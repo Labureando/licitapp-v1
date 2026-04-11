@@ -37,7 +37,6 @@ uvicorn app.main:app --reload --port 8000
 ## Stack
 - Backend: NestJS + TypeORM + PostgreSQL
 - Frontend: React + Vite + TailwindCSS + shadcn/ui
-- Mobile: Expo + React Native + NativeWind
 - IA: FastAPI + OpenAI + Qdrant
 - Colas: BullMQ + Redis
 - Monorepo: Turborepo
