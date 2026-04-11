@@ -1,9 +1,0 @@
-export { User } from './user.entity';
-export { Organization } from './organization.entity';
-export { Licitacion } from './licitacion.entity';
-export { OrganoContratacion } from './organo-contratacion.entity';
-export { Alerta } from './alerta.entity';
-export { AlertMatch } from './alert-match.entity';
-export { SavedLicitacion } from './saved-licitacion.entity';
-export { CpvCode } from './cpv-code.entity';
-export { ScrapingLog } from './scraping-log.entity';
