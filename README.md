@@ -37,7 +37,10 @@ uvicorn app.main:app --reload --port 8000
 ## Stack
 - Backend: NestJS + TypeORM + PostgreSQL
 - Frontend: React + Vite + TailwindCSS + shadcn/ui
+<<<<<<< HEAD
 - Mobile: Expo + React Native + NativeWind
+=======
+>>>>>>> db7c95a9d5ba0f151469698e0d2e6b4fd18a25a9
 - IA: FastAPI + OpenAI + Qdrant
 - Colas: BullMQ + Redis
 - Monorepo: Turborepo
@@ -45,4 +48,8 @@ uvicorn app.main:app --reload --port 8000
 ## Credenciales de desarrollo
 - PostgreSQL: postgres/postgres en localhost:5432
 - Base de datos: licitaapp
+<<<<<<< HEAD
 - Usuario test: admin@test.com / test1234
+=======
+- Usuario test: admin@test.com / test1234
+>>>>>>> db7c95a9d5ba0f151469698e0d2e6b4fd18a25a9
