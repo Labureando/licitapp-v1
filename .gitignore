@@ -1,1 +1,15 @@
-node_modules
+.env
+.env.local
+.env.*.local
+node_modules/
+.turbo/
+dist/
+build/
+.next/
+__pycache__/
+*.pyc
+venv/
+.expo/
+.DS_Store
+coverage/
+*.log
