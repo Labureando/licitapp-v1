@@ -8,6 +8,7 @@ import { winstonConfig } from './config/winston-nest.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { HealthModule } from './modules/health/health.module';
+import { ScrapingModule } from './modules/scraping/scraping.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { HealthModule } from './modules/health/health.module';
     AuthModule,
     UsersModule,
     HealthModule,
+    ScrapingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

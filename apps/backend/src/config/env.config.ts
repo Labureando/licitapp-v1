@@ -14,7 +14,7 @@ export const config = {
     port: parseInt(process.env.DB_PORT || '5432', 10),
     username: process.env.DB_USERNAME || 'postgres',
     password: process.env.DB_PASSWORD || '1234',
-    name: process.env.DB_NAME || 'licitapp',
+    name: process.env.DB_NAME || 'licitaapp',
     synchronize: process.env.NODE_ENV !== 'production',
   },
 
