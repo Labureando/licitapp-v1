@@ -1,4 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity('scraping_logs')
 export class ScrapingLog {
@@ -28,9 +33,6 @@ export class ScrapingLog {
 
   @Column({ type: 'timestamptz', nullable: true })
   finishedAt: Date | null;
-
-  @Column({ type: 'text', nullable: true })
-  errorMessage: string | null;
 
   @CreateDateColumn()
   createdAt: Date;
