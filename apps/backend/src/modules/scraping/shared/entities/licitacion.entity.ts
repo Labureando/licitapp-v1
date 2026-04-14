@@ -106,6 +106,10 @@ export class Licitacion {
   @JoinColumn({ name: 'organoId' })
   organo: OrganoContratacion | null;
 
+  @Column({ type: 'tsvector', nullable: true, select: false })
+  @Index('idx_licitaciones_search', { synchronize: false }) // Lo creamos manual
+  searchVector: any;
+
   @CreateDateColumn()
   createdAt: Date;
 

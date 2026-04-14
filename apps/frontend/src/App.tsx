@@ -1,5 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { AppLayout } from './components/layout/app-layout'
+import { BuscarPage } from './pages/buscar/buscar-page'
+import { LicitacionPage } from './pages/licitacion/licitacion-page';
 
 function App() {
   return (
@@ -12,10 +14,11 @@ function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<div>Home — redirigir a /dashboard</div>} />
         <Route path="/dashboard" element={<div>Dashboard</div>} />
-        <Route path="/buscar" element={<div>Buscador</div>} />
+        <Route path="/buscar" element={<BuscarPage />} />
         <Route path="/alertas" element={<div>Alertas</div>} />
         <Route path="/guardadas" element={<div>Guardadas</div>} />
         <Route path="/settings" element={<div>Settings</div>} />
+        <Route path="/licitaciones/:id" element={<LicitacionPage />} />
       </Route>
 
       <Route path="*" element={<div className="p-8">404 Not Found</div>} />

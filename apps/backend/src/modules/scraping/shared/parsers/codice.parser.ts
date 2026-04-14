@@ -370,17 +370,18 @@ export class CodiceParser {
   private mapEstado(c: string | null): string {
     const m: Record<string, string> = {
       PEN: 'ABIERTA',
+      PUB: 'ABIERTA',
       EV: 'CERRADA',
       ADJ: 'ADJUDICADA',
       RES: 'RESUELTA',
       FOR: 'RESUELTA',
       DES: 'DESIERTA',
       ANU: 'ANULADA',
+      ANUL: 'ANULADA',
       PRE: 'ANUNCIO_PREVIO',
     };
     return m[c || ''] || c || 'DESCONOCIDO';
   }
-
   private mapTipo(c: string | null): string | null {
     const m: Record<string, string> = {
       '1': 'SERVICIOS',
@@ -401,7 +402,14 @@ export class CodiceParser {
       '4': 'NEGOCIADO_CON_PUBLICIDAD',
       '5': 'DIALOGO_COMPETITIVO',
       '6': 'SIMPLIFICADO',
+      '7': 'SIMPLIFICADO_ABREVIADO',
+      '8': 'CONCURSO_PROYECTOS',
+      '9': 'OTROS',
+      '10': 'SISTEMA_DINAMICO',
+      '12': 'ASOCIACION_INNOVACION',
+      '13': 'NORMAS_INTERNAS',
       '100': 'BASADO_ACUERDO_MARCO',
+      '999': 'NO_DEFINIDO',
     };
     return m[c || ''] || c || null;
   }
