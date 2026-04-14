@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LicitacionesService } from './licitaciones.service';
 import { SearchLicitacionesDto } from './dto/search-licitaciones.dto';
 

@@ -1,10 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Licitacion } from '../scraping/shared/entities/licitacion.entity';
 import { OrganoContratacion } from '../scraping/shared/entities/organo-contratacion.entity';
 import { SearchLicitacionesDto } from './dto/search-licitaciones.dto';
+import { SearchQueryBuilderService } from './services/search-query-builder.service';
+import { LicitacionFormatterService } from './services/licitacion-formatter.service';
+import { ISearchResponse } from './interfaces/search-response.interface';
 
+/**
+ * Servicio de Licitaciones - Orquestación de búsqueda y detalle
+ * Delega lógica de queries a SearchQueryBuilderService
+ * Delega lógica de formateo a LicitacionFormatterService
+ */
 @Injectable()
 export class LicitacionesService {
   private readonly logger = new Logger(LicitacionesService.name);
@@ -14,92 +23,45 @@ export class LicitacionesService {
     private readonly licRepo: Repository<Licitacion>,
     @InjectRepository(OrganoContratacion)
     private readonly orgRepo: Repository<OrganoContratacion>,
+    private readonly queryBuilder: SearchQueryBuilderService,
+    private readonly formatter: LicitacionFormatterService,
   ) {}
 
-  async search(dto: SearchLicitacionesDto) {
+  /**
+   * Buscar licitaciones con filtros avanzados
+   * Utiliza el patrón Builder para construir queries dinámicamente
+   */
+  async search(dto: SearchLicitacionesDto): Promise<ISearchResponse<any>> {
     const page = dto.page ?? 1;
     const pageSize = dto.pageSize ?? 20;
     const skip = (page - 1) * pageSize;
 
-    const qb = this.licRepo
-      .createQueryBuilder('l')
-      .leftJoinAndSelect('l.organo', 'o');
+    // Construir query usando el patrón Builder
+    const qb = this.queryBuilder
+      .addFullTextSearch(dto.q)
+      .addStateFilter(dto.estado)
+      .addTypeFilter(dto.tipoContrato)
+      .addProcedureFilter(dto.procedimiento)
+      .addLocationFilters(dto.ccaa, dto.provincia)
+      .addCpvFilter(dto.cpv)
+      .addPriceRange(dto.importeMin, dto.importeMax)
+      .addPublicationDateRange(
+        dto.fechaDesde ? new Date(dto.fechaDesde) : undefined,
+        dto.fechaHasta ? new Date(dto.fechaHasta) : undefined,
+      )
+      .addOpenDeadlineFilter(dto.soloConPlazo)
+      .addOrganoFilter(dto.organoId)
+      .applyOrderBy(
+        dto.sortBy as 'fecha' | 'importe' | 'deadline' | undefined,
+        dto.sortOrder,
+      )
+      .build();
 
-    // ── FULL-TEXT SEARCH ──
-    if (dto.q && dto.q.trim()) {
-      qb.andWhere(
-        `l."searchVector" @@ plainto_tsquery('spanish', :q)`,
-        { q: dto.q.trim() },
-      );
-    }
-    // ── FILTROS ──
-    if (dto.estado) {
-      qb.andWhere('l.estado = :estado', { estado: dto.estado });
-    }
-
-    if (dto.tipoContrato) {
-      qb.andWhere('l."tipoContrato" = :tipo', { tipo: dto.tipoContrato });
-    }
-
-    if (dto.procedimiento) {
-      qb.andWhere('l.procedimiento = :proc', { proc: dto.procedimiento });
-    }
-
-    if (dto.ccaa) {
-      qb.andWhere('l.ccaa ILIKE :ccaa', { ccaa: `%${dto.ccaa}%` });
-    }
-
-    if (dto.provincia) {
-      qb.andWhere('l.provincia ILIKE :prov', { prov: `%${dto.provincia}%` });
-    }
-
-    if (dto.cpv) {
-      qb.andWhere(':cpv = ANY(l."cpvCodes")', { cpv: dto.cpv });
-    }
-
-    if (dto.importeMin !== undefined) {
-      qb.andWhere('CAST(l."presupuestoBase" AS BIGINT) >= :min', { min: dto.importeMin });
-    }
-
-    if (dto.importeMax !== undefined) {
-      qb.andWhere('CAST(l."presupuestoBase" AS BIGINT) <= :max', { max: dto.importeMax });
-    }
-
-    if (dto.fechaDesde) {
-      qb.andWhere('l."fechaPublicacion" >= :desde', { desde: new Date(dto.fechaDesde) });
-    }
-
-    if (dto.fechaHasta) {
-      qb.andWhere('l."fechaPublicacion" <= :hasta', { hasta: new Date(dto.fechaHasta) });
-    }
-
-    if (dto.soloConPlazo) {
-      qb.andWhere('l."fechaPresentacion" > NOW()');
-    }
-
-    if (dto.organoId) {
-      qb.andWhere('l."organoId" = :orgId', { orgId: dto.organoId });
-    }
-
-     // ── ORDENACIÓN ──
-    switch (dto.sortBy) {
-      case 'importe':
-        qb.orderBy('l.presupuestoBase', dto.sortOrder ?? 'DESC');
-        break;
-      case 'deadline':
-        qb.orderBy('l.fechaPresentacion', 'ASC');
-        break;
-      case 'fecha':
-      default:
-        qb.orderBy('l.fechaPublicacion', dto.sortOrder ?? 'DESC');
-        break;
-    }
-
-    // ── PAGINACIÓN ──
+    // Aplicar paginación
     const [data, total] = await qb.skip(skip).take(pageSize).getManyAndCount();
 
     return {
-      data: data.map((l) => this.formatLicitacion(l)),
+      data: data.map((l) => this.formatter.formatList(l)),
       total,
       page,
       pageSize,
@@ -108,6 +70,9 @@ export class LicitacionesService {
     };
   }
 
+  /**
+   * Obtener detalle completo de una licitación por ID
+   */
   async findById(id: string) {
     const lic = await this.licRepo.findOne({
       where: { id },
@@ -118,111 +83,47 @@ export class LicitacionesService {
       throw new NotFoundException(`Licitación ${id} no encontrada`);
     }
 
-    return this.formatLicitacionDetalle(lic);
+    // Usar el formatterService en lugar de método privado
+    return this.formatter.formatDetail(lic);
   }
 
+  /**
+   * Obtener opciones de filtros (estados, tipos, ccaa, procedimientos)
+   * Ejecuta queries en paralelo para mejor performance
+   */
   async getFilterOptions() {
-    // Devolver valores únicos para los dropdowns de filtros
-    const estados = await this.licRepo
-      .createQueryBuilder('l')
-      .select('l.estado', 'estado')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('l.estado')
-      .orderBy('count', 'DESC')
-      .getRawMany();
+    try {
+      // Ejecutar todas las queries en paralelo
+      const [estados, tipos, ccaas, procedimientos] = await Promise.all([
+        this.queryFilterByField('estado'),
+        this.queryFilterByField('tipoContrato'),
+        this.queryFilterByField('ccaa'),
+        this.queryFilterByField('procedimiento'),
+      ]);
 
-    const tipos = await this.licRepo
-      .createQueryBuilder('l')
-      .select('l."tipoContrato"', 'tipo')
-      .addSelect('COUNT(*)', 'count')
-      .where('l."tipoContrato" IS NOT NULL')
-      .groupBy('l."tipoContrato"')
-      .orderBy('count', 'DESC')
-      .getRawMany();
-
-    const ccaas = await this.licRepo
-      .createQueryBuilder('l')
-      .select('l.ccaa', 'ccaa')
-      .addSelect('COUNT(*)', 'count')
-      .where('l.ccaa IS NOT NULL')
-      .groupBy('l.ccaa')
-      .orderBy('count', 'DESC')
-      .getRawMany();
-
-    const procedimientos = await this.licRepo
-      .createQueryBuilder('l')
-      .select('l.procedimiento', 'procedimiento')
-      .addSelect('COUNT(*)', 'count')
-      .where('l.procedimiento IS NOT NULL')
-      .groupBy('l.procedimiento')
-      .orderBy('count', 'DESC')
-      .getRawMany();
-
-    return { estados, tipos, ccaas, procedimientos };
+      return { estados, tipos, ccaas, procedimientos };
+    } catch (error) {
+      this.logger.error('Error fetching filter options', error);
+      throw error;
+    }
   }
 
-  // ── FORMATTERS ──
+  /**
+   * Query genérica para obtener opciones de un campo
+   * Reutilizable para diferentes campos
+   * @private
+   */
+  private async queryFilterByField(field: string) {
+    const fieldName = field === 'tipoContrato' ? `"${field}"` : field;
+    const aliasName = field === 'tipoContrato' ? 'tipo' : field;
 
-  private formatLicitacion(l: Licitacion) {
-    return {
-      id: l.id,
-      title: l.title,
-      estado: l.estado,
-      tipoContrato: l.tipoContrato,
-      procedimiento: l.procedimiento,
-      presupuestoBase: l.presupuestoBase ? Number(l.presupuestoBase) : null,
-      presupuestoConIva: l.presupuestoConIva ? Number(l.presupuestoConIva) : null,
-      cpvCodes: l.cpvCodes,
-      ccaa: l.ccaa,
-      provincia: l.provincia,
-      fechaPublicacion: l.fechaPublicacion,
-      fechaPresentacion: l.fechaPresentacion,
-      organo: l.organo ? { id: l.organo.id, nombre: l.organo.nombre } : null,
-      tieneLotes: l.tieneLotes,
-    };
-  }
-
-  private formatLicitacionDetalle(l: Licitacion) {
-    return {
-      id: l.id,
-      externalId: l.externalId,
-      source: l.source,
-      title: l.title,
-      description: l.description,
-      estado: l.estado,
-      tipoContrato: l.tipoContrato,
-      procedimiento: l.procedimiento,
-      tramitacion: l.tramitacion,
-      presupuestoBase: l.presupuestoBase ? Number(l.presupuestoBase) : null,
-      presupuestoConIva: l.presupuestoConIva ? Number(l.presupuestoConIva) : null,
-      cpvCodes: l.cpvCodes,
-      ccaa: l.ccaa,
-      provincia: l.provincia,
-      municipio: l.municipio,
-      fechaPublicacion: l.fechaPublicacion,
-      fechaPresentacion: l.fechaPresentacion,
-      fechaAdjudicacion: l.fechaAdjudicacion,
-      fechaFormalizacion: l.fechaFormalizacion,
-      adjudicatarioNombre: l.adjudicatarioNombre,
-      adjudicatarioNif: l.adjudicatarioNif,
-      importeAdjudicacion: l.importeAdjudicacion ? Number(l.importeAdjudicacion) : null,
-      porcentajeBaja: l.porcentajeBaja,
-      numLicitadores: l.numLicitadores,
-      tieneLotes: l.tieneLotes,
-      documentos: l.documentos,
-      resumenIA: l.resumenIA,
-      organo: l.organo
-        ? {
-            id: l.organo.id,
-            externalId: l.organo.externalId,
-            nombre: l.organo.nombre,
-            tipo: l.organo.tipo,
-            ccaa: l.organo.ccaa,
-            web: l.organo.web,
-          }
-        : null,
-      createdAt: l.createdAt,
-      updatedAt: l.updatedAt,
-    };
+    return this.licRepo
+      .createQueryBuilder('l')
+      .select(`l.${fieldName}`, aliasName)
+      .addSelect('COUNT(*)', 'count')
+      .where(`l.${fieldName} IS NOT NULL`)
+      .groupBy(`l.${fieldName}`)
+      .orderBy('count', 'DESC')
+      .getRawMany();
   }
 }

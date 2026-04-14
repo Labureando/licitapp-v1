@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LicitacionesController } from './licitaciones.controller';
 import { LicitacionesService } from './licitaciones.service';
+import { SearchQueryBuilderService } from './services/search-query-builder.service';
+import { LicitacionFormatterService } from './services/licitacion-formatter.service';
 import { Licitacion } from '../scraping/shared/entities/licitacion.entity';
 import { OrganoContratacion } from '../scraping/shared/entities/organo-contratacion.entity';
 
@@ -10,7 +12,11 @@ import { OrganoContratacion } from '../scraping/shared/entities/organo-contratac
     TypeOrmModule.forFeature([Licitacion, OrganoContratacion]),
   ],
   controllers: [LicitacionesController],
-  providers: [LicitacionesService],
+  providers: [
+    LicitacionesService,
+    SearchQueryBuilderService,
+    LicitacionFormatterService,
+  ],
   exports: [LicitacionesService],
 })
 export class LicitacionesModule {}

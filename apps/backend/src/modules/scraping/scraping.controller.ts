@@ -151,4 +151,109 @@ export class ScrapingController {
         : null,
     };
   }
+
+  @Post('migrations/update-search-vector')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Actualizar searchVector para búsqueda full-text',
+    description:
+      'Recalcula el campo searchVector para todas las licitaciones existentes. Necesario después de scraping masivo.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'SearchVector actualizado',
+    schema: {
+      type: 'object',
+      properties: {
+        updatedCount: { type: 'number', example: 2028 },
+        duration: { type: 'string', example: '3450ms' },
+      },
+    },
+  })
+  async updateSearchVector() {
+    const start = Date.now();
+    try {
+      const result = await this.licitacionRepo.query(`
+        UPDATE licitaciones SET "searchVector" =
+          setweight(to_tsvector('spanish', COALESCE(title, '')), 'A') ||
+          setweight(to_tsvector('spanish', COALESCE(description, '')), 'B') ||
+          setweight(to_tsvector('spanish', COALESCE("adjudicatarioNombre", '')), 'C') ||
+          setweight(to_tsvector('spanish', COALESCE("adjudicatarioNif", '')), 'C')
+        WHERE "searchVector" IS NULL OR "searchVector" = ''::tsvector;
+      `);
+
+      const duration = Date.now() - start;
+      return {
+        updatedCount: result.affectedRows ?? result,
+        duration: `${duration}ms`,
+      };
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to update searchVector: ${msg}`);
+    }
+  }
+
+  @Post('migrations/create-search-trigger')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Crear trigger para auto-actualizar searchVector',
+    description:
+      'Crea el trigger en PostgreSQL que auto-actualiza searchVector cuando se inserta/actualiza una licitación. Debe ejecutarse UNA SOLA VEZ.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Trigger creado exitosamente',
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string', example: 'Trigger creado' },
+        triggerName: { type: 'string', example: 'trg_licitaciones_search' },
+      },
+    },
+  })
+  async createSearchTrigger() {
+    try {
+      // Ejecutar cada comando por separado
+      await this.licitacionRepo.query(`
+        CREATE OR REPLACE FUNCTION licitaciones_search_trigger()
+        RETURNS trigger AS $$
+        BEGIN
+          NEW."searchVector" :=
+            setweight(to_tsvector('spanish', COALESCE(NEW.title, '')), 'A') ||
+            setweight(to_tsvector('spanish', COALESCE(NEW.description, '')), 'B') ||
+            setweight(to_tsvector('spanish', COALESCE(NEW."adjudicatarioNombre", '')), 'C') ||
+            setweight(to_tsvector('spanish', COALESCE(NEW."adjudicatarioNif", '')), 'C');
+          RETURN NEW;
+        END
+        $$ LANGUAGE plpgsql;
+      `);
+
+      await this.licitacionRepo.query(`
+        DROP TRIGGER IF EXISTS trg_licitaciones_search ON licitaciones;
+      `);
+
+      await this.licitacionRepo.query(`
+        CREATE TRIGGER trg_licitaciones_search
+        BEFORE INSERT OR UPDATE OF title, description, "adjudicatarioNombre", "adjudicatarioNif"
+        ON licitaciones
+        FOR EACH ROW EXECUTE FUNCTION licitaciones_search_trigger();
+      `);
+
+      // Crear índice GIN si no existe
+      await this.licitacionRepo.query(`
+        CREATE INDEX IF NOT EXISTS idx_licitaciones_search
+        ON licitaciones USING GIN ("searchVector");
+      `);
+
+      return {
+        message: 'Trigger y función creados exitosamente',
+        triggerName: 'trg_licitaciones_search',
+        functionName: 'licitaciones_search_trigger()',
+        indexName: 'idx_licitaciones_search',
+      };
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Failed to create trigger: ${msg}`);
+    }
+  }
 }
