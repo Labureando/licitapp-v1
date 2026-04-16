@@ -1,52 +1,94 @@
-import { OrganizationPlan, UserPlan } from '../../../enums';
-import {
-  OrganizationPlanLimits,
-  UserPlanLimits,
-} from './limits.interface';
+import { Plan } from '../../../enums';
+import { PlanLimits } from './limits.interface';
 
 /**
- * Límites para Planes de Organización
- * Dos opciones: STARTER (pequeño equipo) | PROFESSIONAL (equipos grandes)
+ * Límites Unificados para Todos los Planes
+ * Basado en roles-y-planes.md
+ * Diferencia entre planes de usuarios individuales (FREE, PRO, ADVANCED) y organizaciones (STARTER, PROFESSIONAL)
  */
-export const ORGANIZATION_PLAN_LIMITS: Record<
-  OrganizationPlan,
-  OrganizationPlanLimits
-> = {
-  [OrganizationPlan.STARTER]: {
-    maxUsers: 5, // Hasta 5 usuarios en la organización
-    maxAlerts: 3, // Alertas simultáneas por organización
-    maxPipelines: 1, // 1 pipeline de procesamiento
-    hasIntegrations: false, // Sin integraciones externas
-    hasWorkflows: false, // Sin workflows personalizados
-    hasHistoricalAccess: false, // Sin acceso al histórico
+export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
+  // ========== PLANES PARA USUARIOS INDIVIDUALES (PUBLIC_USER) ==========
+
+  // === FREE ===
+  // Gratis: 50 créditos IA, 1 alerta, búsqueda básica, 3 meses histórico
+  [Plan.FREE]: {
+    maxUsers: 1,
+    maxAlerts: 1,
+    maxPipelines: 0,
+    hasIntegrations: false,
+    hasWorkflows: false,
+    hasHistoricalAccess: false,
+    tokensPerMonth: 50,
+    canCreateAlerts: true,
+    maxSavedSearches: 3,
+    hasAdvancedFilters: false,
   },
-  [OrganizationPlan.PROFESSIONAL]: {
-    maxUsers: Infinity, // Usuarios ilimitados
-    maxAlerts: 20, // Muchas alertas simultáneas
-    maxPipelines: Infinity, // Pipelines ilimitados
-    hasIntegrations: true, // Acceso a todas las integraciones
-    hasWorkflows: true, // Workflows personalizados disponibles
-    hasHistoricalAccess: true, // Acceso completo al histórico
+
+  // === PRO ===
+  // $XX/mes: 500 créditos IA, 5 alertas, búsqueda avanzada, 6 meses histórico
+  [Plan.PRO]: {
+    maxUsers: 5,
+    maxAlerts: 5,
+    maxPipelines: 0,
+    hasIntegrations: false,
+    hasWorkflows: false,
+    hasHistoricalAccess: true,
+    tokensPerMonth: 500,
+    canCreateAlerts: true,
+    maxSavedSearches: Infinity,
+    hasAdvancedFilters: true,
+  },
+
+  // === ADVANCED ===
+  // $XX/mes: 1.000 créditos IA, 10 alertas, búsqueda premium, 1 año histórico
+  [Plan.ADVANCED]: {
+    maxUsers: 10,
+    maxAlerts: 10,
+    maxPipelines: 0,
+    hasIntegrations: false,
+    hasWorkflows: false,
+    hasHistoricalAccess: true,
+    tokensPerMonth: 1000,
+    canCreateAlerts: true,
+    maxSavedSearches: Infinity,
+    hasAdvancedFilters: true,
+  },
+
+  // ========== PLANES PARA ORGANIZACIONES (PAGO OBLIGATORIO) ==========
+
+  // === STARTER ===
+  // $XX/mes: 3 usuarios, 5 alertas, 500 créditos IA/mes, 6 meses histórico
+  [Plan.STARTER]: {
+    maxUsers: 3,
+    maxAlerts: 5,
+    maxPipelines: 0,
+    hasIntegrations: false,
+    hasWorkflows: false,
+    hasHistoricalAccess: true,
+    tokensPerMonth: 500,
+    canCreateAlerts: true,
+    maxSavedSearches: Infinity,
+    hasAdvancedFilters: true,
+  },
+
+  // === PROFESSIONAL ===
+  // $XXX/mes: 10 usuarios, 15 alertas, 5.000 créditos IA/mes, 2 años histórico, webhooks/integraciones
+  [Plan.PROFESSIONAL]: {
+    maxUsers: 10,
+    maxAlerts: 15,
+    maxPipelines: 0,
+    hasIntegrations: true,
+    hasWorkflows: false,
+    hasHistoricalAccess: true,
+    tokensPerMonth: 5000,
+    canCreateAlerts: true,
+    maxSavedSearches: Infinity,
+    hasAdvancedFilters: true,
   },
 };
 
 /**
- * Límites para Planes de Usuario Común (PUBLIC_USER)
- * Dos opciones: FREE (básico) | PREMIUM (extendido)
+ * @deprecated Usar PLAN_LIMITS
  */
-export const USER_PLAN_LIMITS: Record<UserPlan, UserPlanLimits> = {
-  [UserPlan.FREE]: {
-    tokensPerMonth: 100, // 100 tokens para búsquedas
-    canCreateAlerts: false, // No puede crear alertas personalizadas
-    hasHistoricalAccess: false, // Solo datos recientes
-    maxSavedSearches: 3, // Hasta 3 búsquedas guardadas
-    hasAdvancedFilters: false, // Filtros básicos
-  },
-  [UserPlan.PREMIUM]: {
-    tokensPerMonth: 1000, // 1000 tokens para búsquedas y IA
-    canCreateAlerts: true, // Puede crear alertas personalizadas
-    hasHistoricalAccess: true, // Acceso al histórico completo
-    maxSavedSearches: Infinity, // Búsquedas ilimitadas
-    hasAdvancedFilters: true, // Filtros avanzados disponibles
-  },
-};
+export const ORGANIZATION_PLAN_LIMITS = PLAN_LIMITS;
+export const USER_PLAN_LIMITS = PLAN_LIMITS;

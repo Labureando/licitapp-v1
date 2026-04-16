@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrganizationPlan } from '../enums';
+import { Plan } from '../enums';
 import { UserEntity } from './user.entity';
 
 @Entity('organizations')
@@ -27,10 +27,10 @@ export class OrganizationEntity {
 
   @Column({
     type: 'enum',
-    enum: OrganizationPlan,
-    default: OrganizationPlan.STARTER,
+    enum: Plan,
+    default: Plan.FREE,
   })
-  plan: OrganizationPlan;
+  plan: Plan;
 
   @Column({
     type: 'varchar',
@@ -45,6 +45,21 @@ export class OrganizationEntity {
     nullable: true,
   })
   website: string;
+
+  @Column({
+    type: 'varchar',
+    length: 20,
+    nullable: true,
+  })
+  phone: string;
+
+  @Column({
+    type: 'varchar',
+    length: 15,
+    nullable: true,
+    unique: true,
+  })
+  cif: string;
 
   @Column({
     type: 'timestamp',

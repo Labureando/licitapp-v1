@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/require-await */
 import {
   Controller,
   Get,
@@ -8,11 +13,13 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto, RequestPasswordChangeDto, ConfirmPasswordChangeDto, ChangePasswordDto } from './dto';
 import { UserEntity } from './entities';
+import { RoleGuard } from '../../common/guards';
 
 @Controller('users')
 export class UsersController {
@@ -112,6 +119,61 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('userId') userId: string): Promise<void> {
     return this.usersService.deleteUser(userId);
+  }
+
+  // ============ ENDPOINTS DE CAMBIO DE CONTRASEÑA ============
+
+  /**
+   * Solicitar cambio de contraseña por email
+   * Envía un email con link tokenizado para cambiar contraseña
+   * @param requestPasswordChangeDto - Email del usuario
+   * @returns Mensaje de confirmación
+   */
+  @Post('password/request')
+  @HttpCode(HttpStatus.OK)
+  async requestPasswordChange(
+    @Body() requestPasswordChangeDto: RequestPasswordChangeDto,
+  ): Promise<{ message: string }> {
+    return this.usersService.requestPasswordChange(requestPasswordChangeDto.email);
+  }
+
+  /**
+   * Confirmar cambio de contraseña con token
+   * Token debe haber sido enviado por email y no estar expirado
+   * @param confirmPasswordChangeDto - Token y nueva contraseña
+   * @returns Mensaje de confirmación
+   */
+  @Post('password/confirm')
+  @HttpCode(HttpStatus.OK)
+  async confirmPasswordChange(
+    @Body() confirmPasswordChangeDto: ConfirmPasswordChangeDto,
+  ): Promise<{ message: string }> {
+    return this.usersService.confirmPasswordChange(
+      confirmPasswordChangeDto.token,
+      confirmPasswordChangeDto.newPassword,
+    );
+  }
+
+  /**
+   * Cambiar contraseña directa (usuario logueado)
+   * Requiere contraseña anterior válida
+   * @param changePasswordDto - Contraseña anterior y nueva
+   * @param req - Request con datos del usuario logueado
+   * @returns Mensaje de confirmación
+   */
+  @Patch('password/change')
+  @UseGuards(RoleGuard)
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Request() req: any,
+  ): Promise<{ message: string }> {
+    const userId = req.user.id;
+    return this.usersService.changePassword(
+      userId,
+      changePasswordDto.oldPassword,
+      changePasswordDto.newPassword,
+    );
   }
 }
 

@@ -1,5 +1,5 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsEmail } from 'class-validator';
-import { Role, UserPlan } from '../enums';
+import { IsString, IsOptional, IsEnum, IsBoolean, IsEmail, Matches } from 'class-validator';
+import { Role, Plan, Timezone } from '../enums';
 
 export class UpdateUserDto {
   @IsEmail()
@@ -14,6 +14,17 @@ export class UpdateUserDto {
   @IsOptional()
   lastName?: string;
 
+  @IsString()
+  @Matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/, {
+    message: 'El teléfono debe tener un formato válido (ej: +34 912345678)',
+  })
+  @IsOptional()
+  phone?: string;
+
+  @IsEnum(Timezone)
+  @IsOptional()
+  timezone?: Timezone;
+
   @IsEnum(Role)
   @IsOptional()
   role?: Role;
@@ -21,9 +32,9 @@ export class UpdateUserDto {
   /**
    * Actualizar plan del usuario (solo para PUBLIC_USER)
    */
-  @IsEnum(UserPlan)
+  @IsEnum(Plan)
   @IsOptional()
-  userPlan?: UserPlan;
+  userPlan?: Plan;
 
   @IsBoolean()
   @IsOptional()

@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { UserEntity, OrganizationEntity } from './entities';
-import { RolesModule } from './modules/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { PlansModule } from './modules/plans/plans.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
@@ -35,7 +34,6 @@ import { EmailModule } from '../../infrastructure/email';
     TypeOrmModule.forFeature([UserEntity, OrganizationEntity]),
     // Módulos internos
     EmailModule,
-    RolesModule,
     PermissionsModule,
     PlansModule,
     OrganizationsModule,

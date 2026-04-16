@@ -1,130 +1,193 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
-import { OrganizationPlan, UserPlan } from '../../../enums';
-import {
-  ORGANIZATION_PLAN_LIMITS,
-  USER_PLAN_LIMITS,
-} from './limits.constants';
-import {
-  OrganizationPlanLimits,
-  UserPlanLimits,
-} from './limits.interface';
+import { Plan } from '../../../enums';
+import { PLAN_LIMITS } from './limits.constants';
+import { PlanLimits } from './limits.interface';
 
 @Injectable()
 export class LimitsService {
-  // ==================== ORGANIZATION PLANS ====================
-
   /**
-   * Obtiene los límites para un plan de organización
+   * Obtiene los límites para un plan específico
    */
-  getOrganizationPlanLimits(
-    plan: OrganizationPlan,
-  ): OrganizationPlanLimits {
-    return ORGANIZATION_PLAN_LIMITS[plan];
+  getPlanLimits(plan: Plan): PlanLimits {
+    return PLAN_LIMITS[plan];
   }
 
+  // ==================== ORGANIZATION/PLAN CHECKS ====================
+
   /**
-   * Verifica si una organización puede agregar más usuarios
+   * Verifica si una organización/plan puede agregar más usuarios
    */
-  canAddUserToOrganization(
-    plan: OrganizationPlan,
-    currentUserCount: number,
-  ): boolean {
-    const limits = this.getOrganizationPlanLimits(plan);
+  canAddUser(plan: Plan, currentUserCount: number): boolean {
+    const limits = this.getPlanLimits(plan);
     return currentUserCount < limits.maxUsers;
   }
 
   /**
-   * Verifica si una organización puede crear más pipelines
+   * Verifica si una organización/plan puede crear más pipelines
    */
-  canCreatePipelineInOrganization(
-    plan: OrganizationPlan,
-    currentPipelineCount: number,
-  ): boolean {
-    const limits = this.getOrganizationPlanLimits(plan);
+  canCreatePipeline(plan: Plan, currentPipelineCount: number): boolean {
+    const limits = this.getPlanLimits(plan);
     return currentPipelineCount < limits.maxPipelines;
   }
 
   /**
-   * Verifica si una organización puede crear más alertas
+   * Verifica si una organización/plan puede crear más alertas
    */
-  canCreateAlertInOrganization(
-    plan: OrganizationPlan,
-    currentAlertCount: number,
-  ): boolean {
-    const limits = this.getOrganizationPlanLimits(plan);
+  canCreateAlert(plan: Plan, currentAlertCount: number): boolean {
+    const limits = this.getPlanLimits(plan);
     return currentAlertCount < limits.maxAlerts;
   }
 
   /**
-   * Verifica si una organización tiene acceso a integraciones
+   * Verifica si tiene acceso a integraciones
    */
-  orgHasIntegrations(plan: OrganizationPlan): boolean {
-    const limits = this.getOrganizationPlanLimits(plan);
+  hasIntegrations(plan: Plan): boolean {
+    const limits = this.getPlanLimits(plan);
     return limits.hasIntegrations;
   }
 
   /**
-   * Verifica si una organización tiene acceso a workflows
+   * Verifica si tiene acceso a workflows personalizados
    */
-  orgHasWorkflows(plan: OrganizationPlan): boolean {
-    const limits = this.getOrganizationPlanLimits(plan);
+  hasWorkflows(plan: Plan): boolean {
+    const limits = this.getPlanLimits(plan);
     return limits.hasWorkflows;
   }
 
   /**
-   * Verifica si una organización tiene acceso al histórico
+   * Verifica si tiene acceso al histórico
    */
-  orgHasHistoricalAccess(plan: OrganizationPlan): boolean {
-    const limits = this.getOrganizationPlanLimits(plan);
+  hasHistoricalAccess(plan: Plan): boolean {
+    const limits = this.getPlanLimits(plan);
     return limits.hasHistoricalAccess;
   }
 
-  // ==================== USER PLANS ====================
+  // ==================== USER PLAN CHECKS ====================
 
   /**
-   * Obtiene los límites para un plan de usuario común (PUBLIC_USER)
+   * Obtiene los tokens disponibles por mes para un usuario
    */
-  getUserPlanLimits(plan: UserPlan): UserPlanLimits {
-    return USER_PLAN_LIMITS[plan];
-  }
-
-  /**
-   * Obtiene los tokens disponibles para un usuario este mes
-   */
-  getUserTokensPerMonth(plan: UserPlan): number {
-    const limits = this.getUserPlanLimits(plan);
+  getTokensPerMonth(plan: Plan): number {
+    const limits = this.getPlanLimits(plan);
     return limits.tokensPerMonth;
   }
 
   /**
    * Verifica si un usuario puede crear alertas personalizadas
    */
-  userCanCreateAlerts(plan: UserPlan): boolean {
-    const limits = this.getUserPlanLimits(plan);
+  canUserCreateAlerts(plan: Plan): boolean {
+    const limits = this.getPlanLimits(plan);
     return limits.canCreateAlerts;
-  }
-
-  /**
-   * Verifica si un usuario tiene acceso al histórico
-   */
-  userHasHistoricalAccess(plan: UserPlan): boolean {
-    const limits = this.getUserPlanLimits(plan);
-    return limits.hasHistoricalAccess;
   }
 
   /**
    * Obtiene la cantidad máxima de búsquedas guardadas
    */
-  getMaxSavedSearches(plan: UserPlan): number {
-    const limits = this.getUserPlanLimits(plan);
+  getMaxSavedSearches(plan: Plan): number {
+    const limits = this.getPlanLimits(plan);
     return limits.maxSavedSearches;
   }
 
   /**
-   * Verifica si un usuario tiene acceso a filtros avanzados
+   * Verifica si tiene acceso a filtros avanzados
    */
-  userHasAdvancedFilters(plan: UserPlan): boolean {
-    const limits = this.getUserPlanLimits(plan);
+  hasAdvancedFilters(plan: Plan): boolean {
+    const limits = this.getPlanLimits(plan);
     return limits.hasAdvancedFilters;
+  }
+
+  // ==================== DEPRECATED METHODS ====================
+
+  /**
+   * @deprecated Usar getPlanLimits
+   */
+  getOrganizationPlanLimits(plan: Plan) {
+    return this.getPlanLimits(plan);
+  }
+
+  /**
+   * @deprecated Usar canAddUser
+   */
+  canAddUserToOrganization(plan: Plan, currentUserCount: number): boolean {
+    return this.canAddUser(plan, currentUserCount);
+  }
+
+  /**
+   * @deprecated Usar canCreatePipeline
+   */
+  canCreatePipelineInOrganization(
+    plan: Plan,
+    currentPipelineCount: number,
+  ): boolean {
+    return this.canCreatePipeline(plan, currentPipelineCount);
+  }
+
+  /**
+   * @deprecated Usar canCreateAlert
+   */
+  canCreateAlertInOrganization(
+    plan: Plan,
+    currentAlertCount: number,
+  ): boolean {
+    return this.canCreateAlert(plan, currentAlertCount);
+  }
+
+  /**
+   * @deprecated Usar hasIntegrations
+   */
+  orgHasIntegrations(plan: Plan): boolean {
+    return this.hasIntegrations(plan);
+  }
+
+  /**
+   * @deprecated Usar hasWorkflows
+   */
+  orgHasWorkflows(plan: Plan): boolean {
+    return this.hasWorkflows(plan);
+  }
+
+  /**
+   * @deprecated Usar hasHistoricalAccess
+   */
+  orgHasHistoricalAccess(plan: Plan): boolean {
+    return this.hasHistoricalAccess(plan);
+  }
+
+  /**
+   * @deprecated Usar getPlanLimits
+   */
+  getUserPlanLimits(plan: Plan) {
+    return this.getPlanLimits(plan);
+  }
+
+  /**
+   * @deprecated Usar getTokensPerMonth
+   */
+  getUserTokensPerMonth(plan: Plan): number {
+    return this.getTokensPerMonth(plan);
+  }
+
+  /**
+   * @deprecated Usar canUserCreateAlerts
+   */
+  userCanCreateAlerts(plan: Plan): boolean {
+    return this.canUserCreateAlerts(plan);
+  }
+
+  /**
+   * @deprecated Usar hasHistoricalAccess
+   */
+  userHasHistoricalAccess(plan: Plan): boolean {
+    return this.hasHistoricalAccess(plan);
+  }
+
+  /**
+   * @deprecated Usar hasAdvancedFilters
+   */
+  userHasAdvancedFilters(plan: Plan): boolean {
+    return this.hasAdvancedFilters(plan);
   }
 }

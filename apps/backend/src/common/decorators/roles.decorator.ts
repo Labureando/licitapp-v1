@@ -15,10 +15,10 @@ export const SuperAdminOnly = () =>
   SetMetadata('roles', [Role.SUPER_ADMIN]);
 
 /**
- * Decorador para especificar que el usuario debe ser admin de su organización
+ * Decorador para especificar que el usuario debe ser admin de su organización (ORG_OWNER)
  */
 export const RequireOrgAdmin = () =>
-  SetMetadata('roles', [Role.SUPER_ADMIN, Role.ORG_OWNER, Role.ORG_ADMIN]);
+  SetMetadata('roles', [Role.SUPER_ADMIN, Role.ORG_OWNER]);
 
 /**
  * Decorador para marcar que una ruta requiere autenticación básica (usuario activo)
