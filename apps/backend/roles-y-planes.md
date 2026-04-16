@@ -6,12 +6,25 @@ Documento de referencia para el desarrollo de la plataforma de contratación pú
 
 ## Contexto
 
-La plataforma maneja dos dimensiones independientes que **siempre van juntas**:
+La plataforma tiene **DOS modelos de planes independientes**:
 
-- **Rol** → controla *qué puede hacer* un usuario dentro de su organización  
-- **Plan** → controla *cuánto puede usar* una organización (límites, features, IA)
+### 1. Usuarios Individuales (PUBLIC_USER)
+- Planes con suscripción **MENSUAL**
+- 3 opciones: FREE, PRO, ADVANCED
+- Cada usuario paga su propio plan
+- **Controlan**: créditos IA, alertas, features de búsqueda
 
-Un `ORG_MEMBER` en plan `FREE` tiene permisos operativos pero acceso limitado a features. Ese mismo `ORG_MEMBER` en plan `ENTERPRISE` tiene acceso completo. El rol no cambia; el plan sí expande las capacidades.
+### 2. Organizaciones (ORG_OWNER + ORG_MEMBER)
+- Planes **OBLIGATORIAMENTE PAGOS** (no hay FREE)
+- 2 opciones: STARTER, PROFESSIONAL
+- ORG_OWNER paga por toda la organización
+- **Controlan**: número de usuarios, alertas, features
+
+**Cuando PUBLIC_USER crea organización:**
+- Siempre comienza en plan **STARTER** (debe pagar)
+- Puede upgradear a PROFESSIONAL pagando diferencia
+- Su plan individual (PRO/ADVANCED) NO se transfiere
+- Si deja la org, vuelve a su plan individual
 
 ---
 
@@ -19,17 +32,13 @@ Un `ORG_MEMBER` en plan `FREE` tiene permisos operativos pero acceso limitado a 
 
 enum Role {
 
-  SUPER\_ADMIN   // Acceso total a la plataforma (solo el equipo interno)
+  SUPER_ADMIN   // Acceso total a la plataforma (solo el equipo interno)
 
-  ORG\_OWNER     // Quien crea la organización y gestiona la suscripción
+  ORG_OWNER     // Quien crea la organización, gestiona suscripción y usuarios
 
-  ORG\_ADMIN     // Admin delegado por el Owner
+  ORG_MEMBER    // Usuario operativo - acceso a alertas, búsqueda, análisis
 
-  ORG\_MEMBER    // Usuario operativo del día a día
-
-  ORG\_VIEWER    // Solo lectura, sin poder modificar nada
-
-  PUBLIC\_USER   // Registro sin organización asignada (freemium / trial)
+  PUBLIC_USER   // Registro sin organización - acceso limitado al buscador público
 
 }
 
@@ -38,11 +47,9 @@ enum Role {
 | Rol | Quién es | Puede hacer |
 | :---- | :---- | :---- |
 | `SUPER_ADMIN` | Tú / equipo interno | Todo. Accede a cualquier organización, gestiona planes, modera contenido |
-| `ORG_OWNER` | El que paga / fundador de la org | Gestiona usuarios, cambia plan, acceso total dentro de su org |
-| `ORG_ADMIN` | Admin delegado por el Owner | Gestiona usuarios y licitaciones, no puede cambiar plan ni billing |
-| `ORG_MEMBER` | Usuario operativo | Busca licitaciones, gestiona pipelines, usa la IA |
-| `ORG_VIEWER` | Consultor externo / auditor | Solo lee. No puede crear, editar ni exportar |
-| `PUBLIC_USER` | Registro nuevo sin org | Acceso limitado al buscador público, sin features de equipo |
+| `ORG_OWNER` | El que paga / fundador de la org | ✓ Gestiona usuarios (invitar/promover) <br> ✓ Cambia plan/billing <br> ✓ Crea alertas <br> ✓ Busca licitaciones <br> ✓ Analiza pliegos (IA) <br> ✓ Ve reportes |
+| `ORG_MEMBER` | Usuarios invitados a la org | ✓ Crea alertas <br> ✓ Busca licitaciones <br> ✓ Analiza pliegos (IA) <br> ✓ Ve reportes <br> ✗ NO gestiona usuarios <br> ✗ NO cambia plan |
+| `PUBLIC_USER` | Registro nuevo sin org | ✓ Acceso limitado al buscador público <br> ✗ NO crea alertas <br> ✗ NO usa IA |
 
 ---
 
@@ -50,61 +57,53 @@ enum Role {
 
 enum Plan {
 
-  FREE        // Trial / acceso básico
+  FREE        // Solo para usuarios individuales (PUBLIC_USER)
 
-  PRO         // Equivalente al Business de Tendios
+  PRO         // Usuarios individuales
 
-  ADVANCED    // Volumen alto, más pipelines y créditos IA
+  ADVANCED    // Usuarios individuales
 
-  ENTERPRISE  // Personalizado, sin límites definidos
+  STARTER     // Organizaciones (PAGO)
+
+  PROFESSIONAL // Organizaciones (PAGO)
 
 }
+
+### Aplicabilidad
+
+| Plan | Aplica a | Costo |
+|------|----------|-------|
+| `FREE` | PUBLIC_USER | Gratis ∞ |
+| `PRO` | PUBLIC_USER | $XX/mes |
+| `ADVANCED` | PUBLIC_USER | $XX/mes |
+| `STARTER` | Organización | $XX/mes (obligatorio) |
+| `PROFESSIONAL` | Organización | $XXX/mes (obligatorio) |
 
 ### Límites por plan
 
-| Feature | FREE | PRO | ADVANCED | ENTERPRISE |
-| :---- | :---- | :---- | :---- | :---- |
-| Usuarios | 1 | 3 | 4 | Ilimitado |
-| Alertas | 1 | 3 | 4 | Personalizadas |
-| Pipelines | 0 | 1 | 2 | 100+ |
-| Créditos IA / mes | 50 | 500 | 1.000 | 10.000+ |
-| Histórico adjudicaciones | — | 2 años | 4 años | Personalizado |
-| Integraciones (Slack, CRM…) | — | — | — | ✓ |
-| Workflows personalizados | — | — | — | ✓ |
+#### Usuarios Individuales (PUBLIC_USER)
 
----
+| Feature | FREE | PRO | ADVANCED |
+|---------|------|-----|----------|
+| Costo | Gratis | $XX/mes | $XX/mes |
+| Análisis de pliegos (IA) / mes | 50 créditos | 500 créditos | 1.000 créditos |
+| Alertas de monitoreo | 1 | 5 | 10 |
+| Búsqueda de licitaciones | ✓ Básica | ✓ Avanzada | ✓ Premium |
+| Histórico de licitaciones | 3 meses | 6 meses | 1 año |
+| Exportar reportes | — | ✓ | ✓ |
 
-## Modelo de datos sugerido (Prisma)
+#### Organizaciones (ORG_OWNER + ORG_MEMBER)
 
-model User {
-
-  id          String   @id @default(cuid())
-
-  email       String   @unique
-
-  role        Role     @default(PUBLIC\_USER)
-
-  orgId       String?
-
-  org         Org?     @relation(fields: \[orgId\], references: \[id\])
-
-  createdAt   DateTime @default(now())
-
-}
-
-model Org {
-
-  id        String   @id @default(cuid())
-
-  name      String
-
-  plan      Plan     @default(FREE)
-
-  users     User\[\]
-
-  createdAt DateTime @default(now())
-
-}
+| Feature | STARTER | PROFESSIONAL |
+|---------|---------|--------------|
+| Costo | $XX/mes (obligatorio) | $XXX/mes (obligatorio) |
+| Usuarios | 3 | 10 |
+| Alertas de monitoreo | 5 | 15 |
+| Análisis de pliegos (IA) / mes | 500 créditos | 5.000 créditos |
+| Búsqueda de licitaciones | ✓ Avanzada | ✓ Premium |
+| Histórico de licitaciones | 6 meses | 2 años |
+| Exportar reportes | ✓ | ✓ |
+| Webhooks / Integraciones | — | ✓ |   
 
 ---
 
@@ -112,57 +111,106 @@ model Org {
 
 La idea es separar **el rol** de **el plan** en los guards:
 
-// Verifica si el usuario puede gestionar otros usuarios
-
+```typescript
+// Gestionar usuarios (invitar, promover, remover) - solo ORG_OWNER
 function canManageUsers(user: User): boolean {
-
-  return \[Role.SUPER\_ADMIN, Role.ORG\_OWNER, Role.ORG\_ADMIN\].includes(user.role)
-
+  return [Role.SUPER_ADMIN, Role.ORG_OWNER].includes(user.role)
 }
 
-// Verifica si la org tiene acceso a una feature según su plan
-
-function canUsePipelines(org: Org): boolean {
-
-  return \[Plan.ADVANCED, Plan.ENTERPRISE\].includes(org.plan)
-
+// Crear alertas - usuarios org + individuales (según su plan)
+function canCreateAlerts(user: User, org?: Org): boolean {
+  const hasRole = [Role.SUPER_ADMIN, Role.ORG_OWNER, Role.ORG_MEMBER].includes(user.role)
+  if (!hasRole) return false
+  
+  // Si es PUBLIC_USER, usa su plan individual
+  if (user.role === Role.PUBLIC_USER) {
+    return user.userPlan !== Plan.FREE // PRO y ADVANCED pueden crear alertas
+  }
+  
+  // Si es en org, verifica que la org no alcanzó límite
+  if (org) {
+    return org.plan in [Plan.STARTER, Plan.PROFESSIONAL]
+  }
+  
+  return false
 }
 
-// Verifica si puede usar integraciones externas
-
-function canUseIntegrations(user: User, org: Org): boolean {
-
-  return canManageUsers(user) && org.plan \=== Plan.ENTERPRISE
-
+// Usar IA (análisis de pliegos)
+function canUseAI(user: User, org?: Org): boolean {
+  const hasRole = [Role.SUPER_ADMIN, Role.ORG_OWNER, Role.ORG_MEMBER].includes(user.role)
+  if (!hasRole) return false
+  
+  if (user.role === Role.PUBLIC_USER) {
+    return user.userPlan !== Plan.FREE // PRO y ADVANCED
+  }
+  
+  return org?.plan in [Plan.STARTER, Plan.PROFESSIONAL]
 }
+
+// Cambiar suscripción (solo ORG_OWNER para org, o PUBLIC_USER para sí mismo)
+function canChangeSubscription(user: User): boolean {
+  return [Role.SUPER_ADMIN, Role.ORG_OWNER].includes(user.role)
+}
+
+// PUBLIC_USER solo puede upgradear su propio plan individual
+function canUpgradeOwnPlan(user: User, targetUserId: string): boolean {
+  return user.role === Role.PUBLIC_USER && user.id === targetUserId
+}
+```
 
 ---
 
-## Flujo de registro
+## Flujo de registro y planes
 
+### Flujo 1: Usuario individual sin organización
+
+```
 Usuario se registra
 
         │
 
         ▼
 
-   PUBLIC\_USER  ──── crea una organización ────▶  ORG\_OWNER (plan FREE)
+   PUBLIC_USER (plan FREE)  ──┬──> Quiere más? Upgrade a PRO ($XX/mes)
+                               │
+                               └──> Upgrade a ADVANCED ($XX/mes)
+```
 
-                                                        │
+### Flujo 2: Usuario crea organización
 
-                                                   invita usuarios
+```
+PUBLIC_USER (plan PRO/ADVANCED)
 
-                                                        │
+        │
 
-                                              ORG\_ADMIN / ORG\_MEMBER / ORG\_VIEWER
+        ▼
+
+Crea una organización
+
+        │
+
+        ▼
+
+ORG_OWNER (plan STARTER - PAGO)  ──┬──> Invita usuarios → ORG_MEMBER
+                                    │
+                                    └──> Quiere más? Upgrade a PROFESSIONAL
+```
+
+**Nota**: El plan individual del PUBLIC_USER NO se transfiere a la org. Son independientes.
 
 ---
 
 ## Notas de desarrollo
 
 - El `SUPER_ADMIN` **nunca pertenece a una organización** (`orgId = null`).  
-- Un `ORG_OWNER` **no puede ser degradado** a `ORG_MEMBER` directamente; primero debe transferir la propiedad.  
+- Un `ORG_OWNER` **no puede ser degradado** a `ORG_MEMBER` directamente; primero debe transferir la propiedad a otro usuario.  
 - El `PUBLIC_USER` se convierte en `ORG_OWNER` automáticamente al crear su primera organización.  
+- Un `ORG_OWNER` es automáticamente también admin: gestiona usuarios Y puede usar alertas/búsqueda/IA.
+- Los `ORG_MEMBER` invitados **heredan el plan de la organización**, NO tienen plan propio.
+- **Planes de usuarios (FREE, PRO, ADVANCED) son independientes del plan de organización.**
+- Cuando PUBLIC_USER crea org, **comienza SIEMPRE en STARTER** (debe pagar nuevamente).
+- No existe plan FREE para organizaciones (todas son pagos).
 - Los límites del plan deben validarse **en el backend**, nunca solo en el frontend.  
-- Considera una tabla `Permission` adicional si en el futuro necesitas permisos granulares por recurso (por licitación, por pipeline, etc.).
+- Licitaciones son solo LECTURA: búsqueda, monitoreo, análisis. No se crean licitaciones en la plataforma.
+- **Suscripción mensual**: Tanto usuarios como orgs se renuevan mes a mes (Stripe integration later).
 

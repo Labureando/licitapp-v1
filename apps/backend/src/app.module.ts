@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WinstonModule } from 'nest-winston';
 import { AppController } from './app.controller';
@@ -12,9 +13,14 @@ import { ScrapingModule } from './modules/scraping/scraping.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
 import { LicitacionesModule } from './modules/licitaciones/licitaciones.module';
+import { InvitationsModule } from './modules/invitations/invitations.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     TypeOrmModule.forRoot(typeormConfig),
     WinstonModule.forRoot(winstonConfig),
     ScheduleModule.forRoot(),
@@ -24,6 +30,7 @@ import { LicitacionesModule } from './modules/licitaciones/licitaciones.module';
     HealthModule,
     ScrapingModule,
     LicitacionesModule,
+    InvitationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

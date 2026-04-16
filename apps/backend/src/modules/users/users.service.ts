@@ -15,7 +15,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 import { UserEntity, OrganizationEntity } from './entities';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { Role } from './enums';
+import { Role, Plan } from './enums';
 import { EmailService } from '../../infrastructure/email';
 import * as bcrypt from 'bcrypt';
 
@@ -112,22 +112,48 @@ export class UsersService {
         throw new ConflictException('El correo electrónico ya está registrado');
       }
 
-      // Validar organización si se proporciona
+      // Validación de planes y organización
+      let organizationId = createUserDto.organizationId;
+      let userPlan: Plan | undefined;
+      
       if (createUserDto.organizationId) {
+        // Si tiene organizationId, userPlan será undefined (hereda del org)
+        userPlan = undefined;
+      } else {
+        // Si no tiene organizationId, userPlan debe ser válido
+        userPlan = createUserDto.userPlan || Plan.FREE;
+      }
+
+      // Si se proporciona organizationId
+      if (organizationId) {
         const organization = await queryRunner.manager.findOne(OrganizationEntity, {
-          where: { id: createUserDto.organizationId },
+          where: { id: organizationId },
         });
 
         if (!organization) {
           throw new BadRequestException('La organización no existe');
         }
 
-        // Verificar límites de la organización si no es SUPER_ADMIN
-        if (createUserDto.role !== Role.SUPER_ADMIN) {
+        // Verificar límites de usuarios en la organización si no es SUPER_ADMIN
+        if (createUserDto.role !== Role.SUPER_ADMIN && createUserDto.role !== Role.ORG_OWNER) {
           const userCount = await queryRunner.manager.count(UserEntity, {
-            where: { organizationId: createUserDto.organizationId },
+            where: { organizationId: organizationId },
           });
           // TODO: Integrar LimitsService para validar límites según plan
+        }
+      } else {
+        // Si NO tiene organizationId, debe ser PUBLIC_USER
+        if (createUserDto.role && createUserDto.role !== Role.PUBLIC_USER) {
+          throw new BadRequestException(
+            'Solo PUBLIC_USER puede no pertenecer a una organización. Para ORG_OWNER/ORG_MEMBER se requiere organizationId.',
+          );
+        }
+
+        // PUBLIC_USER sin org debe tener un plan válido (FREE, PRO, ADVANCED)
+        if (!userPlan || ![Plan.FREE, Plan.PRO, Plan.ADVANCED].includes(userPlan)) {
+          throw new BadRequestException(
+            `Plan no válido para usuario individual. Debe ser: ${Plan.FREE}, ${Plan.PRO}, o ${Plan.ADVANCED}`,
+          );
         }
       }
 
@@ -139,10 +165,12 @@ export class UsersService {
         email: sanitizedEmail,
         firstName: this.sanitizeName(createUserDto.firstName),
         lastName: this.sanitizeName(createUserDto.lastName),
+        phone: createUserDto.phone,
+        timezone: createUserDto.timezone,
         password: hashedPassword,
         role: createUserDto.role || Role.PUBLIC_USER,
-        userPlan: createUserDto.userPlan || undefined,
-        organizationId: createUserDto.organizationId || undefined,
+        userPlan: userPlan,
+        organizationId: organizationId || undefined,
         isActive: true,
       });
 
@@ -419,6 +447,278 @@ export class UsersService {
    */
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, this.SALT_ROUNDS);
+  }
+
+  // ============ MÉTODOS DE PROMOCIÓN DE ROLES ============
+
+  /**
+   * Promover usuario PUBLIC_USER a ORG_OWNER
+   * Se ejecuta automáticamente cuando un PUBLIC_USER crea su primera organización
+   * 
+   * Validaciones:
+   * - Usuario debe ser PUBLIC_USER
+   * - Usuario no debe estar en otra organización
+   * - La organización debe existir
+   * 
+   * @param userId - ID del usuario a promover
+   * @param organizationId - ID de la organización a la que será propietario
+   * @returns Usuario con nuevo rol ORG_OWNER
+   */
+  async promoteToOrgOwner(
+    userId: string,
+    organizationId: string,
+  ): Promise<UserEntity> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Obtener usuario actual
+      const user = await queryRunner.manager.findOne(UserEntity, {
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      // Validar que es PUBLIC_USER
+      if (user.role !== Role.PUBLIC_USER) {
+        throw new BadRequestException(
+          `Solo usuarios PUBLIC_USER pueden ser promovidos. Usuario actual es ${user.role}`,
+        );
+      }
+
+      // Validar que no está en otra organización
+      if (user.organizationId) {
+        throw new BadRequestException(
+          'El usuario ya pertenece a una organización. No puede crear otra.',
+        );
+      }
+
+      // Validar que la organización existe
+      const organization = await queryRunner.manager.findOne(OrganizationEntity, {
+        where: { id: organizationId },
+      });
+
+      if (!organization) {
+        throw new NotFoundException('Organización no encontrada');
+      }
+
+      // Actualizar usuario: cambiar rol a ORG_OWNER y asignar a la organización
+      user.role = Role.ORG_OWNER;
+      user.organizationId = organizationId;
+      user.userPlan = undefined; // Ya no es relevante para ORG_OWNER
+
+      const promotedUser = await queryRunner.manager.save(user);
+      await queryRunner.commitTransaction();
+
+      this.logger.log(
+        `Usuario ${user.email} promovido a ORG_OWNER de organización ${organizationId}`,
+      );
+
+      return promotedUser;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error(
+        `Error al promover usuario: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  // ============ MÉTODOS DE CAMBIO DE CONTRASEÑA ============
+
+  /**
+   * Solicitar cambio de contraseña por email
+   * Genera un token único y envía un email con link para cambiar password
+   * @param email - Email del usuario
+   * @returns Confirmación de email enviado
+   */
+  async requestPasswordChange(email: string): Promise<{ message: string }> {
+    try {
+      const sanitizedEmail = this.sanitizeEmail(email);
+
+      const user = await this.buildUserQuery()
+        .where('user.email = :email', { email: sanitizedEmail })
+        .getOne();
+
+      if (!user) {
+        // No revelar si el email existe (seguridad)
+        this.logger.warn(`Password reset request para email no existente: ${sanitizedEmail}`);
+        return { message: 'Si el email existe, recibirás un enlace para cambiar tu contraseña' };
+      }
+
+      // Generar token único
+      const token = require('crypto').randomBytes(32).toString('hex');
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 1); // Token válido por 1 hora
+
+      // Guardar token en BD
+      user.passwordResetToken = token;
+      user.passwordResetExpiresAt = expiresAt;
+      await this.usersRepository.save(user);
+
+      // Enviar email
+      const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${token}`;
+      await this.emailService.sendEmail({
+        to: user.email,
+        subject: 'Solicitud de cambio de contraseña - LicitApp',
+        html: this.generatePasswordResetEmailHtml(user.firstName, resetLink, expiresAt),
+      });
+
+      this.logger.log(`Email de cambio de contraseña enviado a: ${user.email}`);
+      return { message: 'Si el email existe, recibirás un enlace para cambiar tu contraseña' };
+    } catch (error) {
+      this.logger.error(
+        `Error al solicitar cambio de password: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Confirmar cambio de contraseña usando token
+   * Valida el token y cambia la contraseña
+   * @param token - Token enviado por email
+   * @param newPassword - Nueva contraseña
+   * @returns Confirmación de cambio
+   */
+  async confirmPasswordChange(
+    token: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    try {
+      const user = await this.buildUserQuery()
+        .where('user.passwordResetToken = :token', { token })
+        .getOne();
+
+      if (!user) {
+        throw new BadRequestException('Token de cambio de contraseña inválido o expirado');
+      }
+
+      // Validar que el token no haya expirado
+      if (!user.passwordResetExpiresAt || new Date() > user.passwordResetExpiresAt) {
+        throw new BadRequestException('El token de cambio de contraseña ha expirado');
+      }
+
+      // Hashear nueva contraseña
+      const hashedPassword = await this.hashPassword(newPassword);
+
+      // Actualizar usuario
+      user.password = hashedPassword;
+      user.passwordResetToken = undefined;
+      user.passwordResetExpiresAt = undefined;
+      await this.usersRepository.save(user);
+
+      // Enviar email de confirmación
+      await this.emailService.sendEmail({
+        to: user.email,
+        subject: 'Contraseña actualizada - LicitApp',
+        html: this.generatePasswordChangedEmailHtml(user.firstName),
+      });
+
+      this.logger.log(`Contraseña cambiada exitosamente para: ${user.email}`);
+      return { message: 'Contraseña actualizada exitosamente' };
+    } catch (error) {
+      this.logger.error(
+        `Error al confirmar cambio de password: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Cambiar contraseña directa (usuario logueado)
+   * Requiere validar contraseña anterior
+   * @param userId - ID del usuario
+   * @param oldPassword - Contraseña actual
+   * @param newPassword - Nueva contraseña
+   * @returns Confirmación de cambio
+   */
+  async changePassword(
+    userId: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    try {
+      const user = await this.usersRepository
+        .createQueryBuilder('user')
+        .where('user.id = :userId', { userId })
+        .addSelect('user.password')
+        .getOne();
+
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      // Validar contraseña anterior
+      const isPasswordValid = await this.validatePassword(oldPassword, user.password);
+      if (!isPasswordValid) {
+        throw new BadRequestException('La contraseña actual es incorrecta');
+      }
+
+      // Hashear nueva contraseña
+      const hashedPassword = await this.hashPassword(newPassword);
+
+      // Actualizar
+      user.password = hashedPassword;
+      await this.usersRepository.save(user);
+
+      this.logger.log(`Contraseña cambiada para usuario: ${user.email}`);
+      return { message: 'Contraseña actualizada exitosamente' };
+    } catch (error) {
+      this.logger.error(
+        `Error al cambiar password: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Genera HTML para email de reset de contraseña
+   */
+  private generatePasswordResetEmailHtml(
+    firstName: string,
+    resetLink: string,
+    expiresAt: Date,
+  ): string {
+    return `
+      <h2>Cambio de Contraseña</h2>
+      <p>Hola ${firstName},</p>
+      <p>Recibimos una solicitud para cambiar tu contraseña en LicitApp.</p>
+      <p>Haz clic en el siguiente enlace para cambiar tu contraseña:</p>
+      <p>
+        <a href="${resetLink}" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          Cambiar Contraseña
+        </a>
+      </p>
+      <p><strong>Este enlace expira el ${expiresAt.toLocaleString('es-ES')}</strong></p>
+      <p>Si no solicitaste este cambio, ignora este email.</p>
+    `;
+  }
+
+  /**
+   * Genera HTML para email de confirmación de cambio de contraseña
+   */
+  private generatePasswordChangedEmailHtml(firstName: string): string {
+    return `
+      <h2>Contraseña Actualizada</h2>
+      <p>Hola ${firstName},</p>
+      <p>Tu contraseña ha sido actualizada exitosamente.</p>
+      <p>Si no realizaste este cambio, contacta con nosotros inmediatamente.</p>
+      <p>
+        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}" style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          Volver a LicitApp
+        </a>
+      </p>
+    `;
   }
 }
 

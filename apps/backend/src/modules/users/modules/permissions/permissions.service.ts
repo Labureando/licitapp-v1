@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Injectable, Logger } from '@nestjs/common';
 import { UserEntity, OrganizationEntity } from '../../entities';
-import { Role, OrganizationPlan, UserPlan } from '../../enums';
+import { Role, Plan } from '../../enums';
 import { LimitsService } from '../plans/limits/limits.service';
 import {
   RolePermission,
@@ -35,27 +36,15 @@ export class PermissionsService {
         canViewAnalytics: true,
         canManagePlan: true,
       },
-      [Role.ORG_ADMIN]: {
-        canManageUsers: true,
-        canManageLicitaciones: true,
-        canViewAnalytics: true,
-        canManagePlan: false,
-      },
       [Role.ORG_MEMBER]: {
         canManageUsers: false,
         canManageLicitaciones: true,
-        canViewAnalytics: false,
-        canManagePlan: false,
-      },
-      [Role.ORG_VIEWER]: {
-        canManageUsers: false,
-        canManageLicitaciones: false,
         canViewAnalytics: true,
         canManagePlan: false,
       },
       [Role.PUBLIC_USER]: {
         canManageUsers: false,
-        canManageLicitaciones: false,
+        canManageLicitaciones: true,
         canViewAnalytics: false,
         canManagePlan: false,
       },
@@ -65,58 +54,101 @@ export class PermissionsService {
   }
 
   /**
-   * Obtener permisos basados en el plan de la organización
-   * @param plan - Plan de la organización
+   * Obtener permisos basados en el plan
+   * Diferencia entre planes de usuarios individuales y organizaciones
+   * @param plan - Plan del usuario o organización
    * @returns Objeto con permisos basados en plan
    */
-  getOrganizationPlanPermissions(
-    plan: OrganizationPlan,
-  ): OrganizationPlanPermission {
-    const planPermissions: Record<
-      OrganizationPlan,
-      OrganizationPlanPermission
-    > = {
-      [OrganizationPlan.STARTER]: {
-        canCreatePipelines: false,
+  getPlanPermissions(plan: Plan): OrganizationPlanPermission {
+    // Planes de usuario individual (PUBLIC_USER)
+    if ([Plan.FREE, Plan.PRO, Plan.ADVANCED].includes(plan)) {
+      return this.getIndividualUserPlanPermissions(plan);
+    }
+
+    // Planes de organización
+    return this.getOrgPlanPermissions(plan);
+  }
+
+  /**
+   * Permisos para planes de usuarios individuales (PUBLIC_USER)
+   */
+  private getIndividualUserPlanPermissions(plan: Plan): OrganizationPlanPermission {
+    const userPlans: Record<string, OrganizationPlanPermission> = {
+      [Plan.FREE]: {
         canCreateAlerts: true,
+        canCreatePipelines: false,
         canUseIntegrations: false,
         canUseWorkflows: false,
         canAccessHistorical: false,
       },
-      [OrganizationPlan.PROFESSIONAL]: {
-        canCreatePipelines: true,
+      [Plan.PRO]: {
         canCreateAlerts: true,
-        canUseIntegrations: true,
-        canUseWorkflows: true,
+        canCreatePipelines: false,
+        canUseIntegrations: false,
+        canUseWorkflows: false,
+        canAccessHistorical: true,
+      },
+      [Plan.ADVANCED]: {
+        canCreateAlerts: true,
+        canCreatePipelines: false,
+        canUseIntegrations: false,
+        canUseWorkflows: false,
         canAccessHistorical: true,
       },
     };
 
-    return planPermissions[plan];
+    return userPlans[plan];
   }
 
   /**
-   * Obtener permisos basados en el plan del usuario común
-   * @param plan - Plan del usuario (PUBLIC_USER)
-   * @returns Objeto con permisos basados en plan de usuario
+   * Permisos para planes de organizaciones
    */
-  getUserPlanPermissions(plan: UserPlan): UserPlanPermission {
-    const userPlanPerms: Record<UserPlan, UserPlanPermission> = {
-      [UserPlan.FREE]: {
-        canCreateAlerts: false,
-        canAccessHistorical: false,
-        hasAdvancedSearch: false,
-        hasAdvancedFilters: false,
-      },
-      [UserPlan.PREMIUM]: {
+  private getOrgPlanPermissions(plan: Plan): OrganizationPlanPermission {
+    const orgPlans: Record<string, OrganizationPlanPermission> = {
+      [Plan.STARTER]: {
         canCreateAlerts: true,
+        canCreatePipelines: false,
+        canUseIntegrations: false,
+        canUseWorkflows: false,
         canAccessHistorical: true,
-        hasAdvancedSearch: true,
-        hasAdvancedFilters: true,
+      },
+      [Plan.PROFESSIONAL]: {
+        canCreateAlerts: true,
+        canCreatePipelines: false,
+        canUseIntegrations: true,
+        canUseWorkflows: false,
+        canAccessHistorical: true,
       },
     };
 
-    return userPlanPerms[plan];
+    if (!orgPlans[plan]) {
+      this.logger.warn(`Plan de organización no reconocido: ${plan}`);
+      throw new Error(`Plan no válido para organización: ${plan}`);
+    }
+
+    return orgPlans[plan];
+  }
+
+  /**
+   * @deprecated Usar getPlanPermissions
+   */
+  getOrganizationPlanPermissions(
+    plan: Plan,
+  ): OrganizationPlanPermission {
+    return this.getPlanPermissions(plan);
+  }
+
+  /**
+   * @deprecated Usar getPlanPermissions
+   */
+  getUserPlanPermissions(plan: Plan): UserPlanPermission {
+    const perms = this.getPlanPermissions(plan);
+    return {
+      canCreateAlerts: perms.canCreateAlerts,
+      canAccessHistorical: perms.canAccessHistorical,
+      hasAdvancedSearch: perms.canUseIntegrations,
+      hasAdvancedFilters: perms.canUseWorkflows,
+    };
   }
 
   /**
@@ -154,13 +186,13 @@ export class PermissionsService {
    * @returns true si puede gestionar usuarios
    */
   canManageUsers(user: UserEntity): boolean {
-    return [Role.SUPER_ADMIN, Role.ORG_OWNER, Role.ORG_ADMIN].includes(
+    return [Role.SUPER_ADMIN, Role.ORG_OWNER].includes(
       user.role,
     );
   }
 
   /**
-   * Verificar si el usuario puede gestionar licitaciones (rol-based)
+   * Verificar si el usuario puede gestionar licitaciones (buscar, crear alertas, analizar)
    * @param user - Usuario a verificar
    * @returns true si puede gestionar licitaciones
    */
@@ -168,13 +200,13 @@ export class PermissionsService {
     return [
       Role.SUPER_ADMIN,
       Role.ORG_OWNER,
-      Role.ORG_ADMIN,
       Role.ORG_MEMBER,
+      Role.PUBLIC_USER,
     ].includes(user.role);
   }
 
   /**
-   * Verificar si el usuario puede ver analytics (rol-based)
+   * Verificar si el usuario puede ver analytics y reportes
    * @param user - Usuario a verificar
    * @returns true si puede ver analytics
    */
@@ -182,8 +214,7 @@ export class PermissionsService {
     return [
       Role.SUPER_ADMIN,
       Role.ORG_OWNER,
-      Role.ORG_ADMIN,
-      Role.ORG_VIEWER,
+      Role.ORG_MEMBER,
     ].includes(user.role);
   }
 
@@ -203,8 +234,14 @@ export class PermissionsService {
    * @param organization - Organización a verificar
    * @returns true si puede crear pipelines
    */
-  canCreatePipeline(organization: OrganizationEntity): boolean {
-    return organization.plan === OrganizationPlan.PROFESSIONAL;
+  /**
+   * Verificar si la organización puede crear pipelines
+   * Ningún plan de organización soporta pipelines por ahora
+   * @returns false (pipelines no soportados)
+   */
+  canCreatePipeline(): boolean {
+    // Ningún plan de organización soporta pipelines por ahora
+    return false;
   }
 
   /**
@@ -213,10 +250,8 @@ export class PermissionsService {
    * @returns true si puede crear alertas
    */
   canCreateAlert(organization: OrganizationEntity): boolean {
-    return [
-      OrganizationPlan.STARTER,
-      OrganizationPlan.PROFESSIONAL,
-    ].includes(organization.plan);
+    // Ambos planes de organización (STARTER, PROFESSIONAL) pueden crear alertas
+    return [Plan.STARTER, Plan.PROFESSIONAL].includes(organization.plan);
   }
 
   /**
@@ -225,16 +260,18 @@ export class PermissionsService {
    * @returns true si puede usar integraciones
    */
   canUseIntegrations(organization: OrganizationEntity): boolean {
-    return organization.plan === OrganizationPlan.PROFESSIONAL;
+    // Solo PROFESSIONAL tiene integraciones
+    return organization.plan === Plan.PROFESSIONAL;
   }
 
   /**
    * Verificar si la organización puede usar workflows personalizados
-   * @param organization - Organización a verificar
-   * @returns true si puede usar workflows
+   * Workflows no soportados aún en ningún plan
+   * @returns false (workflows no soportados)
    */
-  canUseWorkflows(organization: OrganizationEntity): boolean {
-    return organization.plan === OrganizationPlan.PROFESSIONAL;
+  canUseWorkflows(): boolean {
+    // Workflows no soportados aún en ningún plan
+    return false;
   }
 
   /**
@@ -243,13 +280,17 @@ export class PermissionsService {
    * @returns true si puede acceder a histórico
    */
   canAccessHistorical(organization: OrganizationEntity): boolean {
-    return organization.plan === OrganizationPlan.PROFESSIONAL;
+    // Ambos planes de organización pueden acceder a histórico
+    return [Plan.STARTER, Plan.PROFESSIONAL].includes(organization.plan);
   }
 
-  // ============ MÉTODOS DE VALIDACIÓN - PLANES DE USUARIO ============
+  // ============ MÉTODOS DE VALIDACIÓN - PLANES DE USUARIO INDIVIDUAL ============
 
   /**
-   * Verificar si el usuario común puede crear alertas personalizadas
+   * Verificar si el usuario individual (PUBLIC_USER) puede crear alertas
+   * FREE: 1 alerta
+   * PRO: 5 alertas
+   * ADVANCED: 10 alertas
    * @param user - Usuario a verificar (debe ser PUBLIC_USER)
    * @returns true si puede crear alertas
    */
@@ -257,11 +298,18 @@ export class PermissionsService {
     if (user.role !== Role.PUBLIC_USER || !user.userPlan) {
       return false;
     }
-    return this.limitsService.userCanCreateAlerts(user.userPlan);
+
+    // FREE permite crear alertas (hasta 1)
+    // PRO permite crear alertas (hasta 5)
+    // ADVANCED permite crear alertas (hasta 10)
+    return [Plan.FREE, Plan.PRO, Plan.ADVANCED].includes(user.userPlan);
   }
 
   /**
-   * Verificar si el usuario común tiene acceso al histórico
+   * Verificar si el usuario individual tiene acceso al histórico
+   * FREE: 3 meses
+   * PRO: 6 meses
+   * ADVANCED: 1 año
    * @param user - Usuario a verificar (debe ser PUBLIC_USER)
    * @returns true si tiene acceso
    */
@@ -269,7 +317,40 @@ export class PermissionsService {
     if (user.role !== Role.PUBLIC_USER || !user.userPlan) {
       return false;
     }
-    return this.limitsService.userHasHistoricalAccess(user.userPlan);
+
+    // FREE no tiene acceso a histórico
+    // PRO y ADVANCED sí tienen acceso
+    return [Plan.PRO, Plan.ADVANCED].includes(user.userPlan);
+  }
+
+  /**
+   * Obtener el límite de créditos IA para un usuario individual por mes
+   * @param userPlan - Plan del usuario individual
+   * @returns Cantidad de créditos disponibles
+   */
+  getAICreditsLimit(userPlan: Plan): number {
+    const creditsByPlan: Record<string, number> = {
+      [Plan.FREE]: 50,
+      [Plan.PRO]: 500,
+      [Plan.ADVANCED]: 1000,
+    };
+
+    return creditsByPlan[userPlan] || 0;
+  }
+
+  /**
+   * Obtener el límite de alertas para un usuario individual
+   * @param userPlan - Plan del usuario individual
+   * @returns Cantidad de alertas permitidas
+   */
+  getAlertsLimit(userPlan: Plan): number {
+    const alertsByPlan: Record<string, number> = {
+      [Plan.FREE]: 1,
+      [Plan.PRO]: 5,
+      [Plan.ADVANCED]: 10,
+    };
+
+    return alertsByPlan[userPlan] || 0;
   }
 
   /**
@@ -296,6 +377,56 @@ export class PermissionsService {
     return this.limitsService.getMaxSavedSearches(user.userPlan);
   }
 
+  // ============ MÉTODOS DE LÍMITES - ORGANIZACIONES ============
+
+  /**
+   * Obtener el límite de usuarios para una organización
+   * STARTER: 3 usuarios
+   * PROFESSIONAL: 10 usuarios
+   * @param orgPlan - Plan de la organización
+   * @returns Cantidad de usuarios permitidos
+   */
+  getOrganizationUsersLimit(orgPlan: Plan): number {
+    const usersByPlan: Record<string, number> = {
+      [Plan.STARTER]: 3,
+      [Plan.PROFESSIONAL]: 10,
+    };
+
+    return usersByPlan[orgPlan] || 0;
+  }
+
+  /**
+   * Obtener el límite de alertas para una organización
+   * STARTER: 5 alertas
+   * PROFESSIONAL: 15 alertas
+   * @param orgPlan - Plan de la organización
+   * @returns Cantidad de alertas permitidas
+   */
+  getOrganizationAlertsLimit(orgPlan: Plan): number {
+    const alertsByPlan: Record<string, number> = {
+      [Plan.STARTER]: 5,
+      [Plan.PROFESSIONAL]: 15,
+    };
+
+    return alertsByPlan[orgPlan] || 0;
+  }
+
+  /**
+   * Obtener créditos IA mensuales para una organización
+   * STARTER: 500 créditos/mes
+   * PROFESSIONAL: 5.000 créditos/mes
+   * @param orgPlan - Plan de la organización
+   * @returns Cantidad de créditos disponibles
+   */
+  getOrganizationAICreditsLimit(orgPlan: Plan): number {
+    const creditsByPlan: Record<string, number> = {
+      [Plan.STARTER]: 500,
+      [Plan.PROFESSIONAL]: 5000,
+    };
+
+    return creditsByPlan[orgPlan] || 0;
+  }
+
   // ============ MÉTODOS VERIFICACIÓN DE ROL ============
 
   /**
@@ -317,21 +448,21 @@ export class PermissionsService {
   }
 
   /**
-   * Verificar si el usuario es admin de la organización
+   * Verificar si el usuario es admin de la organización (ORG_OWNER)
    * @param user - Usuario a verificar
-   * @returns true si es ORG_OWNER o ORG_ADMIN
+   * @returns true si es ORG_OWNER
    */
   isOrgAdmin(user: UserEntity): boolean {
-    return [Role.ORG_OWNER, Role.ORG_ADMIN].includes(user.role);
+    return user.role === Role.ORG_OWNER;
   }
 
   /**
    * Verificar si el usuario tiene rol de solo lectura
    * @param user - Usuario a verificar
-   * @returns true si es ORG_VIEWER o PUBLIC_USER
+   * @returns true si es PUBLIC_USER
    */
   isReadOnly(user: UserEntity): boolean {
-    return [Role.ORG_VIEWER, Role.PUBLIC_USER].includes(user.role);
+    return user.role === Role.PUBLIC_USER;
   }
 
   /**

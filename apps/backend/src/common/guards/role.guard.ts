@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Injectable,
   CanActivate,
@@ -10,7 +13,7 @@ import { Role } from '../../modules/users/enums';
 
 /**
  * Guard para verificar que el usuario tiene los roles requeridos
- * Se usa con el decorador @RequireRoles(Role.ORG_OWNER, Role.ORG_ADMIN)
+ * Se usa con el decorador @RequireRoles(Role.ORG_OWNER, Role.ORG_MEMBER)
  */
 @Injectable()
 export class RoleGuard implements CanActivate {

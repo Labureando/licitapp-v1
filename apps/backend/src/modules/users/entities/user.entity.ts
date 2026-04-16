@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
 } from 'typeorm';
-import { Role, UserPlan } from '../enums';
+import { Role, Plan, Timezone } from '../enums';
 import { OrganizationEntity } from './organization.entity';
 
 @Entity('users')
@@ -34,6 +34,20 @@ export class UserEntity {
 
   @Column({
     type: 'varchar',
+    length: 20,
+    nullable: true,
+  })
+  phone?: string;
+
+  @Column({
+    type: 'enum',
+    enum: Timezone,
+    default: Timezone.UTC,
+  })
+  timezone!: Timezone;
+
+  @Column({
+    type: 'varchar',
     select: false,
   })
   password!: string;
@@ -51,11 +65,11 @@ export class UserEntity {
    */
   @Column({
     type: 'enum',
-    enum: UserPlan,
-    default: UserPlan.FREE,
+    enum: Plan,
+    default: Plan.FREE,
     nullable: true,
   })
-  userPlan?: UserPlan;
+  userPlan?: Plan;
 
   @Column({
     type: 'uuid',
@@ -81,6 +95,19 @@ export class UserEntity {
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt!: Date;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  passwordResetToken?: string;
+
+  @Column({
+    type: 'timestamp',
+    nullable: true,
+  })
+  passwordResetExpiresAt?: Date;
 
   @Column({
     type: 'timestamp',

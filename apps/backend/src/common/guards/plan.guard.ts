@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Injectable,
   CanActivate,
@@ -8,12 +10,12 @@ import {
 import { Reflector } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OrganizationPlan } from '../../modules/users/enums';
+import { Plan } from '../../modules/users/enums';
 import { OrganizationEntity } from '../../modules/users/entities';
 
 /**
  * Guard para verificar que la organización del usuario tiene los planes requeridos
- * Se usa con el decorador @RequirePlans(OrganizationPlan.PROFESSIONAL)
+ * Se usa con el decorador @RequirePlans(Plan.PRO)
  */
 @Injectable()
 export class PlanGuard implements CanActivate {
@@ -27,7 +29,7 @@ export class PlanGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Obtener los planes requeridos del decorador
-    const requiredPlans = this.reflector.get<OrganizationPlan[]>(
+    const requiredPlans = this.reflector.get<Plan[]>(
       'plans',
       context.getHandler(),
     );
