@@ -5,8 +5,10 @@ import { Licitacion } from '../../scraping/shared/entities/licitacion.entity';
 import { ISearchQueryBuilder } from '../interfaces/search-query-builder.interface';
 
 /**
- * Servicio que implementa el patrón Builder para construir queries dinámicamente
- * Permite encadenar filtros de forma limpia y legible
+ * Servicio que implementa el patrón Builder para construir queries dinámicamente.
+ * Todos los filtros de dominio (estado, tipo, ccaa...) aceptan ARRAYS — multi-select.
+ *
+ * NOTA: usar array vacío / undefined / null es equivalente: el filtro se omite.
  */
 @Injectable()
 export class SearchQueryBuilderService implements ISearchQueryBuilder {
@@ -25,6 +27,10 @@ export class SearchQueryBuilderService implements ISearchQueryBuilder {
       .leftJoinAndSelect('l.organo', 'o');
   }
 
+  // ═══════════════════════════════════════════════
+  // Búsqueda full-text
+  // ═══════════════════════════════════════════════
+
   addFullTextSearch(q?: string): this {
     if (q?.trim()) {
       this.qb.andWhere(
@@ -35,36 +41,55 @@ export class SearchQueryBuilderService implements ISearchQueryBuilder {
     return this;
   }
 
-  addStateFilter(estado?: string): this {
-    if (estado) {
-      this.qb.andWhere('l.estado = :estado', { estado });
+  // ═══════════════════════════════════════════════
+  // Filtros multi-select (arrays → IN)
+  // ═══════════════════════════════════════════════
+
+  addStateFilter(estados?: string[]): this {
+    if (estados?.length) {
+      this.qb.andWhere('l.estado IN (:...estados)', { estados });
     }
     return this;
   }
 
-  addTypeFilter(tipo?: string): this {
-    if (tipo) {
-      this.qb.andWhere('l."tipoContrato" = :tipo', { tipo });
+  addTypeFilter(tipos?: string[]): this {
+    if (tipos?.length) {
+      this.qb.andWhere('l."tipoContrato" IN (:...tipos)', { tipos });
     }
     return this;
   }
 
-  addProcedureFilter(procedimiento?: string): this {
-    if (procedimiento) {
-      this.qb.andWhere('l.procedimiento = :proc', { proc: procedimiento });
+  addProcedureFilter(procedimientos?: string[]): this {
+    if (procedimientos?.length) {
+      this.qb.andWhere('l.procedimiento IN (:...procs)', {
+        procs: procedimientos,
+      });
     }
     return this;
   }
 
-  addLocationFilters(ccaa?: string, provincia?: string): this {
-    if (ccaa) {
-      this.qb.andWhere('l.ccaa ILIKE :ccaa', { ccaa: `%${ccaa}%` });
-    }
-    if (provincia) {
-      this.qb.andWhere('l.provincia ILIKE :prov', { prov: `%${provincia}%` });
+  addUrgencyFilter(tramitaciones?: string[]): this {
+    if (tramitaciones?.length) {
+      this.qb.andWhere('l.tramitacion IN (:...trams)', {
+        trams: tramitaciones,
+      });
     }
     return this;
   }
+
+  addLocationFilters(ccaa?: string[], provincia?: string[]): this {
+    if (ccaa?.length) {
+      this.qb.andWhere('l.ccaa IN (:...ccaas)', { ccaas: ccaa });
+    }
+    if (provincia?.length) {
+      this.qb.andWhere('l.provincia IN (:...provs)', { provs: provincia });
+    }
+    return this;
+  }
+
+  // ═══════════════════════════════════════════════
+  // Filtros single-value (strings / rangos)
+  // ═══════════════════════════════════════════════
 
   addCpvFilter(cpv?: string): this {
     if (cpv) {
@@ -74,10 +99,10 @@ export class SearchQueryBuilderService implements ISearchQueryBuilder {
   }
 
   addPriceRange(min?: number, max?: number): this {
-    if (min !== undefined) {
+    if (min !== undefined && min !== null) {
       this.qb.andWhere('CAST(l."presupuestoBase" AS BIGINT) >= :min', { min });
     }
-    if (max !== undefined) {
+    if (max !== undefined && max !== null) {
       this.qb.andWhere('CAST(l."presupuestoBase" AS BIGINT) <= :max', { max });
     }
     return this;
@@ -107,6 +132,10 @@ export class SearchQueryBuilderService implements ISearchQueryBuilder {
     return this;
   }
 
+  // ═══════════════════════════════════════════════
+  // Ordenación
+  // ═══════════════════════════════════════════════
+
   applyOrderBy(
     sortBy?: 'fecha' | 'importe' | 'deadline',
     sortOrder?: 'ASC' | 'DESC',
@@ -115,23 +144,26 @@ export class SearchQueryBuilderService implements ISearchQueryBuilder {
 
     switch (sortBy) {
       case 'importe':
-        this.qb.orderBy('l.presupuestoBase', order);
+        this.qb.orderBy('l.presupuestoBase', order, 'NULLS LAST');
         break;
       case 'deadline':
-        this.qb.orderBy('l.fechaPresentacion', 'ASC');
+        this.qb.orderBy('l.fechaPresentacion', 'ASC', 'NULLS LAST');
         break;
       case 'fecha':
       default:
-        this.qb.orderBy('l.fechaPublicacion', order);
+        this.qb.orderBy('l.fechaPublicacion', order, 'NULLS LAST');
         break;
     }
 
     return this;
   }
 
+  // ═══════════════════════════════════════════════
+  // Build
+  // ═══════════════════════════════════════════════
+
   build(): SelectQueryBuilder<Licitacion> {
     const query = this.qb;
-    // Reset para la próxima búsqueda (evita reutilización del queryBuilder)
     this.resetQueryBuilder();
     return query;
   }

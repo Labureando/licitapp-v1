@@ -4,16 +4,66 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Licitacion } from '../scraping/shared/entities/licitacion.entity';
 import { OrganoContratacion } from '../scraping/shared/entities/organo-contratacion.entity';
-import { SearchLicitacionesDto } from './dto/search-licitaciones.dto';
 import { SearchQueryBuilderService } from './services/search-query-builder.service';
 import { LicitacionFormatterService } from './services/licitacion-formatter.service';
 import { ISearchResponse } from './interfaces/search-response.interface';
+import { SearchLicitacionesDto } from './dto/search-licitaciones.dto';
 
-/**
- * Servicio de Licitaciones - Orquestación de búsqueda y detalle
- * Delega lógica de queries a SearchQueryBuilderService
- * Delega lógica de formateo a LicitacionFormatterService
- */
+// ═══════════════════════════════════════════════════════════════════
+// WHITELISTS de valores válidos para filtros
+// Licitaciones con valores fuera de estos sets se IGNORAN en los
+// dropdowns (pero siguen existiendo en BD — se limpian al re-scrapear)
+// ═══════════════════════════════════════════════════════════════════
+
+const VALID_ESTADOS = new Set([
+  'ABIERTA',
+  'CERRADA',
+  'ADJUDICADA',
+  'RESUELTA',
+  'DESIERTA',
+  'ANULADA',
+  'ANUNCIO_PREVIO',
+  // DESCONOCIDO lo excluimos del dropdown adrede — no aporta
+]);
+
+const VALID_TIPOS = new Set([
+  'OBRAS',
+  'SERVICIOS',
+  'SUMINISTROS',
+  'OTROS',
+  'MIXTO',
+  'PRIVADO',
+  'PATRIMONIAL',
+  'ADMINISTRATIVO_ESPECIAL',
+  'CONCESION_OBRAS',
+  'CONCESION_SERVICIOS',
+  'ACUERDO_MARCO',
+  'SISTEMA_DINAMICO',
+]);
+
+const VALID_PROCEDIMIENTOS = new Set([
+  'ABIERTO',
+  'RESTRINGIDO',
+  'NEGOCIADO_SIN_PUBLICIDAD',
+  'NEGOCIADO_CON_PUBLICIDAD',
+  'DIALOGO_COMPETITIVO',
+  'SIMPLIFICADO',
+  'SIMPLIFICADO_ABREVIADO',
+  'CONCURSO_PROYECTOS',
+  'OTROS',
+  'SISTEMA_DINAMICO',
+  'ASOCIACION_INNOVACION',
+  'NORMAS_INTERNAS',
+  'BASADO_ACUERDO_MARCO',
+  'NO_DEFINIDO',
+]);
+
+const VALID_TRAMITACIONES = new Set([
+  'ORDINARIA',
+  'URGENTE',
+  'EMERGENCIA',
+]);
+
 @Injectable()
 export class LicitacionesService {
   private readonly logger = new Logger(LicitacionesService.name);
@@ -27,21 +77,17 @@ export class LicitacionesService {
     private readonly formatter: LicitacionFormatterService,
   ) {}
 
-  /**
-   * Buscar licitaciones con filtros avanzados
-   * Utiliza el patrón Builder para construir queries dinámicamente
-   */
   async search(dto: SearchLicitacionesDto): Promise<ISearchResponse<any>> {
     const page = dto.page ?? 1;
     const pageSize = dto.pageSize ?? 20;
     const skip = (page - 1) * pageSize;
 
-    // Construir query usando el patrón Builder
     const qb = this.queryBuilder
       .addFullTextSearch(dto.q)
       .addStateFilter(dto.estado)
       .addTypeFilter(dto.tipoContrato)
       .addProcedureFilter(dto.procedimiento)
+      .addUrgencyFilter(dto.tramitacion)
       .addLocationFilters(dto.ccaa, dto.provincia)
       .addCpvFilter(dto.cpv)
       .addPriceRange(dto.importeMin, dto.importeMax)
@@ -57,7 +103,6 @@ export class LicitacionesService {
       )
       .build();
 
-    // Aplicar paginación
     const [data, total] = await qb.skip(skip).take(pageSize).getManyAndCount();
 
     return {
@@ -70,9 +115,6 @@ export class LicitacionesService {
     };
   }
 
-  /**
-   * Obtener detalle completo de una licitación por ID
-   */
   async findById(id: string) {
     const lic = await this.licRepo.findOne({
       where: { id },
@@ -83,25 +125,41 @@ export class LicitacionesService {
       throw new NotFoundException(`Licitación ${id} no encontrada`);
     }
 
-    // Usar el formatterService en lugar de método privado
     return this.formatter.formatDetail(lic);
   }
 
   /**
-   * Obtener opciones de filtros (estados, tipos, ccaa, procedimientos)
-   * Ejecuta queries en paralelo para mejor performance
+   * Opciones para los dropdowns de filtros.
+   * Aplica WHITELIST — solo devuelve valores del enum válido.
+   * Los códigos sucios (ej. "50", "22", "32") quedan filtrados.
    */
   async getFilterOptions() {
     try {
-      // Ejecutar todas las queries en paralelo
-      const [estados, tipos, ccaas, procedimientos] = await Promise.all([
+      const [
+        estados,
+        tipos,
+        procedimientos,
+        tramitaciones,
+        ccaas,
+        provincias,
+      ] = await Promise.all([
         this.queryFilterByField('estado'),
         this.queryFilterByField('tipoContrato'),
-        this.queryFilterByField('ccaa'),
         this.queryFilterByField('procedimiento'),
+        this.queryFilterByField('tramitacion'),
+        this.queryFilterByField('ccaa', 'ASC'),
+        this.queryFilterByField('provincia', 'ASC'),
       ]);
 
-      return { estados, tipos, ccaas, procedimientos };
+      return {
+        estados: this.applyWhitelist(estados, VALID_ESTADOS),
+        tipos: this.applyWhitelist(tipos, VALID_TIPOS),
+        procedimientos: this.applyWhitelist(procedimientos, VALID_PROCEDIMIENTOS),
+        tramitaciones: this.applyWhitelist(tramitaciones, VALID_TRAMITACIONES),
+        // CCAAs y provincias no necesitan whitelist — ya son valores geográficos
+        ccaas,
+        provincias,
+      };
     } catch (error) {
       this.logger.error('Error fetching filter options', error);
       throw error;
@@ -109,21 +167,36 @@ export class LicitacionesService {
   }
 
   /**
-   * Query genérica para obtener opciones de un campo
-   * Reutilizable para diferentes campos
-   * @private
+   * Filtra los resultados a solo los valores permitidos por la whitelist.
+   * Los valores sucios (códigos numéricos, enums inválidos) quedan fuera.
    */
-  private async queryFilterByField(field: string) {
-    const fieldName = field === 'tipoContrato' ? `"${field}"` : field;
-    const aliasName = field === 'tipoContrato' ? 'tipo' : field;
+  private applyWhitelist(
+    rows: Array<{ value: string; count: number }>,
+    whitelist: Set<string>,
+  ): Array<{ value: string; count: number }> {
+    return rows.filter((r) => whitelist.has(r.value));
+  }
 
-    return this.licRepo
+  private async queryFilterByField(
+    field: string,
+    order: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<Array<{ value: string; count: number }>> {
+    const camelCaseFields = ['tipoContrato'];
+    const col = camelCaseFields.includes(field) ? `"${field}"` : field;
+
+    const rows = await this.licRepo
       .createQueryBuilder('l')
-      .select(`l.${fieldName}`, aliasName)
+      .select(`l.${col}`, 'value')
       .addSelect('COUNT(*)', 'count')
-      .where(`l.${fieldName} IS NOT NULL`)
-      .groupBy(`l.${fieldName}`)
-      .orderBy('count', 'DESC')
-      .getRawMany();
+      .where(`l.${col} IS NOT NULL`)
+      .andWhere(`l.${col} != ''`)
+      .groupBy(`l.${col}`)
+      .orderBy(order === 'ASC' ? 'value' : 'count', order)
+      .getRawMany<{ value: string; count: string }>();
+
+    return rows.map((r) => ({
+      value: r.value,
+      count: parseInt(r.count, 10),
+    }));
   }
 }

@@ -11,35 +11,35 @@ import {
 @Index(['externalId'], { unique: true })
 export class OrganoContratacion {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'varchar', unique: true })
-  externalId: string;
+  externalId!: string;
 
   @Column({ type: 'varchar' })
-  nombre: string;
+  nombre!: string;
 
   @Column({ type: 'varchar', nullable: true })
-  tipo: string | null;
+  tipo!: string | null;
 
   @Column({ type: 'varchar', nullable: true })
-  ccaa: string | null;
+  ccaa!: string | null;
 
   @Column({ type: 'varchar', nullable: true })
-  provincia: string | null;
+  provincia!: string | null;
 
   @Column({ type: 'varchar', nullable: true })
-  web: string | null;
+  web!: string | null;
 
   @Column({ type: 'varchar', default: 'PLACE' })
-  plataforma: string;
+  plataforma!: string;
 
   @Column({ type: 'boolean', default: true })
-  activo: boolean;
+  activo!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

@@ -118,41 +118,58 @@ export class PlaceScraperService {
     return this.upsertLicitacionWithTransaction(parsed, organoId);
   }
 
-  private async upsertOrganoWithRetry(
+   private async upsertOrganoWithRetry(
     p: ParsedLicitacion,
-    maxRetries: number
+    maxRetries: number,
   ): Promise<string | null> {
     if (!p.organoExternalId) return null;
-
+ 
     let lastError: Error | null = null;
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction('SERIALIZABLE');
-
+ 
         try {
-          const orgRepoTx =
-            queryRunner.manager.getRepository(OrganoContratacion);
-          let org = await orgRepoTx.findOneBy({
+          const orgRepoTx = queryRunner.manager.getRepository(OrganoContratacion);
+          const existing = await orgRepoTx.findOneBy({
             externalId: p.organoExternalId,
           });
-
-          if (!org) {
+ 
+          let orgId: string;
+ 
+          if (existing) {
+            const updates: Partial<OrganoContratacion> = {};
+            if (
+              p.organoNombre &&
+              (!existing.nombre || existing.nombre === 'Desconocido')
+            ) {
+              updates.nombre = p.organoNombre;
+            }
+            if (p.organoTipo && !existing.tipo) updates.tipo = p.organoTipo;
+            if (p.ccaa && !existing.ccaa) updates.ccaa = p.ccaa;
+            if (p.provincia && !existing.provincia) updates.provincia = p.provincia;
+ 
+            if (Object.keys(updates).length > 0) {
+              await orgRepoTx.update(existing.id, updates);
+            }
+            orgId = existing.id;
+          } else {
             const nuevo = orgRepoTx.create();
             nuevo.externalId = p.organoExternalId;
             nuevo.nombre = p.organoNombre || 'Desconocido';
             nuevo.tipo = p.organoTipo;
             nuevo.ccaa = p.ccaa;
+            nuevo.provincia = p.provincia;
             nuevo.plataforma = 'PLACE';
-            org = await orgRepoTx.save(nuevo);
-            this.logger.debug(
-              `[PLACE] Órgano creado: ${org.nombre} (${org.id})`
-            );
+            const saved = await orgRepoTx.save(nuevo);
+            orgId = saved.id;
+            this.logger.debug(`[PLACE] Órgano creado: ${saved.nombre} (${saved.id})`);
           }
-
+ 
           await queryRunner.commitTransaction();
-          return org.id;
+          return orgId;
         } catch (error) {
           await queryRunner.rollbackTransaction();
           throw error;
@@ -162,15 +179,15 @@ export class PlaceScraperService {
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         if (attempt < maxRetries) {
-          const delay = Math.pow(2, attempt) * 100; // Exponential backoff
+          const delay = Math.pow(2, attempt) * 100;
           this.logger.warn(
-            `[PLACE] Reintento Órgano ${attempt}/${maxRetries} en ${delay}ms. Error: ${lastError.message}`
+            `[PLACE] Reintento Órgano ${attempt}/${maxRetries} en ${delay}ms. Error: ${lastError.message}`,
           );
           await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
-
+ 
     throw lastError || new Error('Upsert Órgano falló después de reintentos');
   }
 
@@ -342,24 +359,53 @@ export class PlaceScraperService {
     return 'new';
   }
 
-  private async upsertOrgano(
+   private async upsertOrgano(
     p: ParsedLicitacion,
-    orgRepoTx?: Repository<OrganoContratacion>
+    orgRepoTx?: Repository<OrganoContratacion>,
   ): Promise<string | null> {
     if (!p.organoExternalId) return null;
     const orgRepoToUse = orgRepoTx || this.orgRepo;
-    let org = await orgRepoToUse.findOneBy({
+ 
+    const existing = await orgRepoToUse.findOneBy({
       externalId: p.organoExternalId,
     });
-    if (!org) {
-      const nuevo = orgRepoToUse.create();
-      nuevo.externalId = p.organoExternalId;
-      nuevo.nombre = p.organoNombre || 'Desconocido';
-      nuevo.tipo = p.organoTipo;
-      nuevo.ccaa = p.ccaa;
-      nuevo.plataforma = 'PLACE';
-      org = await orgRepoToUse.save(nuevo);
+ 
+    if (existing) {
+      // El órgano ya existe. Si los datos nuevos son MEJORES (el existente tiene
+      // 'Desconocido' o nulls), actualizamos. Nunca degradamos datos buenos.
+      const updates: Partial<OrganoContratacion> = {};
+ 
+      if (
+        p.organoNombre &&
+        (!existing.nombre || existing.nombre === 'Desconocido')
+      ) {
+        updates.nombre = p.organoNombre;
+      }
+      if (p.organoTipo && !existing.tipo) {
+        updates.tipo = p.organoTipo;
+      }
+      if (p.ccaa && !existing.ccaa) {
+        updates.ccaa = p.ccaa;
+      }
+      if (p.provincia && !existing.provincia) {
+        updates.provincia = p.provincia;
+      }
+ 
+      if (Object.keys(updates).length > 0) {
+        await orgRepoToUse.update(existing.id, updates);
+      }
+      return existing.id;
     }
-    return org.id;
+ 
+    // No existe: crear nuevo
+    const nuevo = orgRepoToUse.create();
+    nuevo.externalId = p.organoExternalId;
+    nuevo.nombre = p.organoNombre || 'Desconocido';
+    nuevo.tipo = p.organoTipo;
+    nuevo.ccaa = p.ccaa;
+    nuevo.provincia = p.provincia;
+    nuevo.plataforma = 'PLACE';
+    const saved = await orgRepoToUse.save(nuevo);
+    return saved.id;
   }
 }

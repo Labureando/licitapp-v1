@@ -1,99 +1,157 @@
-import { IsOptional, IsString, IsNumber, Min, Max } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsDateString,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
+/**
+ * Transforma "A,B,C" en ['A','B','C']. Tolera arrays ya parseados.
+ */
+function parseCommaList(value: unknown): string[] | undefined {
+  if (value === undefined || value === null || value === '') return undefined;
+  if (Array.isArray(value)) return value.map((v) => String(v).trim()).filter(Boolean);
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean);
+  }
+  return undefined;
+}
+
 export class SearchLicitacionesDto {
-  @ApiPropertyOptional({ description: 'Texto libre de búsqueda', example: 'limpieza hospitales' })
+  // ═══════════════════════════════════════════════
+  // Full-text
+  // ═══════════════════════════════════════════════
+
+  @ApiPropertyOptional({ description: 'Búsqueda full-text' })
   @IsOptional()
   @IsString()
   q?: string;
 
-  @ApiPropertyOptional({ description: 'Filtrar por estado', example: 'ABIERTA', enum: ['ABIERTA', 'ADJUDICADA', 'CERRADA', 'RESUELTA', 'DESIERTA', 'ANULADA', 'ANUNCIO_PREVIO', 'DESCONOCIDO'] })
-  @IsOptional()
-  @IsString()
-  estado?: string;
+  // ═══════════════════════════════════════════════
+  // Filtros multi-select (arrays)
+  // ═══════════════════════════════════════════════
 
-  @ApiPropertyOptional({ description: 'Filtrar por tipo de contrato', example: 'SERVICIOS', enum: ['SERVICIOS', 'SUMINISTROS', 'OBRAS', 'CONCESION_SERVICIOS', 'CONCESION_OBRAS', 'MIXTO'] })
+  @ApiPropertyOptional({ description: 'Estados (separados por coma): ABIERTA,ADJUDICADA' })
   @IsOptional()
-  @IsString()
-  tipoContrato?: string;
+  @IsArray()
+  @Transform(({ value }) => parseCommaList(value))
+  estado?: string[];
 
-  @ApiPropertyOptional({ description: 'Filtrar por procedimiento', example: 'ABIERTO' })
+  @ApiPropertyOptional({ description: 'Tipos de contrato (separados por coma)' })
   @IsOptional()
-  @IsString()
-  procedimiento?: string;
+  @IsArray()
+  @Transform(({ value }) => parseCommaList(value))
+  tipoContrato?: string[];
 
-  @ApiPropertyOptional({ description: 'Filtrar por CCAA', example: 'Comunidad de Madrid' })
+  @ApiPropertyOptional({ description: 'Procedimientos (separados por coma)' })
   @IsOptional()
-  @IsString()
-  ccaa?: string;
+  @IsArray()
+  @Transform(({ value }) => parseCommaList(value))
+  procedimiento?: string[];
 
-  @ApiPropertyOptional({ description: 'Filtrar por provincia', example: 'Madrid' })
+  @ApiPropertyOptional({ description: 'Tramitaciones (separadas por coma)' })
   @IsOptional()
-  @IsString()
-  provincia?: string;
+  @IsArray()
+  @Transform(({ value }) => parseCommaList(value))
+  tramitacion?: string[];
 
-  @ApiPropertyOptional({ description: 'Código CPV', example: '45000000' })
+  @ApiPropertyOptional({ description: 'CCAAs (separadas por coma)' })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => parseCommaList(value))
+  ccaa?: string[];
+
+  @ApiPropertyOptional({ description: 'Provincias (separadas por coma)' })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => parseCommaList(value))
+  provincia?: string[];
+
+  // ═══════════════════════════════════════════════
+  // Filtros single-value / rangos
+  // ═══════════════════════════════════════════════
+
+  @ApiPropertyOptional({ description: 'Código CPV' })
   @IsOptional()
   @IsString()
   cpv?: string;
 
-  @ApiPropertyOptional({ description: 'Presupuesto mínimo (céntimos)', example: 1000000 })
+  @ApiPropertyOptional({ description: 'Importe mínimo (en céntimos)' })
   @IsOptional()
   @Type(() => Number)
-  @IsNumber()
+  @IsInt()
   @Min(0)
   importeMin?: number;
 
-  @ApiPropertyOptional({ description: 'Presupuesto máximo (céntimos)', example: 50000000 })
+  @ApiPropertyOptional({ description: 'Importe máximo (en céntimos)' })
   @IsOptional()
   @Type(() => Number)
-  @IsNumber()
+  @IsInt()
   @Min(0)
   importeMax?: number;
 
-  @ApiPropertyOptional({ description: 'Fecha publicación desde (ISO)', example: '2026-01-01' })
+  @ApiPropertyOptional({ description: 'Fecha desde (ISO)' })
   @IsOptional()
-  @IsString()
+  @IsDateString()
   fechaDesde?: string;
 
-  @ApiPropertyOptional({ description: 'Fecha publicación hasta (ISO)', example: '2026-12-31' })
+  @ApiPropertyOptional({ description: 'Fecha hasta (ISO)' })
   @IsOptional()
-  @IsString()
+  @IsDateString()
   fechaHasta?: string;
 
-  @ApiPropertyOptional({ description: 'Solo con plazo abierto', example: true })
+  @ApiPropertyOptional({ description: 'Solo licitaciones con plazo abierto' })
   @IsOptional()
   @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
   soloConPlazo?: boolean;
 
   @ApiPropertyOptional({ description: 'ID del órgano de contratación' })
   @IsOptional()
-  @IsString()
+  @IsUUID()
   organoId?: string;
 
-  @ApiPropertyOptional({ description: 'Página (empieza en 1)', default: 1 })
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(1)
-  page?: number = 1;
+  // ═══════════════════════════════════════════════
+  // Ordenación
+  // ═══════════════════════════════════════════════
 
-  @ApiPropertyOptional({ description: 'Resultados por página', default: 20 })
+  @ApiPropertyOptional({ enum: ['fecha', 'importe', 'deadline'] })
+  @IsOptional()
+  @IsIn(['fecha', 'importe', 'deadline'])
+  sortBy?: 'fecha' | 'importe' | 'deadline';
+
+  @ApiPropertyOptional({ enum: ['ASC', 'DESC'] })
+  @IsOptional()
+  @IsIn(['ASC', 'DESC'])
+  sortOrder?: 'ASC' | 'DESC';
+
+  // ═══════════════════════════════════════════════
+  // Paginación
+  // ═══════════════════════════════════════════════
+
+  @ApiPropertyOptional({ default: 1 })
   @IsOptional()
   @Type(() => Number)
-  @IsNumber()
+  @IsInt()
+  @Min(1)
+  page?: number;
+
+  @ApiPropertyOptional({ default: 20, maximum: 100 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   @Min(1)
   @Max(100)
-  pageSize?: number = 20;
-
-  @ApiPropertyOptional({ description: 'Ordenar por', default: 'fecha', enum: ['fecha', 'relevancia', 'importe', 'deadline'] })
-  @IsOptional()
-  @IsString()
-  sortBy?: 'fecha' | 'relevancia' | 'importe' | 'deadline' = 'fecha';
-
-  @ApiPropertyOptional({ description: 'Orden', default: 'DESC', enum: ['ASC', 'DESC'] })
-  @IsOptional()
-  @IsString()
-  sortOrder?: 'ASC' | 'DESC' = 'DESC';
+  pageSize?: number;
 }

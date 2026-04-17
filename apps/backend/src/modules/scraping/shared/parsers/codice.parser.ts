@@ -2,6 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, Logger } from '@nestjs/common';
 import { XMLParser } from 'fast-xml-parser';
+import {
+  getGeoFromCode,
+  normalizeCCAA,
+  normalizeProvincia,
+  getCCAAFromProvincia,
+  inferProvinciaFromText,
+} from './geography.map';
 
 export interface ParsedLicitacion {
   externalId: string;
@@ -71,11 +78,10 @@ export class CodiceParser {
         const lic = this.parseEntry(entry);
         if (lic) entries.push(lic);
       } catch (e) {
-        this.logger.warn(`Error parseando entry: ${e.message}`);
+        this.logger.warn(`Error parseando entry: ${(e as Error).message}`);
       }
     }
 
-    // Paginación
     let nextUrl: string | null = null;
     const links = Array.isArray(feed.link)
       ? feed.link
@@ -96,7 +102,7 @@ export class CodiceParser {
 
     const title = this.text(entry.title) || 'Sin título';
     const updated = this.text(entry.updated) || new Date().toISOString();
-    const cf = this.findCF(entry);
+    const cf = this.getLocal(entry, 'ContractFolderStatus');
 
     const base = {
       externalId,
@@ -135,22 +141,34 @@ export class CodiceParser {
       } as ParsedLicitacion;
     }
 
+    // Extraer datos geográficos (combina 3 fuentes en cascada)
+    const geo = this.extractGeo(cf);
+    const organoName = this.extractOrganoName(cf);
+
+    // Último fallback: si sigue sin provincia, infiere desde municipio o nombre del órgano
+    let provincia = geo.provincia;
+    let ccaa = geo.ccaa;
+    if (!provincia && geo.municipio) {
+      provincia = inferProvinciaFromText(geo.municipio);
+      if (provincia && !ccaa) ccaa = getCCAAFromProvincia(provincia);
+    }
+    if (!provincia && organoName) {
+      provincia = inferProvinciaFromText(organoName);
+      if (provincia && !ccaa) ccaa = getCCAAFromProvincia(provincia);
+    }
+
     return {
       ...base,
       cpvCodes: this.cpvs(cf),
       presupuestoBase: this.money(cf, 'TaxExclusiveAmount'),
       presupuestoConIva: this.money(cf, 'TotalAmount'),
-      tipoContrato: this.mapTipo(this.code(cf, 'TypeCode')),
-      procedimiento: this.mapProc(
-        this.nestedCode(cf, 'TenderingProcess', 'ProcedureCode')
-      ),
-      estado: this.mapEstado(this.code(cf, 'ContractFolderStatusCode')),
-      tramitacion: this.mapTram(
-        this.nestedCode(cf, 'TenderingProcess', 'UrgencyCode')
-      ),
-      ccaa: this.location(cf, 'CountrySubentity'),
-      provincia: this.location(cf, 'CountrySubentityCode'),
-      municipio: this.location(cf, 'CityName'),
+      tipoContrato: this.mapTipo(this.extractProjectTypeCode(cf)),
+      procedimiento: this.mapProc(this.extractProcedureCode(cf)),
+      estado: this.mapEstado(this.extractStatusCode(cf)),
+      tramitacion: this.mapTram(this.extractUrgencyCode(cf)),
+      ccaa,
+      provincia,
+      municipio: geo.municipio,
       fechaPublicacion: this.date(updated),
       fechaPresentacion: this.deadline(cf),
       fechaAdjudicacion: this.awardDate(cf),
@@ -159,27 +177,109 @@ export class CodiceParser {
       importeAdjudicacion: this.awardAmount(cf),
       porcentajeBaja: this.baja(cf),
       numLicitadores: this.tenderCount(cf),
-      tieneLotes: !!this.find(
-        this.find(cf, 'ProcurementProject'),
-        'ProcurementProjectLot'
+      tieneLotes: !!this.getLocal(
+        this.getLocal(cf, 'ProcurementProject'),
+        'ProcurementProjectLot',
       ),
       documentos: this.docs(cf),
-      organoExternalId: this.organoId(cf),
-      organoNombre: this.organoName(cf),
-      organoTipo: this.organoType(cf),
+      organoExternalId: this.extractOrganoId(cf),
+      organoNombre: organoName,
+      organoTipo: this.extractOrganoType(cf),
     } as ParsedLicitacion;
   }
 
-  // ═══ EXTRACTORES ═══
+  // ═══════════════════════════════════════════
+  // EXTRACTORES
+  // ═══════════════════════════════════════════
+
+  /**
+   * Extrae geolocalización desde RealizedLocation.
+   * Estructura CODICE real:
+   *   ProcurementProject:
+   *     RealizedLocation:
+   *       CountrySubentity: "Granada"         (provincia en texto)
+   *       CountrySubentityCode: "ES614"       (NUTS3)
+   *       Address:
+   *         CityName: "Albolote (Granada)"    (municipio)
+   */
+  private extractGeo(cf: any): {
+    provincia: string | null;
+    ccaa: string | null;
+    municipio: string | null;
+  } {
+    const project = this.getLocal(cf, 'ProcurementProject');
+    const location = this.getLocal(project, 'RealizedLocation');
+    if (!location) return { provincia: null, ccaa: null, municipio: null };
+
+    // 1) Código NUTS3/NUTS2 (más fiable)
+    const nuts = this.text(this.getLocal(location, 'CountrySubentityCode'));
+    const fromCode = getGeoFromCode(nuts);
+
+    // 2) Nombre de provincia en texto (fallback)
+    const subentityText = this.text(this.getLocal(location, 'CountrySubentity'));
+    const provFromText = normalizeProvincia(subentityText);
+
+    // 3) Municipio
+    const address = this.getLocal(location, 'Address');
+    const municipio = this.text(this.getLocal(address, 'CityName'));
+
+    const provincia = fromCode.provincia ?? provFromText ?? null;
+    const ccaa =
+      fromCode.ccaa ??
+      (provincia ? getCCAAFromProvincia(provincia) : null) ??
+      normalizeCCAA(subentityText);
+
+    return { provincia, ccaa, municipio };
+  }
+
+  private extractOrganoId(cf: any): string | null {
+    const lcp = this.getLocal(cf, 'LocatedContractingParty');
+    return this.text(this.getLocal(lcp, 'BuyerProfileURIID'));
+  }
+
+  private extractOrganoName(cf: any): string | null {
+    const lcp = this.getLocal(cf, 'LocatedContractingParty');
+    const party = this.getLocal(lcp, 'Party');
+    const partyName = this.getLocal(party, 'PartyName');
+    return this.text(this.getLocal(partyName, 'Name'));
+  }
+
+  private extractOrganoType(cf: any): string | null {
+    const lcp = this.getLocal(cf, 'LocatedContractingParty');
+    // ContractingPartyTypeCode está a nivel de LocatedContractingParty, no de Party
+    return (
+      this.text(this.getLocal(lcp, 'ContractingPartyTypeCode')) ??
+      this.text(this.getLocal(this.getLocal(lcp, 'Party'), 'PartyTypeCode'))
+    );
+  }
+
+  private extractStatusCode(cf: any): string | null {
+    return this.text(this.getLocal(cf, 'ContractFolderStatusCode'));
+  }
+
+  private extractProjectTypeCode(cf: any): string | null {
+    const project = this.getLocal(cf, 'ProcurementProject');
+    return this.text(this.getLocal(project, 'TypeCode'));
+  }
+
+  private extractProcedureCode(cf: any): string | null {
+    const tp = this.getLocal(cf, 'TenderingProcess');
+    return this.text(this.getLocal(tp, 'ProcedureCode'));
+  }
+
+  private extractUrgencyCode(cf: any): string | null {
+    const tp = this.getLocal(cf, 'TenderingProcess');
+    return this.text(this.getLocal(tp, 'UrgencyCode'));
+  }
 
   private cpvs(cf: any): string[] {
     try {
-      const proj = this.find(cf, 'ProcurementProject');
-      const cls = this.find(proj, 'RequiredCommodityClassification');
+      const proj = this.getLocal(cf, 'ProcurementProject');
+      const cls = this.getLocal(proj, 'RequiredCommodityClassification');
       if (!cls) return [];
       const items = Array.isArray(cls) ? cls : [cls];
       return items
-        .map((i) => this.text(this.find(i, 'ItemClassificationCode')))
+        .map((i) => this.text(this.getLocal(i, 'ItemClassificationCode')))
         .filter(Boolean) as string[];
     } catch {
       return [];
@@ -188,40 +288,10 @@ export class CodiceParser {
 
   private money(cf: any, field: string): string | null {
     try {
-      const budget = this.find(
-        this.find(cf, 'ProcurementProject'),
-        'BudgetAmount'
-      );
-      const val = this.text(this.find(budget, field));
+      const project = this.getLocal(cf, 'ProcurementProject');
+      const budget = this.getLocal(project, 'BudgetAmount');
+      const val = this.text(this.getLocal(budget, field));
       return val ? String(Math.round(parseFloat(val) * 100)) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  private code(cf: any, frag: string): string | null {
-    try {
-      return this.text(this.find(cf, frag)) || null;
-    } catch {
-      return null;
-    }
-  }
-
-  private nestedCode(cf: any, parent: string, child: string): string | null {
-    try {
-      return this.text(this.find(this.find(cf, parent), child)) || null;
-    } catch {
-      return null;
-    }
-  }
-
-  private location(cf: any, field: string): string | null {
-    try {
-      const addr = this.find(
-        this.find(this.find(cf, 'ProcurementProject'), 'RealizedLocation'),
-        'Address'
-      );
-      return this.text(this.find(addr, field)) || null;
     } catch {
       return null;
     }
@@ -229,12 +299,10 @@ export class CodiceParser {
 
   private deadline(cf: any): Date | null {
     try {
-      const period = this.find(
-        this.find(cf, 'TenderingProcess'),
-        'TenderSubmissionDeadlinePeriod'
-      );
-      const d = this.text(this.find(period, 'EndDate'));
-      const t = this.text(this.find(period, 'EndTime'));
+      const tp = this.getLocal(cf, 'TenderingProcess');
+      const period = this.getLocal(tp, 'TenderSubmissionDeadlinePeriod');
+      const d = this.text(this.getLocal(period, 'EndDate'));
+      const t = this.text(this.getLocal(period, 'EndTime'));
       return d ? this.date(t ? `${d}T${t}` : d) : null;
     } catch {
       return null;
@@ -243,7 +311,7 @@ export class CodiceParser {
 
   private awardDate(cf: any): Date | null {
     try {
-      return this.date(this.text(this.find(this.result(cf), 'AwardDate')));
+      return this.date(this.text(this.getLocal(this.result(cf), 'AwardDate')));
     } catch {
       return null;
     }
@@ -251,10 +319,9 @@ export class CodiceParser {
 
   private winnerName(cf: any): string | null {
     try {
-      const party = this.find(this.result(cf), 'WinningParty');
-      return (
-        this.text(this.find(this.find(party, 'PartyName'), 'Name')) || null
-      );
+      const party = this.getLocal(this.result(cf), 'WinningParty');
+      const partyName = this.getLocal(party, 'PartyName');
+      return this.text(this.getLocal(partyName, 'Name'));
     } catch {
       return null;
     }
@@ -262,11 +329,9 @@ export class CodiceParser {
 
   private winnerNif(cf: any): string | null {
     try {
-      const party = this.find(this.result(cf), 'WinningParty');
-      return (
-        this.text(this.find(this.find(party, 'PartyIdentification'), 'ID')) ||
-        null
-      );
+      const party = this.getLocal(this.result(cf), 'WinningParty');
+      const id = this.getLocal(party, 'PartyIdentification');
+      return this.text(this.getLocal(id, 'ID'));
     } catch {
       return null;
     }
@@ -274,11 +339,9 @@ export class CodiceParser {
 
   private awardAmount(cf: any): string | null {
     try {
-      const monetary = this.find(
-        this.find(this.result(cf), 'AwardedTenderedProject'),
-        'LegalMonetaryTotal'
-      );
-      const val = this.text(this.find(monetary, 'TaxExclusiveAmount'));
+      const atp = this.getLocal(this.result(cf), 'AwardedTenderedProject');
+      const total = this.getLocal(atp, 'LegalMonetaryTotal');
+      const val = this.text(this.getLocal(total, 'TaxExclusiveAmount'));
       return val ? String(Math.round(parseFloat(val) * 100)) : null;
     } catch {
       return null;
@@ -288,7 +351,7 @@ export class CodiceParser {
   private tenderCount(cf: any): number | null {
     try {
       const val = this.text(
-        this.find(this.result(cf), 'ReceivedTenderQuantity')
+        this.getLocal(this.result(cf), 'ReceivedTenderQuantity'),
       );
       return val ? parseInt(val, 10) : null;
     } catch {
@@ -309,21 +372,19 @@ export class CodiceParser {
 
   private docs(cf: any): any[] {
     try {
-      const refs = this.find(cf, 'AdditionalDocumentReference');
+      const refs = this.getLocal(cf, 'AdditionalDocumentReference');
       if (!refs) return [];
       const items = Array.isArray(refs) ? refs : [refs];
       return items
         .map((doc) => {
-          const ext = this.find(
-            this.find(doc, 'Attachment'),
-            'ExternalReference'
-          );
-          const uri = this.text(this.find(ext, 'URI'));
+          const attach = this.getLocal(doc, 'Attachment');
+          const ext = this.getLocal(attach, 'ExternalReference');
+          const uri = this.text(this.getLocal(ext, 'URI'));
           if (!uri) return null;
           return {
-            nombre: this.text(this.find(ext, 'FileName')) || 'Documento',
+            nombre: this.text(this.getLocal(ext, 'FileName')) || 'Documento',
             url: uri,
-            tipo: this.text(this.find(doc, 'DocumentTypeCode')) || 'OTRO',
+            tipo: this.text(this.getLocal(doc, 'DocumentTypeCode')) || 'OTRO',
           };
         })
         .filter(Boolean);
@@ -332,40 +393,9 @@ export class CodiceParser {
     }
   }
 
-  private organoId(cf: any): string | null {
-    try {
-      return (
-        this.text(
-          this.find(
-            this.find(cf, 'LocatedContractingParty'),
-            'BuyerProfileURIID'
-          )
-        ) || null
-      );
-    } catch {
-      return null;
-    }
-  }
-
-  private organoName(cf: any): string | null {
-    try {
-      const cp = this.find(this.find(cf, 'LocatedContractingParty'), 'Party');
-      return this.text(this.find(this.find(cp, 'PartyName'), 'Name')) || null;
-    } catch {
-      return null;
-    }
-  }
-
-  private organoType(cf: any): string | null {
-    try {
-      const cp = this.find(this.find(cf, 'LocatedContractingParty'), 'Party');
-      return this.text(this.find(cp, 'PartyTypeCode')) || null;
-    } catch {
-      return null;
-    }
-  }
-
-  // ═══ MAPPINGS ═══
+  // ═══════════════════════════════════════════
+  // MAPPINGS
+  // ═══════════════════════════════════════════
 
   private mapEstado(c: string | null): string {
     const m: Record<string, string> = {
@@ -382,11 +412,19 @@ export class CodiceParser {
     };
     return m[c || ''] || c || 'DESCONOCIDO';
   }
+
   private mapTipo(c: string | null): string | null {
     const m: Record<string, string> = {
-      '1': 'SERVICIOS',
-      '2': 'SUMINISTROS',
+      '1': 'SUMINISTROS',
+      '2': 'SERVICIOS',
       '3': 'OBRAS',
+      '4': 'ADMINISTRATIVO_ESPECIAL',
+      '5': 'CONCESION_OBRAS',
+      '6': 'CONCESION_SERVICIOS',
+      '7': 'PRIVADO',
+      '8': 'PATRIMONIAL',
+      '9': 'OTROS',
+      '10': 'MIXTO',
       '21': 'CONCESION_SERVICIOS',
       '31': 'CONCESION_OBRAS',
       '40': 'MIXTO',
@@ -423,38 +461,49 @@ export class CodiceParser {
     return m[c || ''] || null;
   }
 
-  // ═══ UTILS ═══
+  // ═══════════════════════════════════════════
+  // UTILS — NAVEGACIÓN DEL OBJETO XML
+  // ═══════════════════════════════════════════
 
   private result(cf: any): any {
-    const r = this.find(cf, 'TenderResult');
+    const r = this.getLocal(cf, 'TenderResult');
     return Array.isArray(r) ? r[0] : r;
   }
 
-  private findCF(entry: any): any {
-    for (const k of Object.keys(entry)) {
-      if (k.includes('ContractFolderStatus')) return entry[k];
+  /**
+   * Busca UNA key de un objeto por su "local name" (nombre sin prefijo de namespace).
+   * Ejemplo: getLocal(obj, 'Party') matchea 'cac:Party' pero NO 'ContractingPartyTypeCode'.
+   *
+   * Reglas de matching (en orden):
+   *   1. Match exacto: 'Party' === 'Party'
+   *   2. Match con namespace: 'cac:Party' → local name es 'Party' → match
+   *   3. No matchea si el local name es distinto (ej. 'ContractingPartyTypeCode')
+   */
+  private getLocal(obj: any, localName: string): any {
+    if (!obj || typeof obj !== 'object') return null;
+    for (const k of Object.keys(obj)) {
+      if (this.localNameOf(k) === localName) return obj[k];
     }
     return null;
+  }
+
+  /**
+   * Extrae el nombre local de una key con posible namespace.
+   *   'cac:Party'                     → 'Party'
+   *   'cbc-place-ext:BuyerProfileURIID' → 'BuyerProfileURIID'
+   *   'Party'                         → 'Party'
+   */
+  private localNameOf(key: string): string {
+    const idx = key.lastIndexOf(':');
+    return idx >= 0 ? key.slice(idx + 1) : key;
   }
 
   private text(node: any): string | null {
     if (!node) return null;
     if (typeof node === 'string') return node;
     if (typeof node === 'number') return String(node);
-    if (node['#text'] !== undefined) return String(node['#text']);
-    return null;
-  }
-
-  private find(obj: any, frag: string): any {
-    if (!obj || typeof obj !== 'object') return null;
-    for (const k of Object.keys(obj)) {
-      if (k.includes(frag)) return obj[k];
-    }
-    for (const k of Object.keys(obj)) {
-      if (typeof obj[k] === 'object' && !k.startsWith('@_')) {
-        const f = this.find(obj[k], frag);
-        if (f) return f;
-      }
+    if (typeof node === 'object' && node['#text'] !== undefined) {
+      return String(node['#text']);
     }
     return null;
   }

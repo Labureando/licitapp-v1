@@ -14,6 +14,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
 import { LicitacionesModule } from './modules/licitaciones/licitaciones.module';
 import { InvitationsModule } from './modules/invitations/invitations.module';
+import { OrganosModule } from './modules/organos/organos.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { InvitationsModule } from './modules/invitations/invitations.module';
     ScrapingModule,
     LicitacionesModule,
     InvitationsModule,
+    OrganosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

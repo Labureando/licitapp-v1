@@ -6,9 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './dropdown-menu'
-import { useTheme } from '../../providers/theme-provider'
-import { cn } from '../../lib/utils'
-
+import { useTheme } from '@/providers/theme-provider'
+import { cn } from '@/lib/utils'
 
 interface ThemeToggleProps {
   variant?: 'icon' | 'full'
@@ -20,17 +19,19 @@ export function ThemeToggle({ variant = 'icon', className }: ThemeToggleProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size={variant === 'icon' ? 'icon' : 'sm'}
-          className={cn('relative', className)}
-        >
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          {variant === 'full' && <span className="ml-2">Tema</span>}
-          <span className="sr-only">Cambiar tema</span>
-        </Button>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            size={variant === 'icon' ? 'icon-sm' : 'sm'}
+            className={cn('relative', className)}
+          />
+        }
+      >
+        <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        {variant === 'full' && <span className="ml-2">Tema</span>}
+        <span className="sr-only">Cambiar tema</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-36">
         <DropdownMenuItem
