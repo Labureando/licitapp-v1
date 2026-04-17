@@ -23,6 +23,14 @@ export class UserEntity {
   @Column({
     type: 'varchar',
     length: 255,
+    nullable: true,
+    unique: true,
+  })
+  google_id?: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
   })
   firstName!: string;
 
@@ -108,6 +116,19 @@ export class UserEntity {
     nullable: true,
   })
   passwordResetExpiresAt?: Date;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  signupToken?: string;
+
+  @Column({
+    type: 'timestamp',
+    nullable: true,
+  })
+  signupTokenExpiresAt?: Date;
 
   @Column({
     type: 'timestamp',

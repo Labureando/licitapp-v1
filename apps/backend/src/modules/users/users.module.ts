@@ -8,6 +8,16 @@ import { PlansModule } from './modules/plans/plans.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { EmailModule } from '../../infrastructure/email';
+import { EmailTemplatesModule } from '../../common/email-templates';
+import {
+  UserCrudService,
+  UserAuthService,
+  UserSignupService,
+  UserPasswordService,
+  UserOrganizationService,
+  UserCreateService,
+} from './services';
+import { UserSanitizeHelper, UserQueryHelper } from './helpers';
 
 /**
  * Módulo de Usuarios
@@ -19,6 +29,8 @@ import { EmailModule } from '../../infrastructure/email';
  * - Planes y límites por organización
  * - Integración con email (bienvenida, reset contraseña)
  * - Transacciones en operaciones críticas (createUser)
+ * - 2-Step Signup con verificación por email
+ * - Google OAuth integration
  *
  * Sub-módulos:
  * - RolesModule: Gestión de roles (SUPER_ADMIN, ORG_OWNER, etc.)
@@ -30,17 +42,30 @@ import { EmailModule } from '../../infrastructure/email';
 @Module({
   imports: [
     // TypeORM repositories: UserEntity y OrganizationEntity
-    // DataSource se inyecta automáticamente en UsersService
     TypeOrmModule.forFeature([UserEntity, OrganizationEntity]),
     // Módulos internos
     EmailModule,
+    EmailTemplatesModule,
     PermissionsModule,
     PlansModule,
     OrganizationsModule,
     ProfileModule,
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [
+    // Helpers
+    UserSanitizeHelper,
+    UserQueryHelper,
+    // Servicios especializados
+    UserAuthService,
+    UserCrudService,
+    UserCreateService,
+    UserSignupService,
+    UserPasswordService,
+    UserOrganizationService,
+    // Orquestador principal
+    UsersService,
+  ],
   // Exportar UsersService para que otros módulos puedan inyectarlo
   exports: [UsersService],
 })

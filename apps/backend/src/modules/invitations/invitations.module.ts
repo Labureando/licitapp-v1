@@ -6,6 +6,7 @@ import { InvitationEntity } from './entities/invitation.entity';
 import { OrganizationEntity } from '../users/entities/organization.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { EmailModule } from '../../infrastructure/email/email.module';
+import { EmailTemplatesModule } from '../../common/email-templates';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EmailModule } from '../../infrastructure/email/email.module';
       UserEntity,
     ]),
     EmailModule,
+    EmailTemplatesModule,
   ],
   controllers: [InvitationsController],
   providers: [InvitationsService],

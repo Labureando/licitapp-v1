@@ -14,6 +14,7 @@ import { OrganizationEntity } from '../users/entities/organization.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { EmailService } from '../../infrastructure/email/email.service';
 import { Role } from '../users/enums';
+import { EmailTemplatesService } from '../../common/email-templates';
 import { randomBytes } from 'crypto';
 
 @Injectable()
@@ -26,6 +27,7 @@ export class InvitationsService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly emailService: EmailService,
+    private readonly emailTemplatesService: EmailTemplatesService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -94,14 +96,15 @@ export class InvitationsService {
     const savedInvitation = await this.invitationRepository.save(invitation);
 
     // 7. Enviar email
+    const emailHtml = this.emailTemplatesService.getInvitationTemplate(
+      organization.name,
+      token,
+      expiresAt,
+    );
     await this.emailService.sendEmail({
       to: sanitizedEmail,
       subject: `Invitación a unirte a ${organization.name} en LicitApp`,
-      html: this.generateInvitationEmailHtml(
-        organization.name,
-        token,
-        expiresAt,
-      ),
+      html: emailHtml,
     });
 
     return savedInvitation;
@@ -173,12 +176,13 @@ export class InvitationsService {
       await queryRunner.commitTransaction();
 
       // 7. Enviar email de bienvenida
+      const emailHtml = this.emailTemplatesService.getWelcomeTemplate(
+        invitation.organization.name,
+      );
       await this.emailService.sendEmail({
         to: invitation.email,
         subject: `Bienvenido a ${invitation.organization.name}`,
-        html: this.generateWelcomeEmailHtml(
-          invitation.organization.name,
-        ),
+        html: emailHtml,
       });
 
       return {
@@ -242,44 +246,5 @@ export class InvitationsService {
    */
   private generateTemporaryPassword(): string {
     return randomBytes(16).toString('hex');
-  }
-
-  /**
-   * Genera el HTML del email de invitación
-   */
-  private generateInvitationEmailHtml(
-    organizationName: string,
-    token: string,
-    expiresAt: Date,
-  ): string {
-    const acceptUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/invitations/${token}/accept`;
-
-    return `
-      <h2>Invitación a ${organizationName}</h2>
-      <p>Has sido invitado a unirte a <strong>${organizationName}</strong> en LicitApp.</p>
-      <p>
-        <a href="${acceptUrl}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-          Aceptar invitación
-        </a>
-      </p>
-      <p>Este enlace expira el ${expiresAt.toLocaleString('es-ES')}</p>
-      <p>Si no esperabas esta invitación, puedes ignorar este email.</p>
-    `;
-  }
-
-  /**
-   * Genera el HTML del email de bienvenida
-   */
-  private generateWelcomeEmailHtml(organizationName: string): string {
-    return `
-      <h2>¡Bienvenido a LicitApp!</h2>
-      <p>Tu cuenta ha sido creada correctamente como miembro de <strong>${organizationName}</strong>.</p>
-      <p>Ahora puedes acceder a LicitApp y comenzar a colaborar con tu equipo.</p>
-      <p>
-        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/login" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
-          Acceder a LicitApp
-        </a>
-      </p>
-    `;
   }
 }
