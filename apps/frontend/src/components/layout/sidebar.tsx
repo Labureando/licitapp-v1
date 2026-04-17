@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { Home, Search, Bell, Bookmark, Settings } from 'lucide-react'
+import { ThemeToggle } from '../ui/theme-toggle'
 
 const NAV = [
   { path: '/dashboard', label: 'Dashboard', icon: Home },
@@ -7,6 +8,7 @@ const NAV = [
   { path: '/alertas', label: 'Alertas', icon: Bell },
   { path: '/guardadas', label: 'Guardadas', icon: Bookmark },
   { path: '/settings', label: 'Settings', icon: Settings },
+  { path: '/', label: 'Inicio', icon: Home },
 ]
 
 export function Sidebar() {
@@ -26,6 +28,9 @@ export function Sidebar() {
             {item.label}
           </Link>
         ))}
+        <div className="flex items-center justify-between p-4 border-t border-sidebar-border">
+     <ThemeToggle />
+  </div>
       </nav>
     </aside>
   )

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from './ui/card';
+import { Badge } from './ui/badge';
 import { Calendar, MapPin, Euro, Building2, Clock } from 'lucide-react';
 import type { LicitacionCard as LicitacionCardType } from '../api/licitaciones';
 
