@@ -51,14 +51,72 @@ async function bootstrap() {
 
   // Configurar Swagger
   const swaggerConfig = new DocumentBuilder()
-    .setTitle(config.appName)
-    .setDescription('API documentation')
-    .setVersion(config.api.version)
-    .addBearerAuth()
+    .setTitle('🔐 LicitApp API - Authentication & Users')
+    .setDescription(
+      `
+      API de Autenticación y Gestión de Usuarios para LicitApp
+      
+      **Features:**
+      - ✅ Login/Logout con JWT
+      - ✅ 2-Step Signup (email + password)
+      - ✅ Google OAuth
+      - ✅ Refresh Token Rotation
+      - ✅ Brute Force Protection (Redis)
+      - ✅ Rate Limiting (Redis)
+      - ✅ Password Reset/Change
+      - ✅ User Management
+      
+      **Seguridad:**
+      - 🛡️ JWT con renovación automática
+      - 🚫 Bloqueo de IP tras 5 intentos fallidos
+      - ⏱️ Rate Limiting: 5 req/15min (auth), 100 req/min (otros)
+      - 🔒 CORS habilitado
+      - ✓ Validación de datos
+      `,
+    )
+    .setVersion('1.0.0')
+    .setContact(
+      'LicitApp Support',
+      'https://licitapp.com',
+      'support@licitapp.com',
+    )
+    .setLicense(
+      'UNLICENSED',
+      'https://licitapp.com/license',
+    )
+    .addServer('http://localhost:3001/api/v1', 'Development')
+    .addServer('https://api.licitapp.com/api/v1', 'Production')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'JWT Access Token (1 hora de validez)',
+      },
+      'access_token',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'JWT Refresh Token (7 días de validez)',
+      },
+      'refresh_token',
+    )
+    .addTag('Authentication', 'Endpoints de autenticación (login, signup, OAuth)')
+    .addTag('Users', 'Gestión de usuarios (CRUD, perfil)')
+    .addTag('Health', 'Health checks')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      displayOperationId: true,
+      tryItOutEnabled: true,
+    },
+  });
 
   await app.listen(config.port);
   console.log(`🚀 Application is running on: http://localhost:${config.port}`);
