@@ -152,10 +152,49 @@ export class PermissionsService {
   }
 
   /**
-   * Obtener permisos combinados (rol + plan)
-   * @param user - Entidad de usuario
-   * @param organization - Entidad de organización
-   * @returns Permisos combinados
+   * Obtener permisos combinados consolidando permisos de rol y plan
+   *
+   * Combina permisos basados en el rol del usuario con los permisos del plan
+   * (ya sea de la organización o del usuario individual).
+   * Este es el método principal para determinar todas las capacidades de un usuario.
+   *
+   * **Lógica de resolución:**
+   * - Si se proporciona `organization`: usa los permisos del plan de la organización
+   * - Si no hay `organization` pero user.role === PUBLIC_USER: usa los permisos del plan individual
+   * - Si no hay `organization` ni userPlan: sin permisos de plan (solo permisos de rol)
+   *
+   * **Casos especiales:**
+   * - SUPER_ADMIN: obtiene permisos máximos de rol, sin dependencia de plan
+   * - PUBLIC_USER sin organization: permisos limitados por plan individual (FREE/PRO/ADVANCED)
+   * - ORG_OWNER/ORG_MEMBER: permisos limitados por plan de organización (STARTER/PROFESSIONAL)
+   *
+   * @param user - Entidad de usuario con rol y plan individual (opcional)
+   * @param organization - Entidad de organización con plan (opcional).
+   *                       Si se omite, se usan permisos del plan individual del usuario
+   *
+   * @returns {CombinedPermission} Objeto con todos los permisos disponibles:
+   *   - Permisos de rol: canManageUsers, canManageLicitaciones, canViewAnalytics, canManagePlan
+   *   - Permisos de plan: canCreateAlerts, canCreatePipelines, canUseIntegrations, canUseWorkflows, canAccessHistorical
+   *   - Flags adicionales: isActive, belongsToOrganization
+   *
+   * @example
+   * // Usuário en organización
+   * const perms = permissionsService.getCombinedPermissions(user, organization);
+   * if (perms.canManageUsers && perms.canCreateAlerts) {
+   *   // Usuario puede gestionar usuarios Y crear alertas
+   * }
+   *
+   * @example
+   * // Usuario individual sin organización
+   * const perms = permissionsService.getCombinedPermissions(publicUser);
+   * const alertsLimit = permissionsService.getAlertsLimit(publicUser.userPlan);
+   * if (perms.canCreateAlerts && alertsLimit > 0) {
+   *   // Puede crear alertas hasta el límite del plan
+   * }
+   *
+   * @see getRolePermissions - Obtiene solo permisos de rol
+   * @see getPlanPermissions - Obtiene solo permisos de plan
+   * @see validatePermissions - Valida un conjunto específico de permisos
    */
   getCombinedPermissions(
     user: UserEntity,

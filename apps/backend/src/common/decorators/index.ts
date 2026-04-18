@@ -8,3 +8,15 @@ export {
   RateLimitRelaxed,
   RateLimitNone,
 } from './rate-limit.decorator';
+export { CurrentUser } from './current-user.decorator';
+export { ValidateOwnership } from './validate-ownership.decorator';
+export { SecureOwnershipEndpoint, SecureAuthEndpoint } from './secure-endpoint.decorator';
+export {
+  ValidateResourceExists,
+  EnableSoftDelete,
+  LogAuditAction,
+  ValidateConcurrency,
+  SecureReadEndpoint,
+  SecureUpdateEndpoint,
+  SecureDeleteEndpoint,
+} from './resource-guards.decorator';

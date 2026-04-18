@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 import { UseGuards, SetMetadata } from '@nestjs/common';
-import { RateLimitGuard, RATE_LIMIT_KEY } from '../guards/rate-limit.guard';
+import { RateLimitGuard, RATE_LIMIT_KEY } from '../guards/rate-limiting/rate-limit.guard';
 
 /**
  * Decorador para aplicar Rate Limiting a un endpoint

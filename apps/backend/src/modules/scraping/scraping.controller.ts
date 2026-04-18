@@ -17,6 +17,8 @@ import { PlaceHistoricalService } from './place/place-historical.service';
 import { Licitacion } from './shared/entities/licitacion.entity';
 import { ScrapingLog } from './shared/entities/scraping-log.entity';
 import { RunPlaceDto, LoadHistoricalDto, ScrapingResultDto } from './dto/index';
+import { LogAuditAction, SecureAuthEndpoint, RequireRoles } from '../../common/decorators';
+import { Role } from '../users/enums';
 
 @ApiTags('Scraping')
 @Controller('scraping')
@@ -31,6 +33,7 @@ export class ScrapingController {
   ) {}
 
   @Post('place/run')
+  @LogAuditAction('SCRAPING_RUN')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({
     summary: 'Ejecutar scraping de PLACE manualmente',
@@ -47,6 +50,7 @@ export class ScrapingController {
   }
 
   @Post('place/historical/:period')
+  @LogAuditAction('SCRAPING_HISTORICAL')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({
     summary: 'Cargar histórico de PLACE por período',
@@ -68,6 +72,7 @@ export class ScrapingController {
   }
 
   @Post('place/historical-all')
+  @LogAuditAction('SCRAPING_HISTORICAL_ALL')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({
     summary: 'Cargar TODO el histórico de PLACE',
@@ -95,6 +100,8 @@ export class ScrapingController {
   }
 
   @Get('stats')
+  @SecureAuthEndpoint()
+  @RequireRoles(Role.SUPER_ADMIN)
   @ApiOperation({
     summary: 'Obtener estadísticas de licitaciones',
     description:
@@ -155,6 +162,7 @@ export class ScrapingController {
   }
 
   @Post('migrations/update-search-vector')
+  @LogAuditAction('MIGRATION_SEARCH_VECTOR')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Actualizar searchVector para búsqueda full-text',
@@ -196,6 +204,7 @@ export class ScrapingController {
   }
 
   @Post('migrations/create-search-trigger')
+  @LogAuditAction('MIGRATION_SEARCH_TRIGGER')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Crear trigger para auto-actualizar searchVector',

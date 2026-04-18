@@ -33,7 +33,7 @@ import { CompleteSignupDto } from './dto/complete-signup.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { JwtAuthGuard } from '../../common/guards';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { BruteForceCooldown, RateLimitStrict } from '../../common/decorators';
+import { BruteForceCooldown, RateLimitStrict, SecureAuthEndpoint } from '../../common/decorators';
 
 @ApiTags('Authentication')
 @ApiExtraModels(LoginDto, SignupDto, CompleteSignupDto, RefreshTokenDto)
@@ -166,9 +166,8 @@ export class AuthController {
    * Logout - Cierra sesión e invalida tokens
    */
   @Post('logout')
-  @UseGuards(JwtAuthGuard)
+  @SecureAuthEndpoint()
   @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth('access_token')
   @ApiOperation({
     summary: 'Cerrar sesión',
     description: `
@@ -200,9 +199,8 @@ export class AuthController {
    * Me - Obtener datos del usuario autenticado
    */
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @SecureAuthEndpoint()
   @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth('access_token')
   @ApiOperation({
     summary: 'Obtener perfil del usuario',
     description: `

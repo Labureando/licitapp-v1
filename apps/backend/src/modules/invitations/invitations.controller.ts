@@ -27,8 +27,10 @@ import {
 import { InvitationsService } from './invitations.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { RoleGuard } from '../../common/guards';
-import { RequireRoles } from '../../common/decorators/roles.decorator';
+import { RequireRoles, LogAuditAction, ValidateResourceExists } from '../../common/decorators';
 import { Role } from '../users/enums';
+import { InvitationEntity } from './entities/invitation.entity';
+import { OrganizationEntity } from '../users/entities/organization.entity';
 
 @ApiTags('📧 Invitations')
 @ApiBearerAuth('access-token')
@@ -126,6 +128,7 @@ export class InvitationsController {
   @Get('organization/:organizationId')
   @UseGuards(RoleGuard)
   @RequireRoles(Role.ORG_OWNER)
+  @ValidateResourceExists(OrganizationEntity, 'organizationId')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Listar invitaciones de organización',
@@ -175,6 +178,8 @@ export class InvitationsController {
   @Delete(':id')
   @UseGuards(RoleGuard)
   @RequireRoles(Role.ORG_OWNER)
+  @LogAuditAction('INVITATION_CANCEL')
+  @ValidateResourceExists(InvitationEntity, 'id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Cancelar invitación',
