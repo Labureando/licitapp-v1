@@ -1,6 +1,22 @@
-export { RoleGuard } from './role.guard';
-export { PlanGuard } from './plan.guard';
-export { PermissionsGuard } from './permissions.guard';
-export { JwtAuthGuard } from './jwt-auth.guard';
-export { BruteForceGuard } from './brute-force.guard';
-export { RateLimitGuard } from './rate-limit.guard';
+/**
+ * Guards - Autorización y Control de Acceso
+ * Arquitectura limpia en subcarpetas por categoría
+ */
+
+// Authentication
+export * from './auth';
+
+// Authorization (Roles, Permissions, Ownership)
+export * from './authorization';
+
+// Resource Management (Existence checks, Soft Delete)
+export * from './resource';
+
+// Data Integrity (Audit logging, Concurrency control)
+export * from './data-integrity';
+
+// Rate Limiting & Brute Force Protection
+export * from './rate-limiting';
+
+// Business Logic Guards (Plans, Subscriptions, etc.)
+export * from './business';

@@ -10,7 +10,6 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
-  UseGuards,
   Request,
 } from '@nestjs/common';
 import {
@@ -19,7 +18,6 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
-  ApiBearerAuth,
   ApiOkResponse,
   ApiNotFoundResponse,
   ApiUnauthorizedResponse,
@@ -29,10 +27,18 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto, RequestPasswordChangeDto, ConfirmPasswordChangeDto, ChangePasswordDto } from './dto';
 import { UserEntity } from './entities';
-import { RoleGuard } from '../../common/guards';
+import { Role } from './enums';
+import { OrganizationEntity } from './entities/organization.entity';
+import {
+  SecureAuthEndpoint,
+  SecureOwnershipEndpoint,
+  LogAuditAction,
+  SecureDeleteEndpoint,
+  RequireRoles,
+  ValidateResourceExists,
+} from '../../common/decorators';
 
 @ApiTags('👥 Users')
-@ApiBearerAuth('access-token')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -41,6 +47,8 @@ export class UsersController {
    * Obtener todos los usuarios (admin only)
    */
   @Get()
+  @SecureAuthEndpoint()
+  @RequireRoles(Role.SUPER_ADMIN)
   @ApiOperation({
     summary: 'Listar todos los usuarios',
     description: 'Obtiene una lista de todos los usuarios del sistema. Solo disponible para administradores.',
@@ -72,6 +80,8 @@ export class UsersController {
    * Listar usuarios de una organización específica
    */
   @Get('organization/:organizationId')
+  @SecureAuthEndpoint()
+  @ValidateResourceExists(OrganizationEntity, 'organizationId')
   @ApiOperation({
     summary: 'Listar usuarios por organización',
     description: 'Obtiene todos los usuarios asociados a una organización específica.',
@@ -98,6 +108,8 @@ export class UsersController {
    * Obtener información de un usuario específico
    */
   @Get(':userId')
+  @SecureAuthEndpoint()
+  @ValidateResourceExists(UserEntity, 'userId')
   @ApiOperation({
     summary: 'Obtener usuario por ID',
     description: 'Recupera la información detallada de un usuario específico usando su ID único.',
@@ -121,6 +133,9 @@ export class UsersController {
    * Actualizar información de un usuario
    */
   @Patch(':userId')
+  @SecureAuthEndpoint()
+  @SecureOwnershipEndpoint('userId')
+  @LogAuditAction('USER_UPDATE')
   @ApiOperation({
     summary: 'Actualizar datos del usuario',
     description: 'Actualiza la información del usuario como nombre, teléfono, zona horaria, etc.',
@@ -161,6 +176,9 @@ export class UsersController {
    * Desactivar un usuario
    */
   @Post(':userId/deactivate')
+  @SecureAuthEndpoint()
+  @SecureOwnershipEndpoint('userId')
+  @LogAuditAction('USER_DEACTIVATE')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Desactivar usuario',
@@ -183,6 +201,9 @@ export class UsersController {
    * Reactivar un usuario
    */
   @Post(':userId/activate')
+  @SecureAuthEndpoint()
+  @SecureOwnershipEndpoint('userId')
+  @LogAuditAction('USER_ACTIVATE')
   @ApiOperation({
     summary: 'Reactivar usuario',
     description: 'Reactiva una cuenta de usuario desactivada. El usuario vuelve a tener acceso al sistema.',
@@ -206,6 +227,10 @@ export class UsersController {
    * Eliminar un usuario
    */
   @Delete(':userId')
+  @SecureAuthEndpoint()
+  @SecureOwnershipEndpoint('userId')
+  @LogAuditAction('USER_DELETE')
+  @SecureDeleteEndpoint(UserEntity, 'userId')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Eliminar usuario',
@@ -296,7 +321,8 @@ export class UsersController {
    * Cambiar contraseña (usuario autenticado)
    */
   @Patch('password/change')
-  @UseGuards(RoleGuard)
+  @SecureAuthEndpoint()
+  @LogAuditAction('PASSWORD_CHANGE')
   @ApiOperation({
     summary: 'Cambiar contraseña directa',
     description: 'Permite a un usuario autenticado cambiar su contraseña directamente. Requiere la contraseña anterior como validación de seguridad.',

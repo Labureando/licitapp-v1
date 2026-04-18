@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { BruteForceGuard } from '../guards/brute-force.guard';
+import { BruteForceGuard } from '../guards/rate-limiting/brute-force.guard';
 
 /**
  * Decorador para aplicar Brute Force Protection a un endpoint

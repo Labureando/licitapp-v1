@@ -9,6 +9,7 @@ import {
 import { Licitacion } from '../shared/entities/licitacion.entity';
 import { OrganoContratacion } from '../shared/entities/organo-contratacion.entity';
 import { ScrapingLog } from '../shared/entities/scraping-log.entity';
+import { AlertsService } from '../../alerts/alerts.service';
 import * as https from 'https';
 
 @Injectable()
@@ -26,7 +27,8 @@ export class PlaceScraperService {
     private readonly logRepo: Repository<ScrapingLog>,
     private readonly http: HttpService,
     private readonly parser: CodiceParser,
-    private readonly dataSource: DataSource
+    private readonly dataSource: DataSource,
+    private readonly alertsService: AlertsService,
   ) {}
 
   async scrapeCurrentFeed(maxPages = 5) {
@@ -57,9 +59,20 @@ export class PlaceScraperService {
 
         for (const entry of entries) {
           try {
-            const r = await this.upsertWithTransaction(entry);
-            if (r === 'new') newItems++;
-            else if (r === 'updated') updatedItems++;
+            const result = await this.upsertWithTransaction(entry);
+            if (result.status === 'new') newItems++;
+            else if (result.status === 'updated') updatedItems++;
+            
+            // Disparar alertas para licitaciones nuevas o actualizadas
+            if ((result.status === 'new' || result.status === 'updated') && result.licitacion) {
+              try {
+                await this.alertsService.triggerAlertsForLicitacion(result.licitacion);
+              } catch (alertError) {
+                const msg = alertError instanceof Error ? alertError.message : 'Unknown error';
+                this.logger.warn(`[PLACE] Error disparando alertas para ${result.licitacion.id}: ${msg}`);
+                // No interrumpir el scraping si fallan las alertas
+              }
+            }
           } catch (e) {
             errors++;
             if (errors <= 5) {
@@ -96,7 +109,7 @@ export class PlaceScraperService {
 
   private async upsertWithTransaction(
     parsed: ParsedLicitacion
-  ): Promise<'new' | 'updated' | 'skipped'> {
+  ): Promise<{ status: 'new' | 'updated' | 'skipped'; licitacion: Licitacion }> {
     // PASO 1: Órgano (con retry independiente)
     let organoId: string | null = null;
     if (parsed.organoExternalId) {
@@ -115,7 +128,11 @@ export class PlaceScraperService {
     }
 
     // PASO 2: Licitación (transacción separada)
-    return this.upsertLicitacionWithTransaction(parsed, organoId);
+    const result = await this.upsertLicitacionWithTransaction(parsed, organoId);
+    return {
+      status: result.status,
+      licitacion: result.licitacion,
+    };
   }
 
    private async upsertOrganoWithRetry(
@@ -194,7 +211,7 @@ export class PlaceScraperService {
   private async upsertLicitacionWithTransaction(
     parsed: ParsedLicitacion,
     organoId: string | null
-  ): Promise<'new' | 'updated' | 'skipped'> {
+  ): Promise<{ status: 'new' | 'updated' | 'skipped'; licitacion: Licitacion }> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction('SERIALIZABLE');
@@ -206,7 +223,10 @@ export class PlaceScraperService {
         queryRunner.manager
       );
       await queryRunner.commitTransaction();
-      return result;
+      return {
+        status: result.status,
+        licitacion: result.licitacion,
+      };
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
@@ -219,7 +239,7 @@ export class PlaceScraperService {
     parsed: ParsedLicitacion,
     organoId: string | null,
     manager: EntityManager
-  ): Promise<'new' | 'updated' | 'skipped'> {
+  ): Promise<{ status: 'new' | 'updated' | 'skipped'; licitacion: Licitacion }> {
     const licRepoTx = manager.getRepository(Licitacion);
 
     const existing = await licRepoTx.findOneBy({
@@ -249,7 +269,17 @@ export class PlaceScraperService {
             : existing.documentos,
         organoId: organoId || existing.organoId,
       });
-      return 'updated';
+      
+      // Recargar la licitación actualizada
+      const updated = await licRepoTx.findOneBy({
+        externalId: parsed.externalId,
+        source: parsed.source,
+      });
+      
+      return {
+        status: 'updated',
+        licitacion: updated!,
+      };
     }
 
     const nueva = licRepoTx.create();
@@ -278,8 +308,11 @@ export class PlaceScraperService {
     nueva.tieneLotes = parsed.tieneLotes;
     nueva.documentos = parsed.documentos;
     nueva.organoId = organoId;
-    await licRepoTx.save(nueva);
-    return 'new';
+    const saved = await licRepoTx.save(nueva);
+    return {
+      status: 'new',
+      licitacion: saved,
+    };
   }
 
   async upsert(

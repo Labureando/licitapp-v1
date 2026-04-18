@@ -32,8 +32,9 @@ import { OrganizationsService } from './organizations.service';
 import { UsersService } from '../../users.service';
 import { CreateOrganizationDto } from './dto';
 import { RoleGuard } from '../../../../common/guards';
-import { RequireRoles, SuperAdminOnly } from '../../../../common/decorators';
+import { RequireRoles, SuperAdminOnly, LogAuditAction, SecureOwnershipEndpoint, SecureAuthEndpoint, ValidateResourceExists } from '../../../../common/decorators';
 import { Role } from '../../enums';
+import { OrganizationEntity } from '../../entities/organization.entity';
 
 @ApiTags('🏢 Organizations')
 @ApiBearerAuth('access-token')
@@ -51,6 +52,7 @@ export class OrganizationsController {
    * Automáticamente convierte al usuario PUBLIC_USER en ORG_OWNER
    */
   @Post()
+  @SecureAuthEndpoint()
   @UseGuards(RoleGuard)
   @RequireRoles(Role.PUBLIC_USER)
   @HttpCode(HttpStatus.CREATED)
@@ -118,6 +120,8 @@ export class OrganizationsController {
    * Obtener datos de una organización específica
    */
   @Get(':id')
+  @SecureAuthEndpoint()
+  @ValidateResourceExists(OrganizationEntity, 'id')
   @UseGuards(RoleGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -166,8 +170,9 @@ export class OrganizationsController {
    * Obtener todas las organizaciones (SUPER_ADMIN solo)
    */
   @Get()
+  @SecureAuthEndpoint()
+  @RequireRoles(Role.SUPER_ADMIN)
   @UseGuards(RoleGuard)
-  @SuperAdminOnly()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Listar todas las organizaciones',
@@ -216,6 +221,8 @@ export class OrganizationsController {
   @Patch(':id')
   @UseGuards(RoleGuard)
   @RequireRoles(Role.ORG_OWNER, Role.SUPER_ADMIN)
+  @SecureOwnershipEndpoint('id')
+  @LogAuditAction('ORG_UPDATE')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Actualizar organización',
@@ -267,6 +274,8 @@ export class OrganizationsController {
    * Obtener cantidad de usuarios en una organización
    */
   @Get(':id/user-count')
+  @SecureAuthEndpoint()
+  @ValidateResourceExists(OrganizationEntity, 'id')
   @UseGuards(RoleGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
