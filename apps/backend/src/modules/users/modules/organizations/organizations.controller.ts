@@ -28,13 +28,16 @@ import {
   ApiNotFoundResponse,
   ApiConflictResponse,
 } from '@nestjs/swagger';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { OrganizationsService } from './organizations.service';
 import { UsersService } from '../../users.service';
 import { CreateOrganizationDto } from './dto';
-import { RoleGuard } from '../../../../common/guards';
-import { RequireRoles, SuperAdminOnly, LogAuditAction, SecureOwnershipEndpoint, SecureAuthEndpoint, ValidateResourceExists } from '../../../../common/decorators';
+import { RoleGuard, JwtAuthGuard, OwnershipGuard } from '../../../../common/guards';
+import { RequireRoles, SuperAdminOnly, LogAuditAction, SecureOwnershipEndpoint, SecureAuthEndpoint, ValidateResourceExists, ValidateOwnership } from '../../../../common/decorators';
 import { Role } from '../../enums';
-import { OrganizationEntity } from '../../entities/organization.entity';
+import { OrganizationEntity, UserEntity } from '../../entities';
 
 @ApiTags('🏢 Organizations')
 @ApiBearerAuth('access-token')
@@ -45,6 +48,9 @@ export class OrganizationsController {
   constructor(
     private readonly organizationsService: OrganizationsService,
     private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
   /**
@@ -52,8 +58,8 @@ export class OrganizationsController {
    * Automáticamente convierte al usuario PUBLIC_USER en ORG_OWNER
    */
   @Post()
-  @SecureAuthEndpoint()
-  @UseGuards(RoleGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @RequireRoles(Role.PUBLIC_USER)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -96,6 +102,7 @@ export class OrganizationsController {
     @Req() req: any,
   ) {
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
     
     if (!userId) {
       throw new Error('Usuario no autenticado');
@@ -109,10 +116,32 @@ export class OrganizationsController {
       this.usersService,
     );
 
+    // Query directo al repositorio para obtener usuario actualizado con nuevo rol
+    const updatedUser = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!updatedUser) {
+      throw new Error('Usuario no encontrado después de la promoción');
+    }
+
+    // Regenerar JWT token con el nuevo rol ORG_OWNER
+    const newPayload = {
+      sub: updatedUser.id,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      isActive: updatedUser.isActive,
+    };
+
+    const new_access_token = this.jwtService.sign(newPayload, {
+      expiresIn: '3600s',
+    });
+
     return {
       statusCode: HttpStatus.CREATED,
       message: 'Organización creada exitosamente. Usuario promovido a ORG_OWNER.',
       data: organization,
+      access_token: new_access_token,
     };
   }
 
@@ -120,9 +149,9 @@ export class OrganizationsController {
    * Obtener datos de una organización específica
    */
   @Get(':id')
-  @SecureAuthEndpoint()
+  @ApiBearerAuth('access-token')
   @ValidateResourceExists(OrganizationEntity, 'id')
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Obtener organización por ID',
@@ -170,9 +199,9 @@ export class OrganizationsController {
    * Obtener todas las organizaciones (SUPER_ADMIN solo)
    */
   @Get()
-  @SecureAuthEndpoint()
+  @ApiBearerAuth('access-token')
   @RequireRoles(Role.SUPER_ADMIN)
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Listar todas las organizaciones',
@@ -219,9 +248,10 @@ export class OrganizationsController {
    * Solo ORG_OWNER o SUPER_ADMIN pueden actualizar
    */
   @Patch(':id')
-  @UseGuards(RoleGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, OwnershipGuard, RoleGuard)
   @RequireRoles(Role.ORG_OWNER, Role.SUPER_ADMIN)
-  @SecureOwnershipEndpoint('id')
+  @ValidateOwnership('id')
   @LogAuditAction('ORG_UPDATE')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -274,9 +304,9 @@ export class OrganizationsController {
    * Obtener cantidad de usuarios en una organización
    */
   @Get(':id/user-count')
-  @SecureAuthEndpoint()
+  @ApiBearerAuth('access-token')
   @ValidateResourceExists(OrganizationEntity, 'id')
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Contar usuarios de organización',
