@@ -10,7 +10,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 
 export const RESOURCE_EXISTS_KEY = 'resource_exists';
 export const RESOURCE_ENTITY_KEY = 'resource_entity';
@@ -41,7 +41,10 @@ export const RESOURCE_ENTITY_KEY = 'resource_entity';
 export class ResourceExistsGuard implements CanActivate {
   private readonly logger = new Logger(ResourceExistsGuard.name);
 
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private dataSource: DataSource,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // Obtener metadata del decorador
@@ -68,13 +71,22 @@ export class ResourceExistsGuard implements CanActivate {
       );
     }
 
-    // Obtener repositorio de la entity
-    const repository: Repository<any> = request.entityManager?.getRepository(entity);
+    // Obtener repositorio de la entity usando DataSource
+    let repository: Repository<any>;
+    try {
+      repository = this.dataSource.getRepository(entity);
+    } catch (error) {
+      const entityName = (entity?.name as string) || 'Unknown';
+      this.logger.warn(
+        `ResourceExistsGuard: No se pudo obtener repositorio para ${entityName}: ${(error as Error).message}`,
+      );
+      throw new BadRequestException('Configuración de repositorio inválida');
+    }
 
     if (!repository) {
       const entityName = (entity?.name as string) || 'Unknown';
       this.logger.warn(
-        `ResourceExistsGuard: No se pudo obtener repositorio para ${entityName}`,
+        `ResourceExistsGuard: Repositorio nulo para ${entityName}`,
       );
       throw new BadRequestException('Configuración de repositorio inválida');
     }

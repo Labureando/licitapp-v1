@@ -86,6 +86,7 @@ export class AuthService {
         sub: user.id,
         email: user.email,
         role: user.role,
+        isActive: user.isActive,
       };
 
       const access_token = this.jwtService.sign(payload, {
@@ -142,6 +143,7 @@ export class AuthService {
         sub: payload.sub,
         email: payload.email,
         role: payload.role,
+        isActive: payload.isActive,
       };
 
       const access_token = this.jwtService.sign(newPayload, {
@@ -301,6 +303,7 @@ export class AuthService {
         sub: user.id,
         email: user.email,
         role: user.role,
+        isActive: user.isActive,
       };
 
       const access_token = this.jwtService.sign(payload, {

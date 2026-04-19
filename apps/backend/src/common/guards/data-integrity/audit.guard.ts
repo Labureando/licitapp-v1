@@ -87,11 +87,12 @@ export class AuditGuard implements CanActivate {
 
     // Hook para capturar el status code y response body después
     const originalSend = response.send;
+    const logger = this.logger;
     response.send = function (data: any) {
       auditData['responseStatus'] = response.statusCode;
       auditData['responseData'] = typeof data === 'string' ? data : JSON.stringify(data);
 
-      this.logger.debug(
+      logger.debug(
         `🔍 AUDIT END: ${action} completado con status ${response.statusCode}`,
       );
 

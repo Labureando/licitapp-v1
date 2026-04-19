@@ -26,7 +26,7 @@ import {
 } from '@nestjs/swagger';
 import { InvitationsService } from './invitations.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
-import { RoleGuard } from '../../common/guards';
+import { RoleGuard, JwtAuthGuard } from '../../common/guards';
 import { RequireRoles, LogAuditAction, ValidateResourceExists } from '../../common/decorators';
 import { Role } from '../users/enums';
 import { InvitationEntity } from './entities/invitation.entity';
@@ -43,7 +43,7 @@ export class InvitationsController {
    * Solo ORG_OWNER puede enviar invitaciones
    */
   @Post()
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @RequireRoles(Role.ORG_OWNER)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -126,7 +126,7 @@ export class InvitationsController {
    * Solo ORG_OWNER puede ver esto
    */
   @Get('organization/:organizationId')
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @RequireRoles(Role.ORG_OWNER)
   @ValidateResourceExists(OrganizationEntity, 'organizationId')
   @HttpCode(HttpStatus.OK)
@@ -176,7 +176,7 @@ export class InvitationsController {
    * Solo ORG_OWNER puede cancelar
    */
   @Delete(':id')
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @RequireRoles(Role.ORG_OWNER)
   @LogAuditAction('INVITATION_CANCEL')
   @ValidateResourceExists(InvitationEntity, 'id')

@@ -46,8 +46,10 @@ async function bootstrap() {
     })
   );
 
-  // Configurar prefijo global de rutas
-  app.setGlobalPrefix(`${config.api.prefix}/${config.api.version}`);
+  // Configurar prefijo global de rutas (excluir health)
+  app.setGlobalPrefix(`${config.api.prefix}/${config.api.version}`, {
+    exclude: ['health', 'health/ready', 'health/live'],
+  });
 
   // Configurar Swagger
   const swaggerConfig = new DocumentBuilder()
