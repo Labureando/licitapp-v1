@@ -10,13 +10,9 @@ export class RequestPasswordChangeDto {
 }
 
 /**
- * DTO para confirmar cambio de contraseña con token
+ * DTO para confirmar cambio de contraseña (token va en params)
  */
 export class ConfirmPasswordChangeDto {
-  @IsString()
-  @IsNotEmpty()
-  token: string;
-
   @IsString()
   @MinLength(8)
   @IsNotEmpty()
@@ -36,4 +32,9 @@ export class ChangePasswordDto {
   @MinLength(8)
   @IsNotEmpty()
   newPassword: string;
+
+  @IsString()
+  @MinLength(8)
+  @IsNotEmpty()
+  newPasswordConfirm: string;
 }

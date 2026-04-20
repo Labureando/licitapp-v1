@@ -133,8 +133,9 @@ export class UsersService {
     userId: string,
     oldPassword: string,
     newPassword: string,
+    newPasswordConfirm: string,
   ): Promise<{ message: string }> {
-    return this.passwordService.changePassword(userId, oldPassword, newPassword);
+    return this.passwordService.changePassword(userId, oldPassword, newPassword, newPasswordConfirm);
   }
 
   // ============ ORGANIZATION OPERATIONS ============

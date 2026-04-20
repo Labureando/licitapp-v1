@@ -424,7 +424,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"oldPassword\": \"SecurePassword123!\",\n  \"newPassword\": \"NewPassword456!\"\n}"
+              "raw": "{\n  \"oldPassword\": \"SecurePassword123!\",\n  \"newPassword\": \"NewPassword456!\",\n  \"newPasswordConfirm\": \"NewPassword456!\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/password/change",
@@ -468,12 +468,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"reset-token-here\",\n  \"newPassword\": \"NewPassword456!\"\n}"
+              "raw": "{\n  \"newPassword\": \"NewPassword456!\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/password/confirm",
+              "raw": "{{baseUrl}}/api/v1/users/password/confirm/{{reset_token}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "users", "password", "confirm"]
+              "path": ["api", "v1", "users", "password", "confirm", "{{reset_token}}"]
             }
           },
           "response": []
@@ -1227,6 +1227,11 @@
     },
     {
       "key": "licitacionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "reset_token",
       "value": "",
       "type": "string"
     }
