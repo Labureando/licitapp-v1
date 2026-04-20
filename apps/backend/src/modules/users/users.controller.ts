@@ -283,18 +283,22 @@ export class UsersController {
   /**
    * Confirmar cambio de contraseña con token
    */
-  @Post('password/confirm')
+  @Post('password/confirm/:token')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Confirmar cambio de contraseña',
     description: 'Completa el cambio de contraseña usando el token enviado por email. El token expira en 1 hora.',
+  })
+  @ApiParam({
+    name: 'token',
+    description: 'Token de recuperación enviado por email',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
   @ApiBody({
     type: ConfirmPasswordChangeDto,
     examples: {
       example1: {
         value: {
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
           newPassword: 'NewSecurePassword123!',
         },
       },
@@ -309,10 +313,11 @@ export class UsersController {
   @ApiNotFoundResponse({ description: 'Token inválido o expirado' })
   @ApiConflictResponse({ description: 'Token ya ha sido utilizado' })
   async confirmPasswordChange(
+    @Param('token') token: string,
     @Body() confirmPasswordChangeDto: ConfirmPasswordChangeDto,
   ): Promise<{ message: string }> {
     return this.usersService.confirmPasswordChange(
-      confirmPasswordChangeDto.token,
+      token,
       confirmPasswordChangeDto.newPassword,
     );
   }
@@ -334,6 +339,7 @@ export class UsersController {
         value: {
           oldPassword: 'CurrentPassword123!',
           newPassword: 'NewSecurePassword456!',
+          newPasswordConfirm: 'NewSecurePassword456!',
         },
       },
     },
@@ -353,6 +359,7 @@ export class UsersController {
       req.user.sub,
       changePasswordDto.oldPassword,
       changePasswordDto.newPassword,
+      changePasswordDto.newPasswordConfirm,
     );
   }
 }

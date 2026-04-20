@@ -133,8 +133,14 @@ export class UserPasswordService {
     userId: string,
     oldPassword: string,
     newPassword: string,
+    newPasswordConfirm: string,
   ): Promise<{ message: string }> {
     try {
+      // Validar que ambas contraseñas coincidan
+      if (newPassword !== newPasswordConfirm) {
+        throw new BadRequestException('Las contraseñas no coinciden');
+      }
+
       const user = await this.usersRepository
         .createQueryBuilder('user')
         .where('user.id = :userId', { userId })
