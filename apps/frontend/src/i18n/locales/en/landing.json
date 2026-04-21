@@ -1,0 +1,95 @@
+{
+  "header": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Sign in",
+    "register": "Start free"
+  },
+  "hero": {
+    "badge": "With built-in AI for automatic summaries",
+    "titlePart1": "Win more public tenders.",
+    "titlePart2": "Waste less time.",
+    "subtitle": "Smart search over 288,000 PLACE tenders, real-time alerts, and AI summaries of 100+ page briefs in seconds.",
+    "ctaStart": "Start free",
+    "ctaSecondary": "See how it works",
+    "disclaimer": "Free forever · No credit card · Data refreshed every 5 minutes"
+  },
+  "features": {
+    "title": "Everything you need. Nothing you don't.",
+    "subtitle": "Tools built for companies competing for real contracts.",
+    "items": {
+      "search": {
+        "title": "Smart search",
+        "description": "Across 288,000 PLACE tenders, with filters by CPV, region, agency, amount, status."
+      },
+      "alerts": {
+        "title": "Tailored alerts",
+        "description": "Define criteria and receive emails when matching tenders appear. In real time."
+      },
+      "ai": {
+        "title": "AI summaries",
+        "description": "Upload a 100-page brief and get a structured summary in 15 seconds: scope, amount, deadlines, requirements."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Simple pricing",
+    "subtitle": "Pay only for what you use. Change plans anytime.",
+    "mostPopular": "Most popular",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "€0",
+        "cadence": "forever",
+        "description": "To try it out. No credit card.",
+        "features": {
+          "search": "Full search",
+          "alerts": "1 active alert",
+          "ai": "5 AI summaries/month",
+          "support": "Email support"
+        },
+        "cta": "Start free"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "€49",
+        "cadence": "/month",
+        "description": "For companies that mean business.",
+        "features": {
+          "everything": "Everything in Free",
+          "alerts": "Unlimited alerts",
+          "ai": "100 AI summaries/month",
+          "export": "Export to Excel/CSV",
+          "support": "Priority support"
+        },
+        "cta": "Start 14-day trial"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "Custom",
+        "description": "For large teams and consultancies.",
+        "features": {
+          "everything": "Everything in Pro",
+          "ai": "Unlimited AI summaries",
+          "integrations": "Integrations (API, Slack, Teams)",
+          "manager": "Dedicated account manager",
+          "sla": "99.9% SLA"
+        },
+        "cta": "Talk to sales"
+      }
+    }
+  },
+  "cta": {
+    "title": "Ready to stop losing tenders?",
+    "subtitle": "Create your free account in 30 seconds. No card. No commitment.",
+    "button": "Start free"
+  },
+  "footer": {
+    "copyright": "© {{year}} LicitaApp. All rights reserved.",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies",
+    "contact": "Contact"
+  }
+}

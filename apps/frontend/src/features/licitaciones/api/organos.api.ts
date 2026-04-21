@@ -1,4 +1,4 @@
-import { api } from '@/lib/api-client';
+import { apiClient } from '@/lib/api-client'
 
 export interface OrganoSearchResult {
   id: string;
@@ -32,7 +32,7 @@ function toParams(p: SearchOrganosParams): Record<string, string> {
 
 export const organosApi = {
   search: (params: SearchOrganosParams) =>
-    api
+    apiClient
       .get<ApiEnvelope<OrganoSearchResult[]>>('/organos/search', {
         params: toParams(params),
       })

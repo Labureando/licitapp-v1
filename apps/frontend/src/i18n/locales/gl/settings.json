@@ -1,0 +1,99 @@
+{
+  "page": {
+    "title": "Axustes",
+    "subtitle": "Xestiona a túa conta, seguridade e preferencias"
+  },
+  "tabs": {
+    "profile": "Perfil",
+    "security": "Seguridade",
+    "notifications": "Notificacións",
+    "organization": "Organización",
+    "preferences": "Preferencias"
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Información básica da túa conta",
+    "firstName": "Nome",
+    "lastName": "Apelidos",
+    "email": "Email",
+    "emailHelp": "O email non se pode cambiar. Contacta con soporte se o necesitas.",
+    "phone": "Teléfono",
+    "phoneOptional": "(opcional)",
+    "phonePlaceholder": "+34 612 345 678",
+    "timezone": "Fuso horario",
+    "timezoneHelp": "Usamos esta zona para enviar alertas no teu horario local.",
+    "saveButton": "Gardar cambios",
+    "savingButton": "Gardando...",
+    "discardButton": "Descartar",
+    "success": "Perfil actualizado",
+    "errors": {
+      "forbidden": "Non tes permiso para modificar este perfil",
+      "rateLimit": "Demasiadas tentativas. Espera un momento.",
+      "generic": "Erro ao gardar os cambios"
+    }
+  },
+  "security": {
+    "title": "Seguridade",
+    "subtitle": "Xestiona o teu contrasinal e métodos de acceso",
+    "changePasswordTitle": "Cambiar contrasinal",
+    "oldPassword": "Contrasinal actual",
+    "newPassword": "Novo contrasinal",
+    "newPasswordConfirm": "Confirma o novo contrasinal",
+    "submitButton": "Cambiar contrasinal",
+    "submittingButton": "Cambiando...",
+    "success": "Contrasinal actualizado correctamente",
+    "errors": {
+      "wrongOldPassword": "O contrasinal actual non é correcto",
+      "rateLimit": "Demasiadas tentativas. Espera un momento.",
+      "generic": "Erro ao cambiar o contrasinal"
+    }
+  },
+  "notifications": {
+    "title": "Notificacións",
+    "subtitle": "Configura como e cando queres recibir alertas",
+    "generalTitle": "Preferencias xerais",
+    "emailEnabled": "Recibir alertas por email",
+    "emailEnabledHelp": "Desactivar isto silencia TODAS as alertas por email (aínda que as alertas individuais estean activas)",
+    "defaultEmail": "Email para alertas",
+    "defaultEmailHelp": "Por defecto usamos o teu email de conta. Podes pór outro se prefires recibir alertas nun enderezo distinto.",
+    "quietHoursTitle": "Horario de silencio",
+    "quietHoursHelp": "Non enviaremos emails durante este horario. Acumularanse e enviaranse xuntos ao rematar.",
+    "quietHoursFrom": "Dende",
+    "quietHoursTo": "Ata",
+    "frequencyTitle": "Frecuencia por defecto",
+    "frequencyHelp": "Cando crees unha alerta nova, usará esta frecuencia por defecto. Podes cambiala por alerta.",
+    "frequency": {
+      "instant": "Instantáneo",
+      "instantDesc": "Email inmediato cando hai match",
+      "daily": "Diario",
+      "dailyDesc": "Resumo diario ás 8:00 AM do teu fuso horario",
+      "weekly": "Semanal",
+      "weeklyDesc": "Resumo cada luns ás 8:00 AM"
+    },
+    "alertsListTitle": "As túas alertas",
+    "alertsListSubtitle": "Preferencias específicas por alerta",
+    "alertsListEmpty": "Aínda non tes alertas. <createLink>Crea a primeira</createLink>.",
+    "manageAlert": "Xestionar",
+    "success": "Preferencias actualizadas",
+    "errors": {
+      "generic": "Erro ao gardar as preferencias"
+    }
+  },
+  "organization": {
+    "title": "Organización",
+    "subtitle": "Datos da túa organización e membros",
+    "planLabel": "Plan actual",
+    "roleLabel": "Rol",
+    "comingSoonTitle": "Xestión de membros proximamente",
+    "comingSoonBody": "Invitar usuarios, xestionar roles e permisos chegará no próximo sprint."
+  },
+  "preferences": {
+    "title": "Preferencias",
+    "subtitle": "Personaliza a túa experiencia",
+    "language": "Idioma da aplicación",
+    "languageHelp": "A interface mostrarase neste idioma. Non afecta ao contido das licitacións (sempre en español).",
+    "theme": "Tema visual",
+    "themeHelp": "Claro, escuro ou seguindo a preferencia do sistema.",
+    "success": "Preferencias gardadas"
+  }
+}

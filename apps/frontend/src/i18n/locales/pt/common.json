@@ -1,0 +1,117 @@
+{
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Criar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Seguinte",
+    "previous": "Anterior",
+    "finish": "Finalizar",
+    "confirm": "Confirmar",
+    "discard": "Descartar",
+    "retry": "Tentar novamente",
+    "search": "Pesquisar",
+    "filter": "Filtrar",
+    "clear": "Limpar",
+    "apply": "Aplicar",
+    "view": "Ver",
+    "copy": "Copiar",
+    "export": "Exportar",
+    "import": "Importar",
+    "add": "Adicionar",
+    "remove": "Remover",
+    "continue": "Continuar",
+    "skip": "Saltar"
+  },
+  "status": {
+    "loading": "A carregar...",
+    "saving": "A guardar...",
+    "sending": "A enviar...",
+    "deleting": "A eliminar...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "pending": "Pendente",
+    "active": "Ativa",
+    "inactive": "Inativa",
+    "none": "Nenhum"
+  },
+  "errors": {
+    "generic": "Ocorreu um erro inesperado",
+    "network": "Erro de ligação. Verifica a tua rede.",
+    "unauthorized": "Não autorizado. Inicia sessão novamente.",
+    "forbidden": "Não tens permissão para esta ação",
+    "notFound": "Recurso não encontrado",
+    "validation": "Dados inválidos",
+    "rateLimit": "Demasiadas tentativas. Espera uns minutos.",
+    "serverError": "Erro do servidor. Tenta mais tarde.",
+    "tryAgain": "Tenta novamente",
+    "notFoundBody": "A página que procuras não existe ou foi movida.",
+    "comingSoonBody": "Esta secção estará disponível em breve."
+  },
+  "time": {
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "tomorrow": "Amanhã",
+    "daysAgo_one": "Há {{count}} dia",
+    "daysAgo_other": "Há {{count}} dias",
+    "hoursAgo_one": "Há {{count}} hora",
+    "hoursAgo_other": "Há {{count}} horas",
+    "minutesAgo_one": "Há {{count}} minuto",
+    "minutesAgo_other": "Há {{count}} minutos",
+    "justNow": "Agora mesmo",
+    "in_days_one": "Em {{count}} dia",
+    "in_days_other": "Em {{count}} dias"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "page": "Página {{current}} de {{total}}",
+    "results": "{{count}} resultados",
+    "noResults": "Sem resultados"
+  },
+  "navigation": {
+    "home": "Início",
+    "dashboard": "Painel",
+    "search": "Pesquisa",
+    "alerts": "Alertas",
+    "saved": "Guardadas",
+    "analytics": "Análises",
+    "calendar": "Calendário",
+    "settings": "Definições",
+    "profile": "Perfil",
+    "logout": "Terminar sessão",
+    "sections": {
+      "main": "Principal",
+      "tools": "Ferramentas"
+    }
+  },
+  "app": {
+    "name": "LicitaApp",
+    "tagline": "Ganha mais concursos públicos"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "language": {
+    "label": "Idioma",
+    "change": "Mudar idioma",
+    "needsReview": "Tradução pendente de revisão nativa"
+  },
+  "validation": {
+    "tooShort": "Mínimo {{min}} caracteres",
+    "tooLong": "Máximo {{max}} caracteres",
+    "invalidEmail": "Email inválido",
+    "required": "Este campo é obrigatório",
+    "passwordMismatch": "As palavras-passe não coincidem",
+    "newPasswordSameAsOld": "A nova palavra-passe deve ser diferente da atual"
+  },
+  "password": {
+    "show": "Mostrar palavra-passe",
+    "hide": "Ocultar palavra-passe"
+  }
+}

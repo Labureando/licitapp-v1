@@ -1,0 +1,95 @@
+{
+  "header": {
+    "features": "Características",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "login": "Iniciar sesión",
+    "register": "Empezar gratis"
+  },
+  "hero": {
+    "badge": "Con IA integrada para resúmenes automáticos",
+    "titlePart1": "Gana más licitaciones públicas.",
+    "titlePart2": "Pierde menos tiempo.",
+    "subtitle": "Búsqueda inteligente sobre 288.000 licitaciones de PLACE, alertas en tiempo real y resúmenes con IA de pliegos de 100+ páginas en segundos.",
+    "ctaStart": "Empezar gratis",
+    "ctaSecondary": "Ver cómo funciona",
+    "disclaimer": "Gratis para siempre · Sin tarjeta · Datos actualizados cada 5 minutos"
+  },
+  "features": {
+    "title": "Todo lo que necesitas. Nada de lo que no.",
+    "subtitle": "Herramientas pensadas para empresas que se juegan contratos de verdad.",
+    "items": {
+      "search": {
+        "title": "Búsqueda inteligente",
+        "description": "Sobre 288.000 licitaciones de PLACE, con filtros por CPV, comunidad, órgano, importe, estado."
+      },
+      "alerts": {
+        "title": "Alertas a medida",
+        "description": "Define criterios y recibe emails cuando aparezcan licitaciones que te encajan. En tiempo real."
+      },
+      "ai": {
+        "title": "Resúmenes con IA",
+        "description": "Sube un pliego de 100 páginas y recibe en 15 segundos un resumen estructurado: objeto, importe, plazos, requisitos."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Precios simples",
+    "subtitle": "Paga solo por lo que usas. Cambia de plan cuando quieras.",
+    "mostPopular": "Más popular",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "0€",
+        "cadence": "para siempre",
+        "description": "Para probarlo. Sin tarjeta.",
+        "features": {
+          "search": "Buscador completo",
+          "alerts": "1 alerta activa",
+          "ai": "5 resúmenes IA/mes",
+          "support": "Soporte por email"
+        },
+        "cta": "Empezar gratis"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "49€",
+        "cadence": "/mes",
+        "description": "Para empresas que van en serio.",
+        "features": {
+          "everything": "Todo lo de Free",
+          "alerts": "Alertas ilimitadas",
+          "ai": "100 resúmenes IA/mes",
+          "export": "Exportación a Excel/CSV",
+          "support": "Soporte prioritario"
+        },
+        "cta": "Empezar prueba de 14 días"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "A medida",
+        "description": "Para equipos grandes y consultoras.",
+        "features": {
+          "everything": "Todo lo de Pro",
+          "ai": "Resúmenes IA ilimitados",
+          "integrations": "Integraciones (API, Slack, Teams)",
+          "manager": "Manager de cuenta dedicado",
+          "sla": "SLA 99.9%"
+        },
+        "cta": "Hablar con ventas"
+      }
+    }
+  },
+  "cta": {
+    "title": "¿Listo para dejar de perder licitaciones?",
+    "subtitle": "Crea tu cuenta gratis en 30 segundos. Sin tarjeta. Sin compromiso.",
+    "button": "Empezar gratis"
+  },
+  "footer": {
+    "copyright": "© {{year}} LicitaApp. Todos los derechos reservados.",
+    "terms": "Términos",
+    "privacy": "Privacidad",
+    "cookies": "Cookies",
+    "contact": "Contacto"
+  }
+}

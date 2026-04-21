@@ -1,0 +1,154 @@
+{
+  "onboarding": {
+    "title": "Configura tu primera alerta",
+    "subtitle": "Recibirás emails cuando aparezcan licitaciones que encajan con tus criterios",
+    "skip": "Saltar por ahora",
+    "skipHelp": "Podrás crear alertas en cualquier momento desde el menú Alertas",
+    "step1": {
+      "title": "¿En qué sector trabajas?",
+      "subtitle": "Esto nos ayuda a sugerirte códigos CPV relevantes",
+      "placeholder": "Ej: Servicios de limpieza, construcción, consultoría IT...",
+      "next": "Continuar"
+    },
+    "step2": {
+      "title": "¿En qué comunidades operas?",
+      "subtitle": "Selecciona todas las que te interesen. Puedes cambiarlo después.",
+      "selectAll": "Seleccionar todas",
+      "deselectAll": "Deseleccionar todas",
+      "next": "Continuar"
+    },
+    "step3": {
+      "title": "¿Qué rango de importe?",
+      "subtitle": "Déjalo vacío si quieres recibir licitaciones de cualquier importe",
+      "minLabel": "Importe mínimo (€)",
+      "maxLabel": "Importe máximo (€)",
+      "minPlaceholder": "Ej: 10000",
+      "maxPlaceholder": "Ej: 500000",
+      "next": "Continuar"
+    },
+    "step4": {
+      "title": "Palabras clave y nombre",
+      "subtitle": "Palabras que deben aparecer en el título o descripción de la licitación",
+      "keywordsLabel": "Palabras clave",
+      "keywordsHelp": "Separa con comas. Ej: mantenimiento, rehabilitación",
+      "nameLabel": "Nombre de la alerta",
+      "namePlaceholder": "Ej: Obras Cataluña 50k-200k",
+      "frequencyLabel": "Frecuencia de notificación",
+      "create": "Crear alerta",
+      "creating": "Creando..."
+    },
+    "success": {
+      "title": "¡Alerta creada!",
+      "subtitle": "Recibirás un email en {{email}} cuando haya licitaciones que coincidan",
+      "cta": "Ir al dashboard",
+      "createAnother": "Crear otra alerta"
+    }
+  },
+  "page": {
+    "title": "Alertas",
+    "subtitle": "Notificaciones por email de licitaciones que coincidan con tus criterios",
+    "createButton": "Nueva alerta",
+    "empty": {
+      "title": "Aún no tienes alertas",
+      "subtitle": "Crea tu primera alerta para empezar a recibir notificaciones de licitaciones que te interesen",
+      "cta": "Crear primera alerta"
+    },
+    "filters": {
+      "all": "Todas",
+      "active": "Activas",
+      "inactive": "Pausadas"
+    },
+    "count_one": "{{count}} alerta",
+    "count_other": "{{count}} alertas"
+  },
+  "card": {
+    "matchesLabel_one": "{{count}} match",
+    "matchesLabel_other": "{{count}} matches",
+    "lastMatch": "Última: {{date}}",
+    "noMatches": "Sin matches aún",
+    "pauseButton": "Pausar",
+    "activateButton": "Activar",
+    "editButton": "Editar",
+    "deleteButton": "Eliminar",
+    "viewMatches": "Ver matches",
+    "paused": "Pausada"
+  },
+  "form": {
+    "createTitle": "Nueva alerta",
+    "editTitle": "Editar alerta",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Ej: Servicios IT Madrid",
+    "nameHelp": "Un nombre descriptivo para identificarla",
+    "descriptionLabel": "Descripción",
+    "descriptionOptional": "(opcional)",
+    "descriptionPlaceholder": "Notas internas sobre esta alerta",
+    "criteriaTitle": "Criterios de búsqueda",
+    "criteriaSubtitle": "Debes rellenar al menos uno. Combinamos todos con AND (la licitación debe cumplir TODOS).",
+    "keywordsLabel": "Palabras clave",
+    "keywordsHelp": "Separa con comas. Buscamos en título y descripción.",
+    "ccaasLabel": "Comunidades autónomas",
+    "provinciasLabel": "Provincias",
+    "estadosLabel": "Estados",
+    "tiposLabel": "Tipos de contrato",
+    "procedimientosLabel": "Procedimientos",
+    "tramitacionesLabel": "Tramitación",
+    "cpvLabel": "Códigos CPV",
+    "cpvHelp": "Códigos del Vocabulario Común de Contratos Públicos. Separa con comas.",
+    "importeTitle": "Rango de importe",
+    "importeSubtitle": "Déjalo vacío si no quieres filtrar por importe",
+    "importeMinLabel": "Mínimo (€)",
+    "importeMaxLabel": "Máximo (€)",
+    "notificationTitle": "Notificaciones",
+    "emailLabel": "Email de notificación",
+    "emailHelp": "Déjalo vacío para usar el email de tu cuenta",
+    "frequencyLabel": "Frecuencia",
+    "isActiveLabel": "Alerta activa",
+    "isActiveHelp": "Las alertas inactivas no envían emails pero se pueden reactivar en cualquier momento",
+    "submitCreate": "Crear alerta",
+    "submitEdit": "Guardar cambios",
+    "submitting": "Guardando...",
+    "cancelButton": "Cancelar",
+    "deleteButton": "Eliminar alerta",
+    "validation": {
+      "nameRequired": "El nombre es obligatorio",
+      "nameMax": "Máximo 255 caracteres",
+      "atLeastOneCriterion": "Debes definir al menos un criterio de búsqueda",
+      "emailInvalid": "Email no válido",
+      "importeInvalid": "Debe ser un número positivo",
+      "importeRange": "El mínimo no puede ser mayor que el máximo"
+    },
+    "success": {
+      "created": "Alerta creada correctamente",
+      "updated": "Alerta actualizada",
+      "deleted": "Alerta eliminada"
+    },
+    "errors": {
+      "createFailed": "Error al crear la alerta",
+      "updateFailed": "Error al actualizar",
+      "deleteFailed": "Error al eliminar"
+    }
+  },
+  "delete": {
+    "title": "¿Eliminar alerta?",
+    "message": "Vas a eliminar la alerta \"{{name}}\". Dejarás de recibir notificaciones sobre estos criterios. Esta acción no se puede deshacer.",
+    "confirm": "Sí, eliminar",
+    "cancel": "Cancelar"
+  },
+  "frequency": {
+    "instant": "Instantáneo",
+    "daily": "Diario",
+    "weekly": "Semanal"
+  },
+  "preview": {
+    "title": "Preview del email",
+    "subject": "Asunto: {{count}} nuevas licitaciones para \"{{alertName}}\"",
+    "fromLabel": "De:",
+    "from": "LicitaApp <alerts@licitapp.com>",
+    "toLabel": "Para:",
+    "sampleGreeting": "Hola {{name}},",
+    "sampleBody": "Hemos encontrado {{count}} nuevas licitaciones que coinciden con tu alerta:",
+    "viewButton": "Ver licitación",
+    "viewAllButton": "Ver todas las alertas",
+    "unsubscribe": "Pausar esta alerta"
+  }
+}

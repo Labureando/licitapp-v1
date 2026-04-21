@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /ajustes/
+Disallow: /login
+Disallow: /register
+Disallow: /auth/
+
+Sitemap: https://licitapp.com/sitemap.xml

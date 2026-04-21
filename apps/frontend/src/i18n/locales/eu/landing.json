@@ -1,0 +1,95 @@
+{
+  "header": {
+    "features": "Ezaugarriak",
+    "pricing": "Prezioak",
+    "contact": "Kontaktua",
+    "login": "Saioa hasi",
+    "register": "Doan hasi"
+  },
+  "hero": {
+    "badge": "IA integratuarekin laburpen automatikoetarako",
+    "titlePart1": "Irabazi lehiaketa publiko gehiago.",
+    "titlePart2": "Galdu denbora gutxiago.",
+    "subtitle": "PLACE-ko 288.000 lehiaketa adimendunaren bilaketa, denbora errealeko alertak eta 100+ orriko pleguen IA laburpenak segundotan.",
+    "ctaStart": "Doan hasi",
+    "ctaSecondary": "Nola funtzionatzen duen ikusi",
+    "disclaimer": "Betiko doan · Txartelik gabe · Datuak 5 minuturo eguneratuak"
+  },
+  "features": {
+    "title": "Behar duzun guztia. Besterik ez.",
+    "subtitle": "Benetako kontratuetan jokatzen duten enpresentzat pentsatutako tresnak.",
+    "items": {
+      "search": {
+        "title": "Bilaketa adimenduna",
+        "description": "PLACE-ko 288.000 lehiaketaren gainean, CPV, erkidego, organo, zenbateko eta egoera araberako iragazkiekin."
+      },
+      "alerts": {
+        "title": "Neurrira egindako alertak",
+        "description": "Definitu irizpideak eta jaso emailak egokitzen zaizkizun lehiaketak agertzen direnean. Denbora errealean."
+      },
+      "ai": {
+        "title": "IA laburpenak",
+        "description": "Igo 100 orriko plegu bat eta jaso 15 segundotan laburpen egituratua: xedea, zenbatekoa, epeak, baldintzak."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Prezio errazak",
+    "subtitle": "Erabiltzen duzunagatik bakarrik ordaindu. Aldatu plana nahi duzunean.",
+    "mostPopular": "Ezagunena",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "0€",
+        "cadence": "betiko",
+        "description": "Probatzeko. Txartelik gabe.",
+        "features": {
+          "search": "Bilatzaile osoa",
+          "alerts": "Alerta aktibo 1",
+          "ai": "Hileko 5 IA laburpen",
+          "support": "Emailezko laguntza"
+        },
+        "cta": "Doan hasi"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "49€",
+        "cadence": "/hileko",
+        "description": "Serio hartzen duten enpresentzat.",
+        "features": {
+          "everything": "Free-ren guztia",
+          "alerts": "Mugarik gabeko alertak",
+          "ai": "Hileko 100 IA laburpen",
+          "export": "Excel/CSV-ra esportatu",
+          "support": "Lehentasunezko laguntza"
+        },
+        "cta": "14 eguneko proba hasi"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "Neurrira",
+        "description": "Talde handi eta aholkularitzentzat.",
+        "features": {
+          "everything": "Pro-ren guztia",
+          "ai": "Mugarik gabeko IA laburpenak",
+          "integrations": "Integrazioak (API, Slack, Teams)",
+          "manager": "Kontu-kudeatzaile dedikatua",
+          "sla": "SLA %99.9"
+        },
+        "cta": "Salmentekin hitz egin"
+      }
+    }
+  },
+  "cta": {
+    "title": "Lehiaketak galtzeari uzteko prest?",
+    "subtitle": "Sortu zure kontua doan 30 segundotan. Txartelik gabe. Konpromisorik gabe.",
+    "button": "Doan hasi"
+  },
+  "footer": {
+    "copyright": "© {{year}} LicitaApp. Eskubide guztiak erreserbatuta.",
+    "terms": "Baldintzak",
+    "privacy": "Pribatutasuna",
+    "cookies": "Cookieak",
+    "contact": "Kontaktua"
+  }
+}

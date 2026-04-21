@@ -1,0 +1,95 @@
+{
+  "header": {
+    "features": "Características",
+    "pricing": "Preços",
+    "contact": "Contacto",
+    "login": "Iniciar sessão",
+    "register": "Começar grátis"
+  },
+  "hero": {
+    "badge": "Com IA integrada para resumos automáticos",
+    "titlePart1": "Ganha mais concursos públicos.",
+    "titlePart2": "Perde menos tempo.",
+    "subtitle": "Pesquisa inteligente sobre 288.000 concursos da PLACE, alertas em tempo real e resumos com IA de cadernos de 100+ páginas em segundos.",
+    "ctaStart": "Começar grátis",
+    "ctaSecondary": "Ver como funciona",
+    "disclaimer": "Grátis para sempre · Sem cartão · Dados atualizados a cada 5 minutos"
+  },
+  "features": {
+    "title": "Tudo o que precisas. Nada do que não precisas.",
+    "subtitle": "Ferramentas pensadas para empresas que competem por contratos a sério.",
+    "items": {
+      "search": {
+        "title": "Pesquisa inteligente",
+        "description": "Sobre 288.000 concursos da PLACE, com filtros por CPV, comunidade, órgão, valor, estado."
+      },
+      "alerts": {
+        "title": "Alertas à medida",
+        "description": "Define critérios e recebe emails quando aparecerem concursos que te encaixem. Em tempo real."
+      },
+      "ai": {
+        "title": "Resumos com IA",
+        "description": "Carrega um caderno de 100 páginas e recebe em 15 segundos um resumo estruturado: objeto, valor, prazos, requisitos."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Preços simples",
+    "subtitle": "Paga apenas pelo que usas. Muda de plano quando quiseres.",
+    "mostPopular": "Mais popular",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "0€",
+        "cadence": "para sempre",
+        "description": "Para experimentar. Sem cartão.",
+        "features": {
+          "search": "Pesquisa completa",
+          "alerts": "1 alerta ativo",
+          "ai": "5 resumos IA/mês",
+          "support": "Suporte por email"
+        },
+        "cta": "Começar grátis"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "49€",
+        "cadence": "/mês",
+        "description": "Para empresas que vão a sério.",
+        "features": {
+          "everything": "Tudo o do Free",
+          "alerts": "Alertas ilimitados",
+          "ai": "100 resumos IA/mês",
+          "export": "Exportação para Excel/CSV",
+          "support": "Suporte prioritário"
+        },
+        "cta": "Começar teste de 14 dias"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "À medida",
+        "description": "Para equipas grandes e consultorias.",
+        "features": {
+          "everything": "Tudo o do Pro",
+          "ai": "Resumos IA ilimitados",
+          "integrations": "Integrações (API, Slack, Teams)",
+          "manager": "Gestor de conta dedicado",
+          "sla": "SLA 99,9%"
+        },
+        "cta": "Falar com vendas"
+      }
+    }
+  },
+  "cta": {
+    "title": "Pronto para deixar de perder concursos?",
+    "subtitle": "Cria a tua conta grátis em 30 segundos. Sem cartão. Sem compromisso.",
+    "button": "Começar grátis"
+  },
+  "footer": {
+    "copyright": "© {{year}} LicitaApp. Todos os direitos reservados.",
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "cookies": "Cookies",
+    "contact": "Contacto"
+  }
+}

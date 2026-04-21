@@ -1,0 +1,117 @@
+{
+  "actions": {
+    "save": "Gardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "close": "Pechar",
+    "back": "Volver",
+    "next": "Seguinte",
+    "previous": "Anterior",
+    "finish": "Finalizar",
+    "confirm": "Confirmar",
+    "discard": "Descartar",
+    "retry": "Tentar de novo",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "clear": "Limpar",
+    "apply": "Aplicar",
+    "view": "Ver",
+    "copy": "Copiar",
+    "export": "Exportar",
+    "import": "Importar",
+    "add": "Engadir",
+    "remove": "Quitar",
+    "continue": "Continuar",
+    "skip": "Saltar"
+  },
+  "status": {
+    "loading": "Cargando...",
+    "saving": "Gardando...",
+    "sending": "Enviando...",
+    "deleting": "Eliminando...",
+    "error": "Erro",
+    "success": "Éxito",
+    "pending": "Pendente",
+    "active": "Activa",
+    "inactive": "Inactiva",
+    "none": "Ningún"
+  },
+  "errors": {
+    "generic": "Produciuse un erro inesperado",
+    "network": "Erro de conexión. Verifica a túa rede.",
+    "unauthorized": "Non autorizado. Inicia sesión de novo.",
+    "forbidden": "Non tes permiso para esta acción",
+    "notFound": "Recurso non atopado",
+    "validation": "Datos non válidos",
+    "rateLimit": "Demasiadas tentativas. Espera uns minutos.",
+    "serverError": "Erro do servidor. Téntao máis tarde.",
+    "tryAgain": "Téntao de novo",
+    "notFoundBody": "A páxina que buscas non existe ou foi movida.",
+    "comingSoonBody": "Esta sección estará dispoñible proximamente."
+  },
+  "time": {
+    "today": "Hoxe",
+    "yesterday": "Onte",
+    "tomorrow": "Mañá",
+    "daysAgo_one": "Hai {{count}} día",
+    "daysAgo_other": "Hai {{count}} días",
+    "hoursAgo_one": "Hai {{count}} hora",
+    "hoursAgo_other": "Hai {{count}} horas",
+    "minutesAgo_one": "Hai {{count}} minuto",
+    "minutesAgo_other": "Hai {{count}} minutos",
+    "justNow": "Agora mesmo",
+    "in_days_one": "En {{count}} día",
+    "in_days_other": "En {{count}} días"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "page": "Páxina {{current}} de {{total}}",
+    "results": "{{count}} resultados",
+    "noResults": "Sen resultados"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "search": "Buscador",
+    "alerts": "Alertas",
+    "saved": "Gardadas",
+    "analytics": "Analíticas",
+    "calendar": "Calendario",
+    "settings": "Axustes",
+    "profile": "Perfil",
+    "logout": "Pechar sesión",
+    "sections": {
+      "main": "Principal",
+      "tools": "Ferramentas"
+    }
+  },
+  "app": {
+    "name": "LicitaApp",
+    "tagline": "Gaña máis licitacións públicas"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "language": {
+    "label": "Idioma",
+    "change": "Cambiar idioma",
+    "needsReview": "Tradución pendente de revisión nativa"
+  },
+  "validation": {
+    "tooShort": "Mínimo {{min}} caracteres",
+    "tooLong": "Máximo {{max}} caracteres",
+    "invalidEmail": "Email non válido",
+    "required": "Este campo é obrigatorio",
+    "passwordMismatch": "Os contrasinais non coinciden",
+    "newPasswordSameAsOld": "O novo contrasinal debe ser distinto do actual"
+  },
+  "password": {
+    "show": "Mostrar contrasinal",
+    "hide": "Ocultar contrasinal"
+  }
+}

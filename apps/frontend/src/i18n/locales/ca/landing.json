@@ -1,0 +1,95 @@
+{
+  "header": {
+    "features": "Característiques",
+    "pricing": "Preus",
+    "contact": "Contacte",
+    "login": "Iniciar sessió",
+    "register": "Començar gratis"
+  },
+  "hero": {
+    "badge": "Amb IA integrada per a resums automàtics",
+    "titlePart1": "Guanya més licitacions públiques.",
+    "titlePart2": "Perd menys temps.",
+    "subtitle": "Cerca intel·ligent sobre 288.000 licitacions de PLACE, alertes en temps real i resums amb IA de plecs de 100+ pàgines en segons.",
+    "ctaStart": "Començar gratis",
+    "ctaSecondary": "Veure com funciona",
+    "disclaimer": "Gratis per sempre · Sense targeta · Dades actualitzades cada 5 minuts"
+  },
+  "features": {
+    "title": "Tot el que necessites. Res del que no.",
+    "subtitle": "Eines pensades per a empreses que es juguen contractes de veritat.",
+    "items": {
+      "search": {
+        "title": "Cerca intel·ligent",
+        "description": "Sobre 288.000 licitacions de PLACE, amb filtres per CPV, comunitat, òrgan, import, estat."
+      },
+      "alerts": {
+        "title": "Alertes a mida",
+        "description": "Defineix criteris i rep emails quan apareguin licitacions que t'encaixin. En temps real."
+      },
+      "ai": {
+        "title": "Resums amb IA",
+        "description": "Puja un plec de 100 pàgines i rep en 15 segons un resum estructurat: objecte, import, terminis, requisits."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Preus senzills",
+    "subtitle": "Paga només pel que fas servir. Canvia de pla quan vulguis.",
+    "mostPopular": "Més popular",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "0€",
+        "cadence": "per sempre",
+        "description": "Per provar-ho. Sense targeta.",
+        "features": {
+          "search": "Cercador complet",
+          "alerts": "1 alerta activa",
+          "ai": "5 resums IA/mes",
+          "support": "Suport per email"
+        },
+        "cta": "Començar gratis"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "49€",
+        "cadence": "/mes",
+        "description": "Per a empreses que van de debò.",
+        "features": {
+          "everything": "Tot el de Free",
+          "alerts": "Alertes il·limitades",
+          "ai": "100 resums IA/mes",
+          "export": "Exportació a Excel/CSV",
+          "support": "Suport prioritari"
+        },
+        "cta": "Començar prova de 14 dies"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "A mida",
+        "description": "Per a equips grans i consultories.",
+        "features": {
+          "everything": "Tot el de Pro",
+          "ai": "Resums IA il·limitats",
+          "integrations": "Integracions (API, Slack, Teams)",
+          "manager": "Manager de compte dedicat",
+          "sla": "SLA 99.9%"
+        },
+        "cta": "Parlar amb vendes"
+      }
+    }
+  },
+  "cta": {
+    "title": "Llest per deixar de perdre licitacions?",
+    "subtitle": "Crea el teu compte gratis en 30 segons. Sense targeta. Sense compromís.",
+    "button": "Començar gratis"
+  },
+  "footer": {
+    "copyright": "© {{year}} LicitaApp. Tots els drets reservats.",
+    "terms": "Termes",
+    "privacy": "Privacitat",
+    "cookies": "Galetes",
+    "contact": "Contacte"
+  }
+}

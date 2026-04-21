@@ -1,0 +1,99 @@
+{
+  "page": {
+    "title": "Settings",
+    "subtitle": "Manage your account, security, and preferences"
+  },
+  "tabs": {
+    "profile": "Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "organization": "Organization",
+    "preferences": "Preferences"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Basic information about your account",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "emailHelp": "Email cannot be changed. Contact support if you need to.",
+    "phone": "Phone",
+    "phoneOptional": "(optional)",
+    "phonePlaceholder": "+34 612 345 678",
+    "timezone": "Time zone",
+    "timezoneHelp": "We use this zone to send alerts in your local time.",
+    "saveButton": "Save changes",
+    "savingButton": "Saving...",
+    "discardButton": "Discard",
+    "success": "Profile updated",
+    "errors": {
+      "forbidden": "You don't have permission to modify this profile",
+      "rateLimit": "Too many attempts. Wait a moment.",
+      "generic": "Error saving changes"
+    }
+  },
+  "security": {
+    "title": "Security",
+    "subtitle": "Manage your password and access methods",
+    "changePasswordTitle": "Change password",
+    "oldPassword": "Current password",
+    "newPassword": "New password",
+    "newPasswordConfirm": "Confirm new password",
+    "submitButton": "Change password",
+    "submittingButton": "Changing...",
+    "success": "Password updated successfully",
+    "errors": {
+      "wrongOldPassword": "Current password is incorrect",
+      "rateLimit": "Too many attempts. Wait a moment.",
+      "generic": "Error changing password"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Configure how and when you want to receive alerts",
+    "generalTitle": "General preferences",
+    "emailEnabled": "Receive alerts by email",
+    "emailEnabledHelp": "Disabling this silences ALL email alerts (even if individual alerts are active)",
+    "defaultEmail": "Alerts email",
+    "defaultEmailHelp": "By default we use your account email. You can set another if you prefer to receive alerts at a different address.",
+    "quietHoursTitle": "Quiet hours",
+    "quietHoursHelp": "We won't send emails during this time window. They'll be queued and sent together when the window ends.",
+    "quietHoursFrom": "From",
+    "quietHoursTo": "To",
+    "frequencyTitle": "Default frequency",
+    "frequencyHelp": "When you create a new alert, it will use this frequency by default. You can change it per alert.",
+    "frequency": {
+      "instant": "Instant",
+      "instantDesc": "Immediate email when there's a match",
+      "daily": "Daily",
+      "dailyDesc": "Daily digest at 8:00 AM in your timezone",
+      "weekly": "Weekly",
+      "weeklyDesc": "Weekly digest every Monday at 8:00 AM"
+    },
+    "alertsListTitle": "Your alerts",
+    "alertsListSubtitle": "Alert-specific preferences",
+    "alertsListEmpty": "You don't have any alerts yet. <createLink>Create your first one</createLink>.",
+    "manageAlert": "Manage",
+    "success": "Preferences updated",
+    "errors": {
+      "generic": "Error saving preferences"
+    }
+  },
+  "organization": {
+    "title": "Organization",
+    "subtitle": "Your organization data and members",
+    "planLabel": "Current plan",
+    "roleLabel": "Role",
+    "comingSoonTitle": "Member management coming soon",
+    "comingSoonBody": "Inviting users, managing roles and permissions is coming in the next sprint."
+  },
+  "preferences": {
+    "title": "Preferences",
+    "subtitle": "Customize your experience",
+    "language": "App language",
+    "languageHelp": "The interface will be shown in this language. It doesn't affect tender content (always in Spanish).",
+    "theme": "Visual theme",
+    "themeHelp": "Light, dark, or following your system preference.",
+    "success": "Preferences saved"
+  }
+}
