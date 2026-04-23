@@ -1,0 +1,154 @@
+{
+  "onboarding": {
+    "title": "Konfiguratu zure lehen alerta",
+    "subtitle": "Emailak jasoko dituzu zure irizpideekin bat datozen lehiaketak agertzen direnean",
+    "skip": "Oraingoz saltatu",
+    "skipHelp": "Alertak edozein unetan sor ditzakezu Alertak menutik",
+    "step1": {
+      "title": "Zein sektoretan lan egiten duzu?",
+      "subtitle": "Honek CPV kode esanguratsuak iradokitzen laguntzen digu",
+      "placeholder": "Adib: Garbiketa zerbitzuak, eraikuntza, IT aholkularitza...",
+      "next": "Jarraitu"
+    },
+    "step2": {
+      "title": "Zein erkidegotan jarduten duzu?",
+      "subtitle": "Hautatu interesatzen zaizkizun guztiak. Gero alda dezakezu.",
+      "selectAll": "Guztiak hautatu",
+      "deselectAll": "Guztiak desautatu",
+      "next": "Jarraitu"
+    },
+    "step3": {
+      "title": "Zein zenbatekoren tartea?",
+      "subtitle": "Hutsik utzi edozein zenbatekoko lehiaketak jaso nahi badituzu",
+      "minLabel": "Gutxieneko zenbatekoa (€)",
+      "maxLabel": "Gehieneko zenbatekoa (€)",
+      "minPlaceholder": "Adib: 10000",
+      "maxPlaceholder": "Adib: 500000",
+      "next": "Jarraitu"
+    },
+    "step4": {
+      "title": "Hitz gakoak eta izena",
+      "subtitle": "Lehiaketaren izenburu edo deskribapenean agertu behar diren hitzak",
+      "keywordsLabel": "Hitz gakoak",
+      "keywordsHelp": "Komaz bereizi. Adib: mantentze-lanak, birgaitzea",
+      "nameLabel": "Alertaren izena",
+      "namePlaceholder": "Adib: Euskadiko obrak 50k-200k",
+      "frequencyLabel": "Jakinarazpen maiztasuna",
+      "create": "Alerta sortu",
+      "creating": "Sortzen..."
+    },
+    "success": {
+      "title": "Alerta sortuta!",
+      "subtitle": "{{email}}-ra emaila jasoko duzu bat datozten lehiaketak daudenean",
+      "cta": "Panelera joan",
+      "createAnother": "Beste alerta bat sortu"
+    }
+  },
+  "page": {
+    "title": "Alertak",
+    "subtitle": "Zure irizpideekin bat datozen lehiaketen emailezko jakinarazpenak",
+    "createButton": "Alerta berria",
+    "empty": {
+      "title": "Oraindik ez duzu alertarik",
+      "subtitle": "Sortu zure lehen alerta interesatzen zaizkizun lehiaketen jakinarazpenak jasotzen hasteko",
+      "cta": "Lehen alerta sortu"
+    },
+    "filters": {
+      "all": "Denak",
+      "active": "Aktiboak",
+      "inactive": "Pausatuak"
+    },
+    "count_one": "{{count}} alerta",
+    "count_other": "{{count}} alerta"
+  },
+  "card": {
+    "matchesLabel_one": "{{count}} match",
+    "matchesLabel_other": "{{count}} match",
+    "lastMatch": "Azkena: {{date}}",
+    "noMatches": "Oraindik matchik ez",
+    "pauseButton": "Pausatu",
+    "activateButton": "Aktibatu",
+    "editButton": "Editatu",
+    "deleteButton": "Ezabatu",
+    "viewMatches": "Matchak ikusi",
+    "paused": "Pausatuta"
+  },
+  "form": {
+    "createTitle": "Alerta berria",
+    "editTitle": "Alerta editatu",
+    "nameLabel": "Izena",
+    "namePlaceholder": "Adib: IT Zerbitzuak Madril",
+    "nameHelp": "Izen deskriptiboa identifikatzeko",
+    "descriptionLabel": "Deskribapena",
+    "descriptionOptional": "(aukerakoa)",
+    "descriptionPlaceholder": "Alerta honi buruzko barne-oharrak",
+    "criteriaTitle": "Bilaketa-irizpideak",
+    "criteriaSubtitle": "Gutxienez bat bete behar duzu. Guztiak AND-ekin konbinatzen ditugu (lehiaketak GUZTIAK bete behar ditu).",
+    "keywordsLabel": "Hitz gakoak",
+    "keywordsHelp": "Komaz bereizi. Izenburu eta deskribapenean bilatzen dugu.",
+    "ccaasLabel": "Autonomia-erkidegoak",
+    "provinciasLabel": "Probintziak",
+    "estadosLabel": "Egoerak",
+    "tiposLabel": "Kontratu motak",
+    "procedimientosLabel": "Prozedurak",
+    "tramitacionesLabel": "Izapidetzea",
+    "cpvLabel": "CPV kodeak",
+    "cpvHelp": "Kontratu Publikoen Hiztegi Komuneko kodeak. Komaz bereizi.",
+    "importeTitle": "Zenbateko-tartea",
+    "importeSubtitle": "Hutsik utzi ez baduzu zenbatekoz iragazi nahi",
+    "importeMinLabel": "Gutxienekoa (€)",
+    "importeMaxLabel": "Gehienezkoa (€)",
+    "notificationTitle": "Jakinarazpenak",
+    "emailLabel": "Jakinarazpen emaila",
+    "emailHelp": "Hutsik utzi zure kontuaren emaila erabiltzeko",
+    "frequencyLabel": "Maiztasuna",
+    "isActiveLabel": "Alerta aktibo",
+    "isActiveHelp": "Alerta inaktiboek ez dute emailik bidaltzen baina edozein unetan berraktiba daitezke",
+    "submitCreate": "Alerta sortu",
+    "submitEdit": "Aldaketak gorde",
+    "submitting": "Gordetzen...",
+    "cancelButton": "Utzi",
+    "deleteButton": "Alerta ezabatu",
+    "validation": {
+      "nameRequired": "Izena derrigorrezkoa da",
+      "nameMax": "Gehienez 255 karaktere",
+      "atLeastOneCriterion": "Gutxienez bilaketa-irizpide bat definitu behar duzu",
+      "emailInvalid": "Email baliogabea",
+      "importeInvalid": "Zenbaki positiboa izan behar du",
+      "importeRange": "Gutxienekoa ezin da gehienezkoa baino handiagoa izan"
+    },
+    "success": {
+      "created": "Alerta ondo sortu da",
+      "updated": "Alerta eguneratuta",
+      "deleted": "Alerta ezabatuta"
+    },
+    "errors": {
+      "createFailed": "Errorea alerta sortzean",
+      "updateFailed": "Errorea eguneratzean",
+      "deleteFailed": "Errorea ezabatzean"
+    }
+  },
+  "delete": {
+    "title": "Alerta ezabatu?",
+    "message": "\"{{name}}\" alerta ezabatuko duzu. Ez duzu irizpide hauei buruzko jakinarazpenik jasoko. Ekintza hau ezin da desegin.",
+    "confirm": "Bai, ezabatu",
+    "cancel": "Utzi"
+  },
+  "frequency": {
+    "instant": "Berehala",
+    "daily": "Egunero",
+    "weekly": "Astero"
+  },
+  "preview": {
+    "title": "Emailaren previewa",
+    "subject": "Gaia: \"{{alertName}}\"-rako {{count}} lehiaketa berri",
+    "fromLabel": "Nork:",
+    "from": "LicitaApp <alerts@licitapp.com>",
+    "toLabel": "Nori:",
+    "sampleGreeting": "Kaixo {{name}},",
+    "sampleBody": "Zure alertarekin bat datozen {{count}} lehiaketa berri aurkitu ditugu:",
+    "viewButton": "Lehiaketa ikusi",
+    "viewAllButton": "Alerta guztiak ikusi",
+    "unsubscribe": "Alerta hau pausatu"
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "page": {
+    "title": "Ezarpenak",
+    "subtitle": "Kudeatu zure kontua, segurtasuna eta hobespenak"
+  },
+  "tabs": {
+    "profile": "Profila",
+    "security": "Segurtasuna",
+    "notifications": "Jakinarazpenak",
+    "organization": "Erakundea",
+    "preferences": "Hobespenak"
+  },
+  "profile": {
+    "title": "Profila",
+    "subtitle": "Zure kontuaren oinarrizko informazioa",
+    "firstName": "Izena",
+    "lastName": "Abizenak",
+    "email": "Emaila",
+    "emailHelp": "Emaila ezin da aldatu. Jarri harremanetan laguntzarekin behar baduzu.",
+    "phone": "Telefonoa",
+    "phoneOptional": "(aukerakoa)",
+    "phonePlaceholder": "+34 612 345 678",
+    "timezone": "Ordu-eremua",
+    "timezoneHelp": "Ordu-eremu hau erabiltzen dugu alertak zure tokiko orduan bidaltzeko.",
+    "saveButton": "Aldaketak gorde",
+    "savingButton": "Gordetzen...",
+    "discardButton": "Baztertu",
+    "success": "Profila eguneratuta",
+    "errors": {
+      "forbidden": "Ez duzu baimenik profil hau aldatzeko",
+      "rateLimit": "Saiakera gehiegi. Itxaron une bat.",
+      "generic": "Errorea aldaketak gordetzean"
+    }
+  },
+  "security": {
+    "title": "Segurtasuna",
+    "subtitle": "Kudeatu zure pasahitza eta sarbide-metodoak",
+    "changePasswordTitle": "Pasahitza aldatu",
+    "oldPassword": "Oraingo pasahitza",
+    "newPassword": "Pasahitz berria",
+    "newPasswordConfirm": "Baieztatu pasahitz berria",
+    "submitButton": "Pasahitza aldatu",
+    "submittingButton": "Aldatzen...",
+    "success": "Pasahitza ondo eguneratu da",
+    "errors": {
+      "wrongOldPassword": "Oraingo pasahitza ez da zuzena",
+      "rateLimit": "Saiakera gehiegi. Itxaron une bat.",
+      "generic": "Errorea pasahitza aldatzean"
+    }
+  },
+  "notifications": {
+    "title": "Jakinarazpenak",
+    "subtitle": "Konfiguratu nola eta noiz jaso nahi dituzun alertak",
+    "generalTitle": "Hobespen orokorrak",
+    "emailEnabled": "Alertak emailez jaso",
+    "emailEnabledHelp": "Hau desaktibatzeak emailezko alerta GUZTIAK isiltzen ditu (banakako alertak aktibatuta badaude ere)",
+    "defaultEmail": "Alerten emaila",
+    "defaultEmailHelp": "Lehenespenez zure kontuaren emaila erabiltzen dugu. Beste bat jarri dezakezu alertak beste helbide batean jaso nahi badituzu.",
+    "quietHoursTitle": "Isiltasun-ordutegia",
+    "quietHoursHelp": "Ez dugu emailik bidaliko ordutegi honetan. Metatuta eta bukatzean elkarrekin bidaliko dira.",
+    "quietHoursFrom": "Hemendik",
+    "quietHoursTo": "Honaino",
+    "frequencyTitle": "Lehenespenezko maiztasuna",
+    "frequencyHelp": "Alerta berria sortzean, lehenespenezko maiztasun hau erabiliko du. Alerta bakoitzean alda dezakezu.",
+    "frequency": {
+      "instant": "Berehala",
+      "instantDesc": "Berehalako emaila matcha dagoenean",
+      "daily": "Egunero",
+      "dailyDesc": "Eguneroko laburpena 8:00etan zure ordu-eremuan",
+      "weekly": "Astero",
+      "weeklyDesc": "Asteroko laburpena astelehenero 8:00etan"
+    },
+    "alertsListTitle": "Zure alertak",
+    "alertsListSubtitle": "Alerta bakoitzeko hobespen espezifikoak",
+    "alertsListEmpty": "Oraindik ez duzu alertarik. <createLink>Sortu lehena</createLink>.",
+    "manageAlert": "Kudeatu",
+    "success": "Hobespenak eguneratuta",
+    "errors": {
+      "generic": "Errorea hobespenak gordetzean"
+    }
+  },
+  "organization": {
+    "title": "Erakundea",
+    "subtitle": "Zure erakundearen datuak eta kideak",
+    "planLabel": "Oraingo plana",
+    "roleLabel": "Rola",
+    "comingSoonTitle": "Kideen kudeaketa laster",
+    "comingSoonBody": "Erabiltzaileak gonbidatzea, rolak eta baimenak kudeatzea hurrengo sprint-ean helduko da."
+  },
+  "preferences": {
+    "title": "Hobespenak",
+    "subtitle": "Pertsonalizatu zure esperientzia",
+    "language": "Aplikazioaren hizkuntza",
+    "languageHelp": "Interfazea hizkuntza honetan erakutsiko da. Ez du eraginik lehiaketen edukian (beti gaztelaniaz).",
+    "theme": "Itxura",
+    "themeHelp": "Argia, iluna edo sistemaren hobespena jarraituz.",
+    "success": "Hobespenak gordeta"
+  }
+}

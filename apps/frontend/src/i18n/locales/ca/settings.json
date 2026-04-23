@@ -1,0 +1,99 @@
+{
+  "page": {
+    "title": "Configuració",
+    "subtitle": "Gestiona el teu compte, seguretat i preferències"
+  },
+  "tabs": {
+    "profile": "Perfil",
+    "security": "Seguretat",
+    "notifications": "Notificacions",
+    "organization": "Organització",
+    "preferences": "Preferències"
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Informació bàsica del teu compte",
+    "firstName": "Nom",
+    "lastName": "Cognoms",
+    "email": "Email",
+    "emailHelp": "L'email no es pot canviar. Contacta amb suport si ho necessites.",
+    "phone": "Telèfon",
+    "phoneOptional": "(opcional)",
+    "phonePlaceholder": "+34 612 345 678",
+    "timezone": "Fus horari",
+    "timezoneHelp": "Fem servir aquesta zona per enviar alertes en el teu horari local.",
+    "saveButton": "Desar canvis",
+    "savingButton": "Desant...",
+    "discardButton": "Descartar",
+    "success": "Perfil actualitzat",
+    "errors": {
+      "forbidden": "No tens permís per modificar aquest perfil",
+      "rateLimit": "Massa intents. Espera un moment.",
+      "generic": "Error en desar els canvis"
+    }
+  },
+  "security": {
+    "title": "Seguretat",
+    "subtitle": "Gestiona la teva contrasenya i mètodes d'accés",
+    "changePasswordTitle": "Canviar contrasenya",
+    "oldPassword": "Contrasenya actual",
+    "newPassword": "Nova contrasenya",
+    "newPasswordConfirm": "Confirma la nova contrasenya",
+    "submitButton": "Canviar contrasenya",
+    "submittingButton": "Canviant...",
+    "success": "Contrasenya actualitzada correctament",
+    "errors": {
+      "wrongOldPassword": "La contrasenya actual no és correcta",
+      "rateLimit": "Massa intents. Espera un moment.",
+      "generic": "Error en canviar la contrasenya"
+    }
+  },
+  "notifications": {
+    "title": "Notificacions",
+    "subtitle": "Configura com i quan vols rebre alertes",
+    "generalTitle": "Preferències generals",
+    "emailEnabled": "Rebre alertes per email",
+    "emailEnabledHelp": "Desactivar això silencia TOTES les alertes per email (encara que les alertes individuals estiguin actives)",
+    "defaultEmail": "Email per a alertes",
+    "defaultEmailHelp": "Per defecte fem servir el teu email de compte. Pots posar-ne un altre si prefereixes rebre alertes en una adreça diferent.",
+    "quietHoursTitle": "Horari de silenci",
+    "quietHoursHelp": "No enviarem emails durant aquest horari. S'acumularan i s'enviaran junts en acabar.",
+    "quietHoursFrom": "Des de",
+    "quietHoursTo": "Fins a",
+    "frequencyTitle": "Freqüència per defecte",
+    "frequencyHelp": "Quan creïs una alerta nova, farà servir aquesta freqüència per defecte. Pots canviar-la per alerta.",
+    "frequency": {
+      "instant": "Instantani",
+      "instantDesc": "Email immediat quan hi ha match",
+      "daily": "Diari",
+      "dailyDesc": "Resum diari a les 8:00 AM del teu fus horari",
+      "weekly": "Setmanal",
+      "weeklyDesc": "Resum cada dilluns a les 8:00 AM"
+    },
+    "alertsListTitle": "Les teves alertes",
+    "alertsListSubtitle": "Preferències específiques per alerta",
+    "alertsListEmpty": "Encara no tens alertes. <createLink>Crea la primera</createLink>.",
+    "manageAlert": "Gestionar",
+    "success": "Preferències actualitzades",
+    "errors": {
+      "generic": "Error en desar les preferències"
+    }
+  },
+  "organization": {
+    "title": "Organització",
+    "subtitle": "Dades de la teva organització i membres",
+    "planLabel": "Pla actual",
+    "roleLabel": "Rol",
+    "comingSoonTitle": "Gestió de membres properament",
+    "comingSoonBody": "Invitar usuaris, gestionar rols i permisos arribarà al proper sprint."
+  },
+  "preferences": {
+    "title": "Preferències",
+    "subtitle": "Personalitza la teva experiència",
+    "language": "Idioma de l'aplicació",
+    "languageHelp": "La interfície es mostrarà en aquest idioma. No afecta al contingut de les licitacions (sempre en espanyol).",
+    "theme": "Tema visual",
+    "themeHelp": "Clar, fosc o seguint la preferència del sistema.",
+    "success": "Preferències desades"
+  }
+}

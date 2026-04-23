@@ -1,0 +1,154 @@
+{
+  "onboarding": {
+    "title": "Set up your first alert",
+    "subtitle": "You'll receive emails when tenders matching your criteria appear",
+    "skip": "Skip for now",
+    "skipHelp": "You can create alerts anytime from the Alerts menu",
+    "step1": {
+      "title": "What sector do you work in?",
+      "subtitle": "This helps us suggest relevant CPV codes",
+      "placeholder": "e.g. Cleaning services, construction, IT consulting...",
+      "next": "Continue"
+    },
+    "step2": {
+      "title": "Which regions do you operate in?",
+      "subtitle": "Select all that interest you. You can change this later.",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "next": "Continue"
+    },
+    "step3": {
+      "title": "What amount range?",
+      "subtitle": "Leave empty if you want to receive tenders of any amount",
+      "minLabel": "Minimum amount (€)",
+      "maxLabel": "Maximum amount (€)",
+      "minPlaceholder": "e.g. 10000",
+      "maxPlaceholder": "e.g. 500000",
+      "next": "Continue"
+    },
+    "step4": {
+      "title": "Keywords and name",
+      "subtitle": "Words that must appear in the tender title or description",
+      "keywordsLabel": "Keywords",
+      "keywordsHelp": "Separate with commas. e.g. maintenance, refurbishment",
+      "nameLabel": "Alert name",
+      "namePlaceholder": "e.g. Works Catalonia 50k-200k",
+      "frequencyLabel": "Notification frequency",
+      "create": "Create alert",
+      "creating": "Creating..."
+    },
+    "success": {
+      "title": "Alert created!",
+      "subtitle": "You'll receive an email at {{email}} when matching tenders appear",
+      "cta": "Go to dashboard",
+      "createAnother": "Create another alert"
+    }
+  },
+  "page": {
+    "title": "Alerts",
+    "subtitle": "Email notifications for tenders matching your criteria",
+    "createButton": "New alert",
+    "empty": {
+      "title": "You don't have any alerts yet",
+      "subtitle": "Create your first alert to start receiving notifications about tenders that interest you",
+      "cta": "Create first alert"
+    },
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "inactive": "Paused"
+    },
+    "count_one": "{{count}} alert",
+    "count_other": "{{count}} alerts"
+  },
+  "card": {
+    "matchesLabel_one": "{{count}} match",
+    "matchesLabel_other": "{{count}} matches",
+    "lastMatch": "Last: {{date}}",
+    "noMatches": "No matches yet",
+    "pauseButton": "Pause",
+    "activateButton": "Activate",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "viewMatches": "View matches",
+    "paused": "Paused"
+  },
+  "form": {
+    "createTitle": "New alert",
+    "editTitle": "Edit alert",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. IT Services Madrid",
+    "nameHelp": "A descriptive name to identify it",
+    "descriptionLabel": "Description",
+    "descriptionOptional": "(optional)",
+    "descriptionPlaceholder": "Internal notes about this alert",
+    "criteriaTitle": "Search criteria",
+    "criteriaSubtitle": "You must fill in at least one. We combine all with AND (the tender must meet ALL).",
+    "keywordsLabel": "Keywords",
+    "keywordsHelp": "Separate with commas. We search title and description.",
+    "ccaasLabel": "Autonomous communities",
+    "provinciasLabel": "Provinces",
+    "estadosLabel": "States",
+    "tiposLabel": "Contract types",
+    "procedimientosLabel": "Procedures",
+    "tramitacionesLabel": "Processing",
+    "cpvLabel": "CPV codes",
+    "cpvHelp": "Common Procurement Vocabulary codes. Separate with commas.",
+    "importeTitle": "Amount range",
+    "importeSubtitle": "Leave empty if you don't want to filter by amount",
+    "importeMinLabel": "Minimum (€)",
+    "importeMaxLabel": "Maximum (€)",
+    "notificationTitle": "Notifications",
+    "emailLabel": "Notification email",
+    "emailHelp": "Leave empty to use your account email",
+    "frequencyLabel": "Frequency",
+    "isActiveLabel": "Active alert",
+    "isActiveHelp": "Inactive alerts don't send emails but can be reactivated at any time",
+    "submitCreate": "Create alert",
+    "submitEdit": "Save changes",
+    "submitting": "Saving...",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete alert",
+    "validation": {
+      "nameRequired": "Name is required",
+      "nameMax": "Maximum 255 characters",
+      "atLeastOneCriterion": "You must define at least one search criterion",
+      "emailInvalid": "Invalid email",
+      "importeInvalid": "Must be a positive number",
+      "importeRange": "Minimum cannot be greater than maximum"
+    },
+    "success": {
+      "created": "Alert created successfully",
+      "updated": "Alert updated",
+      "deleted": "Alert deleted"
+    },
+    "errors": {
+      "createFailed": "Error creating alert",
+      "updateFailed": "Error updating",
+      "deleteFailed": "Error deleting"
+    }
+  },
+  "delete": {
+    "title": "Delete alert?",
+    "message": "You're about to delete the alert \"{{name}}\". You will stop receiving notifications about these criteria. This action cannot be undone.",
+    "confirm": "Yes, delete",
+    "cancel": "Cancel"
+  },
+  "frequency": {
+    "instant": "Instant",
+    "daily": "Daily",
+    "weekly": "Weekly"
+  },
+  "preview": {
+    "title": "Email preview",
+    "subject": "Subject: {{count}} new tenders for \"{{alertName}}\"",
+    "fromLabel": "From:",
+    "from": "LicitaApp <alerts@licitapp.com>",
+    "toLabel": "To:",
+    "sampleGreeting": "Hi {{name}},",
+    "sampleBody": "We found {{count}} new tenders matching your alert:",
+    "viewButton": "View tender",
+    "viewAllButton": "View all alerts",
+    "unsubscribe": "Pause this alert"
+  }
+}

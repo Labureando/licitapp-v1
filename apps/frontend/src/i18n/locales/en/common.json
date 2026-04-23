@@ -1,0 +1,117 @@
+{
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "finish": "Finish",
+    "confirm": "Confirm",
+    "discard": "Discard",
+    "retry": "Retry",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "apply": "Apply",
+    "view": "View",
+    "copy": "Copy",
+    "export": "Export",
+    "import": "Import",
+    "add": "Add",
+    "remove": "Remove",
+    "continue": "Continue",
+    "skip": "Skip"
+  },
+  "status": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "sending": "Sending...",
+    "deleting": "Deleting...",
+    "error": "Error",
+    "success": "Success",
+    "pending": "Pending",
+    "active": "Active",
+    "inactive": "Inactive",
+    "none": "None"
+  },
+  "errors": {
+    "generic": "An unexpected error occurred",
+    "network": "Connection error. Check your network.",
+    "unauthorized": "Unauthorized. Please sign in again.",
+    "forbidden": "You don't have permission for this action",
+    "notFound": "Resource not found",
+    "validation": "Invalid data",
+    "rateLimit": "Too many attempts. Wait a few minutes.",
+    "serverError": "Server error. Try again later.",
+    "tryAgain": "Try again",
+    "notFoundBody": "The page you're looking for doesn't exist or has been moved.",
+    "comingSoonBody": "This section will be available soon."
+  },
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago",
+    "hoursAgo_one": "{{count}} hour ago",
+    "hoursAgo_other": "{{count}} hours ago",
+    "minutesAgo_one": "{{count}} minute ago",
+    "minutesAgo_other": "{{count}} minutes ago",
+    "justNow": "Just now",
+    "in_days_one": "In {{count}} day",
+    "in_days_other": "In {{count}} days"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{current}} of {{total}}",
+    "results": "{{count}} results",
+    "noResults": "No results"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "search": "Search",
+    "alerts": "Alerts",
+    "saved": "Saved",
+    "analytics": "Analytics",
+    "calendar": "Calendar",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Sign out",
+    "sections": {
+      "main": "Main",
+      "tools": "Tools"
+    }
+  },
+  "app": {
+    "name": "LicitaApp",
+    "tagline": "Win more public tenders"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "label": "Language",
+    "change": "Change language",
+    "needsReview": "Translation pending native review"
+  },
+  "validation": {
+    "tooShort": "Minimum {{min}} characters",
+    "tooLong": "Maximum {{max}} characters",
+    "invalidEmail": "Invalid email",
+    "required": "This field is required",
+    "passwordMismatch": "Passwords don't match",
+    "newPasswordSameAsOld": "The new password must be different from the current one"
+  },
+  "password": {
+    "show": "Show password",
+    "hide": "Hide password"
+  }
+}

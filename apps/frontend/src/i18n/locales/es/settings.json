@@ -1,0 +1,99 @@
+{
+  "page": {
+    "title": "Ajustes",
+    "subtitle": "Gestiona tu cuenta, seguridad y preferencias"
+  },
+  "tabs": {
+    "profile": "Perfil",
+    "security": "Seguridad",
+    "notifications": "Notificaciones",
+    "organization": "Organización",
+    "preferences": "Preferencias"
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Información básica de tu cuenta",
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
+    "email": "Email",
+    "emailHelp": "El email no se puede cambiar. Contacta con soporte si lo necesitas.",
+    "phone": "Teléfono",
+    "phoneOptional": "(opcional)",
+    "phonePlaceholder": "+34 612 345 678",
+    "timezone": "Zona horaria",
+    "timezoneHelp": "Usamos esta zona para enviar alertas en tu horario local.",
+    "saveButton": "Guardar cambios",
+    "savingButton": "Guardando...",
+    "discardButton": "Descartar",
+    "success": "Perfil actualizado",
+    "errors": {
+      "forbidden": "No tienes permiso para modificar este perfil",
+      "rateLimit": "Demasiados intentos. Espera un momento.",
+      "generic": "Error al guardar los cambios"
+    }
+  },
+  "security": {
+    "title": "Seguridad",
+    "subtitle": "Gestiona tu contraseña y métodos de acceso",
+    "changePasswordTitle": "Cambiar contraseña",
+    "oldPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "newPasswordConfirm": "Confirma la nueva contraseña",
+    "submitButton": "Cambiar contraseña",
+    "submittingButton": "Cambiando...",
+    "success": "Contraseña actualizada correctamente",
+    "errors": {
+      "wrongOldPassword": "La contraseña actual no es correcta",
+      "rateLimit": "Demasiados intentos. Espera un momento.",
+      "generic": "Error al cambiar la contraseña"
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "subtitle": "Configura cómo y cuándo quieres recibir alertas",
+    "generalTitle": "Preferencias generales",
+    "emailEnabled": "Recibir alertas por email",
+    "emailEnabledHelp": "Desactivar esto silencia TODAS las alertas por email (incluso si las alertas individuales están activas)",
+    "defaultEmail": "Email para alertas",
+    "defaultEmailHelp": "Por defecto usamos tu email de cuenta. Puedes poner otro si prefieres recibir alertas en una dirección distinta.",
+    "quietHoursTitle": "Horario de silencio",
+    "quietHoursHelp": "No enviaremos emails durante este horario. Se acumularán y se enviarán juntos al terminar.",
+    "quietHoursFrom": "Desde",
+    "quietHoursTo": "Hasta",
+    "frequencyTitle": "Frecuencia por defecto",
+    "frequencyHelp": "Cuando crees una alerta nueva, usará esta frecuencia por defecto. Puedes cambiarla por alerta.",
+    "frequency": {
+      "instant": "Instantáneo",
+      "instantDesc": "Email inmediato cuando hay match",
+      "daily": "Diario",
+      "dailyDesc": "Resumen diario a las 8:00 AM de tu timezone",
+      "weekly": "Semanal",
+      "weeklyDesc": "Resumen cada lunes a las 8:00 AM"
+    },
+    "alertsListTitle": "Tus alertas",
+    "alertsListSubtitle": "Preferencias específicas por alerta",
+    "alertsListEmpty": "Aún no tienes alertas. <createLink>Crea la primera</createLink>.",
+    "manageAlert": "Gestionar",
+    "success": "Preferencias actualizadas",
+    "errors": {
+      "generic": "Error al guardar las preferencias"
+    }
+  },
+  "organization": {
+    "title": "Organización",
+    "subtitle": "Datos de tu organización y miembros",
+    "planLabel": "Plan actual",
+    "roleLabel": "Rol",
+    "comingSoonTitle": "Gestión de miembros próximamente",
+    "comingSoonBody": "Invitar usuarios, gestionar roles y permisos llegará en el próximo sprint."
+  },
+  "preferences": {
+    "title": "Preferencias",
+    "subtitle": "Personaliza tu experiencia",
+    "language": "Idioma de la aplicación",
+    "languageHelp": "La interfaz se mostrará en este idioma. No afecta al contenido de las licitaciones (siempre en español).",
+    "theme": "Tema visual",
+    "themeHelp": "Claro, oscuro o siguiendo preferencia del sistema.",
+    "success": "Preferencias guardadas"
+  }
+}

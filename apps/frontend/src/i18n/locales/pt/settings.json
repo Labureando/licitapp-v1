@@ -1,0 +1,99 @@
+{
+  "page": {
+    "title": "Definições",
+    "subtitle": "Gere a tua conta, segurança e preferências"
+  },
+  "tabs": {
+    "profile": "Perfil",
+    "security": "Segurança",
+    "notifications": "Notificações",
+    "organization": "Organização",
+    "preferences": "Preferências"
+  },
+  "profile": {
+    "title": "Perfil",
+    "subtitle": "Informação básica da tua conta",
+    "firstName": "Nome",
+    "lastName": "Apelidos",
+    "email": "Email",
+    "emailHelp": "O email não pode ser alterado. Contacta o suporte se necessitares.",
+    "phone": "Telefone",
+    "phoneOptional": "(opcional)",
+    "phonePlaceholder": "+351 912 345 678",
+    "timezone": "Fuso horário",
+    "timezoneHelp": "Usamos este fuso para enviar alertas no teu horário local.",
+    "saveButton": "Guardar alterações",
+    "savingButton": "A guardar...",
+    "discardButton": "Descartar",
+    "success": "Perfil atualizado",
+    "errors": {
+      "forbidden": "Não tens permissão para modificar este perfil",
+      "rateLimit": "Demasiadas tentativas. Espera um momento.",
+      "generic": "Erro ao guardar as alterações"
+    }
+  },
+  "security": {
+    "title": "Segurança",
+    "subtitle": "Gere a tua palavra-passe e métodos de acesso",
+    "changePasswordTitle": "Alterar palavra-passe",
+    "oldPassword": "Palavra-passe atual",
+    "newPassword": "Nova palavra-passe",
+    "newPasswordConfirm": "Confirma a nova palavra-passe",
+    "submitButton": "Alterar palavra-passe",
+    "submittingButton": "A alterar...",
+    "success": "Palavra-passe atualizada com sucesso",
+    "errors": {
+      "wrongOldPassword": "A palavra-passe atual não está correta",
+      "rateLimit": "Demasiadas tentativas. Espera um momento.",
+      "generic": "Erro ao alterar a palavra-passe"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "subtitle": "Configura como e quando queres receber alertas",
+    "generalTitle": "Preferências gerais",
+    "emailEnabled": "Receber alertas por email",
+    "emailEnabledHelp": "Desativar isto silencia TODOS os alertas por email (mesmo que os alertas individuais estejam ativos)",
+    "defaultEmail": "Email para alertas",
+    "defaultEmailHelp": "Por defeito usamos o email da tua conta. Podes pôr outro se preferires receber alertas num endereço diferente.",
+    "quietHoursTitle": "Horário de silêncio",
+    "quietHoursHelp": "Não enviaremos emails durante este horário. Serão acumulados e enviados juntos no final.",
+    "quietHoursFrom": "Desde",
+    "quietHoursTo": "Até",
+    "frequencyTitle": "Frequência por defeito",
+    "frequencyHelp": "Quando criares um novo alerta, usará esta frequência por defeito. Podes alterar por alerta.",
+    "frequency": {
+      "instant": "Instantâneo",
+      "instantDesc": "Email imediato quando há correspondência",
+      "daily": "Diário",
+      "dailyDesc": "Resumo diário às 8:00 AM do teu fuso horário",
+      "weekly": "Semanal",
+      "weeklyDesc": "Resumo todas as segundas-feiras às 8:00 AM"
+    },
+    "alertsListTitle": "Os teus alertas",
+    "alertsListSubtitle": "Preferências específicas por alerta",
+    "alertsListEmpty": "Ainda não tens alertas. <createLink>Cria o primeiro</createLink>.",
+    "manageAlert": "Gerir",
+    "success": "Preferências atualizadas",
+    "errors": {
+      "generic": "Erro ao guardar as preferências"
+    }
+  },
+  "organization": {
+    "title": "Organização",
+    "subtitle": "Dados da tua organização e membros",
+    "planLabel": "Plano atual",
+    "roleLabel": "Função",
+    "comingSoonTitle": "Gestão de membros em breve",
+    "comingSoonBody": "Convidar utilizadores, gerir funções e permissões chegará no próximo sprint."
+  },
+  "preferences": {
+    "title": "Preferências",
+    "subtitle": "Personaliza a tua experiência",
+    "language": "Idioma da aplicação",
+    "languageHelp": "A interface será mostrada neste idioma. Não afeta o conteúdo dos concursos (sempre em espanhol).",
+    "theme": "Tema visual",
+    "themeHelp": "Claro, escuro ou seguindo a preferência do sistema.",
+    "success": "Preferências guardadas"
+  }
+}

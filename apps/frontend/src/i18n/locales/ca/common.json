@@ -1,0 +1,117 @@
+{
+  "actions": {
+    "save": "Desar",
+    "cancel": "Cancel·lar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "close": "Tancar",
+    "back": "Tornar",
+    "next": "Següent",
+    "previous": "Anterior",
+    "finish": "Finalitzar",
+    "confirm": "Confirmar",
+    "discard": "Descartar",
+    "retry": "Reintentar",
+    "search": "Cercar",
+    "filter": "Filtrar",
+    "clear": "Netejar",
+    "apply": "Aplicar",
+    "view": "Veure",
+    "copy": "Copiar",
+    "export": "Exportar",
+    "import": "Importar",
+    "add": "Afegir",
+    "remove": "Treure",
+    "continue": "Continuar",
+    "skip": "Saltar"
+  },
+  "status": {
+    "loading": "Carregant...",
+    "saving": "Desant...",
+    "sending": "Enviant...",
+    "deleting": "Eliminant...",
+    "error": "Error",
+    "success": "Èxit",
+    "pending": "Pendent",
+    "active": "Activa",
+    "inactive": "Inactiva",
+    "none": "Cap"
+  },
+  "errors": {
+    "generic": "Hi ha hagut un error inesperat",
+    "network": "Error de connexió. Comprova la teva xarxa.",
+    "unauthorized": "No autoritzat. Inicia sessió de nou.",
+    "forbidden": "No tens permís per a aquesta acció",
+    "notFound": "Recurs no trobat",
+    "validation": "Dades no vàlides",
+    "rateLimit": "Massa intents. Espera uns minuts.",
+    "serverError": "Error del servidor. Prova-ho més tard.",
+    "tryAgain": "Prova-ho de nou",
+    "notFoundBody": "La pàgina que busques no existeix o ha estat moguda.",
+    "comingSoonBody": "Aquesta secció estarà disponible properament."
+  },
+  "time": {
+    "today": "Avui",
+    "yesterday": "Ahir",
+    "tomorrow": "Demà",
+    "daysAgo_one": "Fa {{count}} dia",
+    "daysAgo_other": "Fa {{count}} dies",
+    "hoursAgo_one": "Fa {{count}} hora",
+    "hoursAgo_other": "Fa {{count}} hores",
+    "minutesAgo_one": "Fa {{count}} minut",
+    "minutesAgo_other": "Fa {{count}} minuts",
+    "justNow": "Ara mateix",
+    "in_days_one": "En {{count}} dia",
+    "in_days_other": "En {{count}} dies"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Següent",
+    "page": "Pàgina {{current}} de {{total}}",
+    "results": "{{count}} resultats",
+    "noResults": "Sense resultats"
+  },
+  "navigation": {
+    "home": "Inici",
+    "dashboard": "Tauler",
+    "search": "Cercador",
+    "alerts": "Alertes",
+    "saved": "Desades",
+    "analytics": "Analítica",
+    "calendar": "Calendari",
+    "settings": "Configuració",
+    "profile": "Perfil",
+    "logout": "Tancar sessió",
+    "sections": {
+      "main": "Principal",
+      "tools": "Eines"
+    }
+  },
+  "app": {
+    "name": "LicitaApp",
+    "tagline": "Guanya més licitacions públiques"
+  },
+  "theme": {
+    "light": "Clar",
+    "dark": "Fosc",
+    "system": "Sistema"
+  },
+  "language": {
+    "label": "Idioma",
+    "change": "Canviar idioma",
+    "needsReview": "Traducció pendent de revisió nativa"
+  },
+  "validation": {
+    "tooShort": "Mínim {{min}} caràcters",
+    "tooLong": "Màxim {{max}} caràcters",
+    "invalidEmail": "Email no vàlid",
+    "required": "Aquest camp és obligatori",
+    "passwordMismatch": "Les contrasenyes no coincideixen",
+    "newPasswordSameAsOld": "La nova contrasenya ha de ser diferent de l'actual"
+  },
+  "password": {
+    "show": "Mostrar contrasenya",
+    "hide": "Amagar contrasenya"
+  }
+}

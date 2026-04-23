@@ -1,4 +1,4 @@
-import { api } from '@/lib/api-client';
+import { apiClient } from '@/lib/api-client'
 import type {
   LicitacionCard,
   LicitacionDetail,
@@ -47,7 +47,7 @@ function unwrap<T>(response: { data: ApiEnvelope<T> }): T {
 export const licitacionesApi = {
   /** GET /licitaciones — búsqueda paginada */
   search: (params: SearchParams = {}) =>
-    api
+    apiClient
       .get<ApiEnvelope<SearchResult<LicitacionCard>>>('/licitaciones', {
         params: toParams(params),
       })
@@ -55,11 +55,11 @@ export const licitacionesApi = {
 
   /** GET /licitaciones/:id — detalle */
   getById: (id: string) =>
-    api
+    apiClient
       .get<ApiEnvelope<LicitacionDetail>>(`/licitaciones/${id}`)
       .then(unwrap),
 
   /** GET /licitaciones/filters — opciones de dropdown */
   getFilters: () =>
-    api.get<ApiEnvelope<FilterOptions>>('/licitaciones/filters').then(unwrap),
+    apiClient.get<ApiEnvelope<FilterOptions>>('/licitaciones/filters').then(unwrap),
 };

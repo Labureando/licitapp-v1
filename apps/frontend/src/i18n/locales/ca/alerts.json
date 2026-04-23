@@ -1,0 +1,154 @@
+{
+  "onboarding": {
+    "title": "Configura la teva primera alerta",
+    "subtitle": "Rebràs emails quan apareguin licitacions que encaixin amb els teus criteris",
+    "skip": "Saltar per ara",
+    "skipHelp": "Podràs crear alertes en qualsevol moment des del menú Alertes",
+    "step1": {
+      "title": "En quin sector treballes?",
+      "subtitle": "Això ens ajuda a suggerir-te codis CPV rellevants",
+      "placeholder": "Ex: Serveis de neteja, construcció, consultoria IT...",
+      "next": "Continuar"
+    },
+    "step2": {
+      "title": "En quines comunitats operes?",
+      "subtitle": "Selecciona totes les que t'interessin. Pots canviar-ho després.",
+      "selectAll": "Seleccionar totes",
+      "deselectAll": "Deseleccionar totes",
+      "next": "Continuar"
+    },
+    "step3": {
+      "title": "Quin rang d'import?",
+      "subtitle": "Deixa-ho buit si vols rebre licitacions de qualsevol import",
+      "minLabel": "Import mínim (€)",
+      "maxLabel": "Import màxim (€)",
+      "minPlaceholder": "Ex: 10000",
+      "maxPlaceholder": "Ex: 500000",
+      "next": "Continuar"
+    },
+    "step4": {
+      "title": "Paraules clau i nom",
+      "subtitle": "Paraules que han d'aparèixer al títol o descripció de la licitació",
+      "keywordsLabel": "Paraules clau",
+      "keywordsHelp": "Separa amb comes. Ex: manteniment, rehabilitació",
+      "nameLabel": "Nom de l'alerta",
+      "namePlaceholder": "Ex: Obres Catalunya 50k-200k",
+      "frequencyLabel": "Freqüència de notificació",
+      "create": "Crear alerta",
+      "creating": "Creant..."
+    },
+    "success": {
+      "title": "Alerta creada!",
+      "subtitle": "Rebràs un email a {{email}} quan hi hagi licitacions que coincideixin",
+      "cta": "Anar al tauler",
+      "createAnother": "Crear una altra alerta"
+    }
+  },
+  "page": {
+    "title": "Alertes",
+    "subtitle": "Notificacions per email de licitacions que coincideixin amb els teus criteris",
+    "createButton": "Nova alerta",
+    "empty": {
+      "title": "Encara no tens alertes",
+      "subtitle": "Crea la teva primera alerta per començar a rebre notificacions de licitacions que t'interessin",
+      "cta": "Crear primera alerta"
+    },
+    "filters": {
+      "all": "Totes",
+      "active": "Actives",
+      "inactive": "Pausades"
+    },
+    "count_one": "{{count}} alerta",
+    "count_other": "{{count}} alertes"
+  },
+  "card": {
+    "matchesLabel_one": "{{count}} match",
+    "matchesLabel_other": "{{count}} matches",
+    "lastMatch": "Últim: {{date}}",
+    "noMatches": "Sense matches encara",
+    "pauseButton": "Pausar",
+    "activateButton": "Activar",
+    "editButton": "Editar",
+    "deleteButton": "Eliminar",
+    "viewMatches": "Veure matches",
+    "paused": "Pausada"
+  },
+  "form": {
+    "createTitle": "Nova alerta",
+    "editTitle": "Editar alerta",
+    "nameLabel": "Nom",
+    "namePlaceholder": "Ex: Serveis IT Madrid",
+    "nameHelp": "Un nom descriptiu per identificar-la",
+    "descriptionLabel": "Descripció",
+    "descriptionOptional": "(opcional)",
+    "descriptionPlaceholder": "Notes internes sobre aquesta alerta",
+    "criteriaTitle": "Criteris de cerca",
+    "criteriaSubtitle": "Has d'omplir almenys un. Combinem tots amb AND (la licitació ha de complir TOTS).",
+    "keywordsLabel": "Paraules clau",
+    "keywordsHelp": "Separa amb comes. Cerquem al títol i descripció.",
+    "ccaasLabel": "Comunitats autònomes",
+    "provinciasLabel": "Províncies",
+    "estadosLabel": "Estats",
+    "tiposLabel": "Tipus de contracte",
+    "procedimientosLabel": "Procediments",
+    "tramitacionesLabel": "Tramitació",
+    "cpvLabel": "Codis CPV",
+    "cpvHelp": "Codis del Vocabulari Comú de Contractes Públics. Separa amb comes.",
+    "importeTitle": "Rang d'import",
+    "importeSubtitle": "Deixa-ho buit si no vols filtrar per import",
+    "importeMinLabel": "Mínim (€)",
+    "importeMaxLabel": "Màxim (€)",
+    "notificationTitle": "Notificacions",
+    "emailLabel": "Email de notificació",
+    "emailHelp": "Deixa'l buit per fer servir l'email del teu compte",
+    "frequencyLabel": "Freqüència",
+    "isActiveLabel": "Alerta activa",
+    "isActiveHelp": "Les alertes inactives no envien emails però es poden reactivar en qualsevol moment",
+    "submitCreate": "Crear alerta",
+    "submitEdit": "Desar canvis",
+    "submitting": "Desant...",
+    "cancelButton": "Cancel·lar",
+    "deleteButton": "Eliminar alerta",
+    "validation": {
+      "nameRequired": "El nom és obligatori",
+      "nameMax": "Màxim 255 caràcters",
+      "atLeastOneCriterion": "Has de definir almenys un criteri de cerca",
+      "emailInvalid": "Email no vàlid",
+      "importeInvalid": "Ha de ser un número positiu",
+      "importeRange": "El mínim no pot ser més gran que el màxim"
+    },
+    "success": {
+      "created": "Alerta creada correctament",
+      "updated": "Alerta actualitzada",
+      "deleted": "Alerta eliminada"
+    },
+    "errors": {
+      "createFailed": "Error en crear l'alerta",
+      "updateFailed": "Error en actualitzar",
+      "deleteFailed": "Error en eliminar"
+    }
+  },
+  "delete": {
+    "title": "Eliminar alerta?",
+    "message": "Vas a eliminar l'alerta \"{{name}}\". Deixaràs de rebre notificacions sobre aquests criteris. Aquesta acció no es pot desfer.",
+    "confirm": "Sí, eliminar",
+    "cancel": "Cancel·lar"
+  },
+  "frequency": {
+    "instant": "Instantani",
+    "daily": "Diari",
+    "weekly": "Setmanal"
+  },
+  "preview": {
+    "title": "Preview de l'email",
+    "subject": "Assumpte: {{count}} noves licitacions per a \"{{alertName}}\"",
+    "fromLabel": "De:",
+    "from": "LicitaApp <alerts@licitapp.com>",
+    "toLabel": "Per a:",
+    "sampleGreeting": "Hola {{name}},",
+    "sampleBody": "Hem trobat {{count}} noves licitacions que coincideixen amb la teva alerta:",
+    "viewButton": "Veure licitació",
+    "viewAllButton": "Veure totes les alertes",
+    "unsubscribe": "Pausar aquesta alerta"
+  }
+}

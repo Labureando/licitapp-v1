@@ -86,7 +86,7 @@ async function bootstrap() {
       'UNLICENSED',
       'https://licitapp.com/license',
     )
-    .addServer('http://localhost:3001/api/v1', 'Development')
+    .addServer('http://localhost:3000', 'Development')
     .addServer('https://api.licitapp.com/api/v1', 'Production')
     .addBearerAuth(
       {

@@ -1,0 +1,117 @@
+{
+  "actions": {
+    "save": "Gorde",
+    "cancel": "Utzi",
+    "delete": "Ezabatu",
+    "edit": "Editatu",
+    "create": "Sortu",
+    "close": "Itxi",
+    "back": "Itzuli",
+    "next": "Hurrengoa",
+    "previous": "Aurrekoa",
+    "finish": "Bukatu",
+    "confirm": "Berretsi",
+    "discard": "Baztertu",
+    "retry": "Berriro saiatu",
+    "search": "Bilatu",
+    "filter": "Iragazi",
+    "clear": "Garbitu",
+    "apply": "Aplikatu",
+    "view": "Ikusi",
+    "copy": "Kopiatu",
+    "export": "Esportatu",
+    "import": "Inportatu",
+    "add": "Gehitu",
+    "remove": "Kendu",
+    "continue": "Jarraitu",
+    "skip": "Saltatu"
+  },
+  "status": {
+    "loading": "Kargatzen...",
+    "saving": "Gordetzen...",
+    "sending": "Bidaltzen...",
+    "deleting": "Ezabatzen...",
+    "error": "Errorea",
+    "success": "Arrakasta",
+    "pending": "Zain",
+    "active": "Aktibo",
+    "inactive": "Ez-aktibo",
+    "none": "Bat ere ez"
+  },
+  "errors": {
+    "generic": "Ustekabeko errorea gertatu da",
+    "network": "Konexio errorea. Egiaztatu zure sarea.",
+    "unauthorized": "Baimendu gabe. Saio hasi berriro.",
+    "forbidden": "Ez duzu baimenik ekintza honetarako",
+    "notFound": "Baliabidea ez da aurkitu",
+    "validation": "Datu baliogabeak",
+    "rateLimit": "Saiakera gehiegi. Itxaron minutu batzuk.",
+    "serverError": "Zerbitzariaren errorea. Saiatu geroago.",
+    "tryAgain": "Saiatu berriro",
+    "notFoundBody": "Bilatzen ari zaren orria ez da existitzen edo mugitu da.",
+    "comingSoonBody": "Atal hau laster egongo da erabilgarri."
+  },
+  "time": {
+    "today": "Gaur",
+    "yesterday": "Atzo",
+    "tomorrow": "Bihar",
+    "daysAgo_one": "Duela {{count}} egun",
+    "daysAgo_other": "Duela {{count}} egun",
+    "hoursAgo_one": "Duela {{count}} ordu",
+    "hoursAgo_other": "Duela {{count}} ordu",
+    "minutesAgo_one": "Duela {{count}} minutu",
+    "minutesAgo_other": "Duela {{count}} minutu",
+    "justNow": "Oraintxe bertan",
+    "in_days_one": "{{count}} egun barru",
+    "in_days_other": "{{count}} egun barru"
+  },
+  "pagination": {
+    "previous": "Aurrekoa",
+    "next": "Hurrengoa",
+    "page": "{{current}} / {{total}} orria",
+    "results": "{{count}} emaitza",
+    "noResults": "Emaitzarik ez"
+  },
+  "navigation": {
+    "home": "Hasiera",
+    "dashboard": "Panela",
+    "search": "Bilatzailea",
+    "alerts": "Alertak",
+    "saved": "Gordeak",
+    "analytics": "Analisiak",
+    "calendar": "Egutegia",
+    "settings": "Ezarpenak",
+    "profile": "Profila",
+    "logout": "Saioa itxi",
+    "sections": {
+      "main": "Nagusia",
+      "tools": "Tresnak"
+    }
+  },
+  "app": {
+    "name": "LicitaApp",
+    "tagline": "Irabazi lehiaketa publiko gehiago"
+  },
+  "theme": {
+    "light": "Argia",
+    "dark": "Iluna",
+    "system": "Sistema"
+  },
+  "language": {
+    "label": "Hizkuntza",
+    "change": "Aldatu hizkuntza",
+    "needsReview": "Itzulpenak hiztun natiboaren berrikuspena behar du"
+  },
+  "validation": {
+    "tooShort": "Gutxienez {{min}} karaktere",
+    "tooLong": "Gehienez {{max}} karaktere",
+    "invalidEmail": "Email baliogabea",
+    "required": "Eremu hau derrigorrezkoa da",
+    "passwordMismatch": "Pasahitzak ez datoz bat",
+    "newPasswordSameAsOld": "Pasahitz berria oraingoa ez den bezalakoa izan behar da"
+  },
+  "password": {
+    "show": "Pasahitza erakutsi",
+    "hide": "Pasahitza ezkutatu"
+  }
+}
