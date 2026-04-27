@@ -2,6 +2,132 @@ import { AlertEntity } from '../../modules/alerts/entities/alert.entity';
 import { Licitacion } from '../../modules/scraping/shared/entities/licitacion.entity';
 
 /**
+ * Generar HTML del email de digest diario de alertas
+ * Muestra hasta 10 licitaciones que coinciden con los criterios de la alerta
+ */
+export function generateAlertDigestEmailTemplate(
+  alert: AlertEntity,
+  licitaciones: Licitacion[],
+  totalFound: number,
+): string {
+  const firstName = alert.user?.firstName || 'Usuario';
+  const today = new Date().toLocaleDateString('es-ES', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const licitacionesHtml = licitaciones.map((lic, index) => {
+    const presupuesto = lic.presupuestoBase
+      ? `€${parseInt(lic.presupuestoBase).toLocaleString('es-ES')}`
+      : 'No especificado';
+    const plazo = lic.fechaPresentacion
+      ? new Date(lic.fechaPresentacion).toLocaleDateString('es-ES')
+      : 'No especificado';
+    const publicada = lic.fechaPublicacion
+      ? new Date(lic.fechaPublicacion).toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        })
+      : null;
+    const estadoBadgeColor =
+      lic.estado === 'ABIERTA' ? '#2e7d32' : lic.estado === 'ADJUDICADA' ? '#1565c0' : '#555';
+
+    // Las 3 primeras llevan borde naranja para destacar las más recientes
+    const borderColor = index < 3 ? '#e65100' : '#0066cc';
+    const isNew = index < 3;
+
+    return `
+      <div style="background:#fff;border:1px solid #e0e0e0;border-left:4px solid ${borderColor};border-radius:6px;padding:18px 20px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
+          <div>
+            ${isNew ? `<span style="display:inline-block;background:#fff3e0;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid #ffcc80;margin-right:6px;letter-spacing:0.5px;">🆕 NUEVA</span>` : ''}
+            <span style="display:inline-block;background:${estadoBadgeColor};color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;letter-spacing:0.5px;">${escapeHtml(lic.estado)}</span>
+          </div>
+          ${publicada ? `<span style="font-size:11px;color:#888;">Publicada: <strong>${publicada}</strong></span>` : ''}
+        </div>
+        <h3 style="margin:0 0 12px;font-size:15px;font-weight:600;color:${borderColor};line-height:1.4;">${escapeHtml(lic.title)}</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;color:#555;">
+          <tr>
+            <td style="padding:3px 8px 3px 0;width:50%;">
+              <span style="color:#0066cc;font-weight:600;">Presupuesto: </span>${presupuesto}
+            </td>
+            <td style="padding:3px 0;width:50%;">
+              <span style="color:#0066cc;font-weight:600;">Plazo: </span>${plazo}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:3px 8px 3px 0;">
+              <span style="color:#0066cc;font-weight:600;">Tipo: </span>${escapeHtml(lic.tipoContrato || 'No especificado')}
+            </td>
+            <td style="padding:3px 0;">
+              <span style="color:#0066cc;font-weight:600;">CCAA: </span>${escapeHtml(lic.ccaa || 'No especificada')}
+            </td>
+          </tr>
+          ${lic.provincia ? `<tr><td colspan="2" style="padding:3px 0;"><span style="color:#0066cc;font-weight:600;">Provincia: </span>${escapeHtml(lic.provincia)}</td></tr>` : ''}
+        </table>
+        ${lic.description ? `<p style="margin:10px 0 0;font-size:12px;color:#777;line-height:1.5;border-top:1px solid #f0f0f0;padding-top:10px;">${escapeHtml(lic.description.substring(0, 200))}${lic.description.length > 200 ? '…' : ''}</p>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  const moreBadge =
+    totalFound > licitaciones.length
+      ? `<p style="text-align:center;color:#666;font-size:13px;margin:8px 0 0;">
+           Y <strong>${totalFound - licitaciones.length}</strong> licitaciones más que cumplen tus criterios.
+         </p>`
+      : '';
+
+  return `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin:0;padding:0;background:#f4f6f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+      <div style="max-width:620px;margin:0 auto;padding:24px 16px;">
+
+        <!-- Header -->
+        <div style="background:linear-gradient(135deg,#0066cc 0%,#0052a3 100%);color:#fff;padding:28px 30px;border-radius:8px 8px 0 0;text-align:center;">
+          <p style="margin:0 0 6px;font-size:13px;opacity:0.85;text-transform:uppercase;letter-spacing:1px;">${today}</p>
+          <h2 style="margin:0;font-size:22px;font-weight:700;">📋 Tu resumen diario de licitaciones</h2>
+          <p style="margin:8px 0 0;font-size:14px;opacity:0.9;">Alerta: <strong>${escapeHtml(alert.name)}</strong></p>
+        </div>
+
+        <!-- Body -->
+        <div style="background:#f9f9f9;padding:24px 24px 28px;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 8px 8px;">
+          <p style="margin:0 0 20px;font-size:15px;color:#333;">
+            Hola <strong>${firstName}</strong>, hemos encontrado <strong>${totalFound}</strong> licitación${totalFound !== 1 ? 'es' : ''} que coincide${totalFound === 1 ? '' : 'n'} con tu alerta hoy.
+            ${totalFound === 0 ? '<br><em style="color:#888;">No hay licitaciones nuevas para tus criterios hoy.</em>' : ''}
+          </p>
+
+          ${licitacionesHtml}
+          ${moreBadge}
+
+          <!-- CTA -->
+          <div style="text-align:center;margin-top:24px;">
+            <a href="#" style="display:inline-block;background:#0066cc;color:#fff;padding:12px 32px;border-radius:5px;text-decoration:none;font-weight:600;font-size:14px;">
+              Ver todas en LicitApp →
+            </a>
+          </div>
+
+          <!-- Footer -->
+          <div style="margin-top:28px;padding-top:18px;border-top:1px solid #ddd;text-align:center;font-size:11px;color:#aaa;line-height:1.8;">
+            <p style="margin:0;">Recibes este email porque tienes activa la alerta <em>"${escapeHtml(alert.name)}"</em> en LicitApp.</p>
+            <p style="margin:0;">Puedes gestionar o desactivar tus alertas desde tu panel de control.</p>
+          </div>
+        </div>
+
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+/**
  * Generar HTML del email de alerta de licitación
  * Template limpio y reutilizable para notificaciones de alertas
  * 

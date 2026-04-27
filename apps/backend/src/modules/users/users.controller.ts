@@ -192,9 +192,9 @@ export class UsersController {
   @ApiNotFoundResponse({ description: 'Usuario no encontrado' })
   async deactivate(
     @Param('userId') userId: string,
-    @Param('organizationId') organizationId: string,
+    @Request() req: any,
   ): Promise<void> {
-    return this.usersService.deactivate(userId, organizationId);
+    return this.usersService.deactivate(userId, req.user.organizationId);
   }
 
   /**
@@ -218,9 +218,9 @@ export class UsersController {
   @ApiNotFoundResponse({ description: 'Usuario no encontrado' })
   async activate(
     @Param('userId') userId: string,
-    @Param('organizationId') organizationId: string,
+    @Request() req: any,
   ): Promise<Partial<UserEntity>> {
-    return this.usersService.activate(userId, organizationId);
+    return this.usersService.activate(userId, req.user.organizationId);
   }
 
   /**

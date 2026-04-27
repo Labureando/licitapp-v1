@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "LicitApp - Colección Completa",
-    "description": "Colección completa de 60+ endpoints para la API LicitApp v1",
+    "description": "Colección completa para la API LicitApp v1.\n\nNOTA ResponseInterceptor: TODAS las respuestas exitosas quedan envueltas en:\n  { success: true, data: <respuesta_del_controller>, timestamp, path }\n\nExcepción: OrganizationsController ya devuelve su propio wrapper { statusCode, message, data, access_token? }, quedando doblemente envuelto:\n  { success, data: { statusCode, message, data: <entidad>, ... } }\n\nTags: TagsController devuelve { success, tag|tags|results }, envuelto a: { data: { success, tag|tags|results } }",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -30,8 +30,8 @@
                   "});",
                   "",
                   "pm.test('Has signup message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.message).to.include('email');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.message).to.include('email');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -48,7 +48,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"email\":\"testuser@example.com\",\"firstName\":\"Test\",\"lastName\":\"User\"}"
+              "raw": "{\n    \"email\": \"testuser@example.com\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/signup",
@@ -56,7 +56,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "auth", "signup"]
             },
-            "description": "Paso 1 de registro: envía email y datos básicos"
+            "description": "Paso 1 de registro: envía email y datos básicos. Devuelve mensaje con instrucciones para completar registro."
           },
           "response": []
         },
@@ -72,21 +72,21 @@
                   "});",
                   "",
                   "pm.test('Has access_token', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.access_token).to.be.a('string');",
-                  "    pm.environment.set('access_token', jsonData.access_token);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.access_token).to.be.a('string');",
+                  "    pm.environment.set('access_token', j.data.access_token);",
                   "});",
                   "",
                   "pm.test('Has refresh_token', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.refresh_token).to.be.a('string');",
-                  "    pm.environment.set('refresh_token', jsonData.refresh_token);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.refresh_token).to.be.a('string');",
+                  "    pm.environment.set('refresh_token', j.data.refresh_token);",
                   "});",
                   "",
                   "pm.test('Has user data', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.user.id).to.be.a('string');",
-                  "    pm.environment.set('userId', jsonData.user.id);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.user.id).to.be.a('string');",
+                  "    pm.environment.set('userId', j.data.user.id);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -103,7 +103,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"password\":\"SecurePass123!\",\"confirmPassword\":\"SecurePass123!\"}"
+              "raw": "{\n    \"password\": \"SecurePass123!\",\n    \"passwordConfirm\": \"SecurePass123!\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/complete-signup/REPLACE_WITH_SIGNUP_TOKEN",
@@ -111,7 +111,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "auth", "complete-signup", "REPLACE_WITH_SIGNUP_TOKEN"]
             },
-            "description": "Paso 2 de registro: establece contraseña y completa signup"
+            "description": "Paso 2 de registro: token en URL, body solo lleva password + passwordConfirm. Activa cuenta y hace login automático."
           },
           "response": []
         },
@@ -127,21 +127,21 @@
                   "});",
                   "",
                   "pm.test('Has access_token', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.access_token).to.be.a('string');",
-                  "    pm.environment.set('access_token', jsonData.access_token);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.access_token).to.be.a('string');",
+                  "    pm.environment.set('access_token', j.data.access_token);",
                   "});",
                   "",
                   "pm.test('Has refresh_token', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.refresh_token).to.be.a('string');",
-                  "    pm.environment.set('refresh_token', jsonData.refresh_token);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.refresh_token).to.be.a('string');",
+                  "    pm.environment.set('refresh_token', j.data.refresh_token);",
                   "});",
                   "",
                   "pm.test('Has user data', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.user.id).to.be.a('string');",
-                  "    pm.environment.set('userId', jsonData.user.id);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.user.id).to.be.a('string');",
+                  "    pm.environment.set('userId', j.data.user.id);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -158,7 +158,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"email\":\"testuser@example.com\",\"password\":\"SecurePass123!\"}"
+              "raw": "{\n    \"email\": \"testuser@example.com\",\n    \"password\": \"SecurePass123!\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
@@ -166,7 +166,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "auth", "login"]
             },
-            "description": "Login con email y contraseña"
+            "description": "Login con email y contraseña. Rate limit: 5 req/15min por IP."
           },
           "response": []
         },
@@ -181,10 +181,12 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Has new access_token', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.access_token).to.be.a('string');",
-                  "    pm.environment.set('access_token', jsonData.access_token);",
+                  "pm.test('Has new tokens', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.access_token).to.be.a('string');",
+                  "    pm.expect(j.data.refresh_token).to.be.a('string');",
+                  "    pm.environment.set('access_token', j.data.access_token);",
+                  "    pm.environment.set('refresh_token', j.data.refresh_token);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -201,7 +203,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"refresh_token\":\"{{refresh_token}}\"}"
+              "raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/refresh",
@@ -209,24 +211,13 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "auth", "refresh"]
             },
-            "description": "Refresca el access_token usando refresh_token"
+            "description": "Renueva access_token usando refresh_token. El refresh_token rota en cada uso."
           },
           "response": []
         },
         {
           "name": "GET /auth/me",
           "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [
-                  "if (!pm.environment.get('access_token')) {",
-                  "    console.error('access_token no establecido. Ejecuta login primero.');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            },
             {
               "listen": "test",
               "script": {
@@ -236,10 +227,10 @@
                   "});",
                   "",
                   "pm.test('Has user data', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.id).to.be.a('string');",
-                  "    pm.expect(jsonData.email).to.be.a('string');",
-                  "    pm.expect(jsonData.role).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.id).to.be.a('string');",
+                  "    pm.expect(j.data.email).to.be.a('string');",
+                  "    pm.expect(j.data.role).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -260,7 +251,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "auth", "me"]
             },
-            "description": "Obtiene perfil del usuario autenticado"
+            "description": "Obtiene perfil del usuario autenticado."
           },
           "response": []
         },
@@ -276,8 +267,8 @@
                   "});",
                   "",
                   "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.message).to.include('Sesión');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.message).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -298,7 +289,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"refresh_token\":\"{{refresh_token}}\"}"
+              "raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/logout",
@@ -306,7 +297,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "auth", "logout"]
             },
-            "description": "Cierra la sesión del usuario"
+            "description": "Cierra sesión e invalida el refresh_token."
           },
           "response": []
         },
@@ -321,7 +312,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "auth", "google"]
             },
-            "description": "Inicia OAuth 2.0 flow con Google (302 redirect)"
+            "description": "Inicia OAuth 2.0 con Google. Hace redirect 302 — no retorna JSON, abrir en navegador."
           },
           "response": []
         },
@@ -336,17 +327,11 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "auth", "google", "callback"],
               "query": [
-                {
-                  "key": "code",
-                  "value": "AUTH_CODE"
-                },
-                {
-                  "key": "state",
-                  "value": "STATE"
-                }
+                { "key": "code", "value": "AUTH_CODE" },
+                { "key": "state", "value": "STATE" }
               ]
             },
-            "description": "Callback automático de Google OAuth (302 redirect)"
+            "description": "Callback automático de Google OAuth. Hace redirect 302 al frontend con tokens en URL."
           },
           "response": []
         }
@@ -356,7 +341,7 @@
       "name": "👥 Users",
       "item": [
         {
-          "name": "GET /users",
+          "name": "GET /users (SUPER_ADMIN)",
           "event": [
             {
               "listen": "test",
@@ -367,8 +352,8 @@
                   "});",
                   "",
                   "pm.test('Returns array', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -389,7 +374,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users"]
             },
-            "description": "Obtiene lista de todos los usuarios (solo admin)"
+            "description": "Lista todos los usuarios del sistema. Solo SUPER_ADMIN."
           },
           "response": []
         },
@@ -405,9 +390,9 @@
                   "});",
                   "",
                   "pm.test('Has user data', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.id).to.be.a('string');",
-                  "    pm.expect(jsonData.email).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.id).to.be.a('string');",
+                  "    pm.expect(j.data.email).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -428,7 +413,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users", "{{userId}}"]
             },
-            "description": "Obtiene detalles de un usuario específico"
+            "description": "Obtiene detalles de un usuario específico."
           },
           "response": []
         },
@@ -444,8 +429,8 @@
                   "});",
                   "",
                   "pm.test('Returns array', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -466,7 +451,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users", "organization", "{{organizationId}}"]
             },
-            "description": "Obtiene lista de usuarios de una organización"
+            "description": "Lista usuarios de una organización específica."
           },
           "response": []
         },
@@ -482,8 +467,8 @@
                   "});",
                   "",
                   "pm.test('Returns updated user', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.id).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.id).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -504,7 +489,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"firstName\":\"UpdatedName\",\"lastName\":\"UpdatedLast\",\"phone\":\"+1234567890\"}"
+              "raw": "{\n    \"firstName\": \"UpdatedName\",\n    \"lastName\": \"UpdatedLast\",\n    \"phone\": \"+1234567890\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
@@ -512,7 +497,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users", "{{userId}}"]
             },
-            "description": "Actualiza información del usuario"
+            "description": "Actualiza datos del usuario. Solo el propio usuario o SUPER_ADMIN."
           },
           "response": []
         },
@@ -545,7 +530,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users", "{{userId}}", "deactivate"]
             },
-            "description": "Desactiva un usuario"
+            "description": "Desactiva un usuario. Responde 204 No Content (sin body)."
           },
           "response": []
         },
@@ -561,8 +546,8 @@
                   "});",
                   "",
                   "pm.test('User is active', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.isActive).to.equal(true);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.isActive).to.equal(true);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -583,7 +568,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users", "{{userId}}", "activate"]
             },
-            "description": "Reactiva un usuario desactivado"
+            "description": "Reactiva un usuario desactivado."
           },
           "response": []
         },
@@ -616,7 +601,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users", "{{userId}}"]
             },
-            "description": "Elimina un usuario permanentemente"
+            "description": "Elimina permanentemente un usuario. Responde 204 No Content."
           },
           "response": []
         },
@@ -631,9 +616,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.message).to.include('Email');",
+                  "pm.test('Has message', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.message).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -650,7 +635,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"email\":\"testuser@example.com\"}"
+              "raw": "{\n    \"email\": \"testuser@example.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/password/request",
@@ -658,12 +643,12 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users", "password", "request"]
             },
-            "description": "Solicita recuperación de contraseña"
+            "description": "Solicita recuperación de contraseña. Envía email con token válido 1 hora."
           },
           "response": []
         },
         {
-          "name": "POST /users/password/confirm",
+          "name": "POST /users/password/confirm/:token",
           "event": [
             {
               "listen": "test",
@@ -674,8 +659,8 @@
                   "});",
                   "",
                   "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.message).to.include('actualizada');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.message).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -692,15 +677,15 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"token\":\"PASSWORD_RESET_TOKEN\",\"newPassword\":\"NewSecurePass123!\"}"
+              "raw": "{\n    \"newPassword\": \"NewSecurePass123!\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/users/password/confirm",
+              "raw": "{{baseUrl}}/api/v1/users/password/confirm/PASSWORD_RESET_TOKEN",
               "protocol": "http",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "users", "password", "confirm"]
+              "path": ["api", "v1", "users", "password", "confirm", "PASSWORD_RESET_TOKEN"]
             },
-            "description": "Confirma recuperación de contraseña"
+            "description": "Confirma cambio de contraseña. Token en URL, body solo lleva newPassword."
           },
           "response": []
         },
@@ -716,8 +701,8 @@
                   "});",
                   "",
                   "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.message).to.include('actualizada');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.message).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -738,7 +723,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"oldPassword\":\"SecurePass123!\",\"newPassword\":\"NewSecurePass456!\"}"
+              "raw": "{\n    \"oldPassword\": \"SecurePass123!\",\n    \"newPassword\": \"NewSecurePass456!\",\n    \"newPasswordConfirm\": \"NewSecurePass456!\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/password/change",
@@ -746,7 +731,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "users", "password", "change"]
             },
-            "description": "Cambia contraseña del usuario autenticado"
+            "description": "Cambia contraseña del usuario autenticado. Requiere contraseña anterior."
           },
           "response": []
         }
@@ -754,6 +739,7 @@
     },
     {
       "name": "🏢 Organizations",
+      "description": "IMPORTANTE: OrganizationsController ya devuelve su propio objeto { statusCode, message, data, access_token? }. El ResponseInterceptor lo envuelve en .data. Resultado final: { success, data: { statusCode, message, data: <entidad>, ... } }. Los tests acceden a j.data.data.id, j.data.access_token, etc.",
       "item": [
         {
           "name": "POST /organizations",
@@ -766,10 +752,16 @@
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test('Returns organization with id', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.data.id).to.be.a('string');",
-                  "    pm.environment.set('organizationId', jsonData.data.id);",
+                  "pm.test('Returns organization id', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.data.id).to.be.a('string');",
+                  "    pm.environment.set('organizationId', j.data.data.id);",
+                  "});",
+                  "",
+                  "pm.test('Updates access_token con rol ORG_OWNER', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.access_token).to.be.a('string');",
+                  "    pm.environment.set('access_token', j.data.access_token);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -790,7 +782,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"name\":\"Test Organization\",\"description\":\"A test organization\",\"website\":\"https://example.com\",\"industry\":\"Technology\",\"country\":\"ES\"}"
+              "raw": "{\n    \"name\": \"Test Organization\",\n    \"description\": \"A test organization\",\n    \"website\": \"https://example.com\",\n    \"phone\": \"+34912345678\",\n    \"cif\": \"A12345678\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/organizations",
@@ -798,7 +790,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "organizations"]
             },
-            "description": "Crea una nueva organización"
+            "description": "Crea una nueva organización. Solo PUBLIC_USER puede hacerlo. El usuario es promovido a ORG_OWNER automáticamente. La respuesta incluye un nuevo access_token con el rol actualizado."
           },
           "response": []
         },
@@ -814,9 +806,9 @@
                   "});",
                   "",
                   "pm.test('Returns organization data', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.data.id).to.be.a('string');",
-                  "    pm.expect(jsonData.data.name).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.data.id).to.be.a('string');",
+                  "    pm.expect(j.data.data.name).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -837,12 +829,12 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "organizations", "{{organizationId}}"]
             },
-            "description": "Obtiene detalles de una organización"
+            "description": "Obtiene detalles de una organización."
           },
           "response": []
         },
         {
-          "name": "GET /organizations",
+          "name": "GET /organizations (SUPER_ADMIN)",
           "event": [
             {
               "listen": "test",
@@ -853,8 +845,8 @@
                   "});",
                   "",
                   "pm.test('Returns array of organizations', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.data).to.be.an('array');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.data).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -875,7 +867,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "organizations"]
             },
-            "description": "Obtiene lista de todas las organizaciones (solo SUPER_ADMIN)"
+            "description": "Lista todas las organizaciones. Solo SUPER_ADMIN."
           },
           "response": []
         },
@@ -891,8 +883,8 @@
                   "});",
                   "",
                   "pm.test('Returns updated organization', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.data.id).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.data.id).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -913,7 +905,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"name\":\"Updated Organization\",\"description\":\"Updated description\",\"website\":\"https://newsite.com\"}"
+              "raw": "{\n    \"name\": \"Updated Organization\",\n    \"description\": \"Updated description\",\n    \"website\": \"https://newsite.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/organizations/{{organizationId}}",
@@ -921,7 +913,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "organizations", "{{organizationId}}"]
             },
-            "description": "Actualiza datos de una organización"
+            "description": "Actualiza datos de una organización. Solo ORG_OWNER o SUPER_ADMIN."
           },
           "response": []
         },
@@ -937,8 +929,8 @@
                   "});",
                   "",
                   "pm.test('Returns user count', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.data.userCount).to.be.a('number');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.data.userCount).to.be.a('number');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -959,7 +951,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "organizations", "{{organizationId}}", "user-count"]
             },
-            "description": "Obtiene cantidad de usuarios en una organización"
+            "description": "Cuenta usuarios de una organización."
           },
           "response": []
         }
@@ -967,9 +959,10 @@
     },
     {
       "name": "🏷️ Tags",
+      "description": "TagsController devuelve su propio wrapper { success, message?, tag|tags|results }. El ResponseInterceptor lo envuelve en .data. Acceso final: j.data.tags, j.data.tag, j.data.results",
       "item": [
         {
-          "name": "POST /tags/global",
+          "name": "POST /tags/global (SUPER_ADMIN)",
           "event": [
             {
               "listen": "test",
@@ -979,9 +972,10 @@
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test('Returns tag with id', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tag.id).to.be.a('string');",
+                  "pm.test('Returns tag id', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tag.id).to.be.a('string');",
+                  "    pm.environment.set('tagId', j.data.tag.id);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1002,7 +996,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"name\":\"Global Tag\",\"slug\":\"global-tag\",\"description\":\"A global tag\",\"category\":\"technology\",\"keywords\":\"tech,digital\"}"
+              "raw": "{\n    \"name\": \"Global Tag\",\n    \"slug\": \"global-tag\",\n    \"description\": \"A global tag\",\n    \"category\": \"technology\",\n    \"keywords\": [\"tech\", \"digital\"]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/tags/global",
@@ -1010,7 +1004,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "global"]
             },
-            "description": "Crea una etiqueta global (solo SUPER_ADMIN)"
+            "description": "Crea una etiqueta global del marketplace. Solo SUPER_ADMIN. keywords es array de strings."
           },
           "response": []
         },
@@ -1026,8 +1020,8 @@
                   "});",
                   "",
                   "pm.test('Returns array of tags', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tags).to.be.an('array');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tags).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1043,7 +1037,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "global"]
             },
-            "description": "Obtiene todas las etiquetas globales disponibles"
+            "description": "Obtiene todas las etiquetas globales disponibles para suscripción."
           },
           "response": []
         },
@@ -1059,8 +1053,8 @@
                   "});",
                   "",
                   "pm.test('Returns tags for category', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tags).to.be.an('array');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tags).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1076,12 +1070,12 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "category", "technology"]
             },
-            "description": "Obtiene etiquetas filtradas por categoría"
+            "description": "Filtra etiquetas globales por categoría."
           },
           "response": []
         },
         {
-          "name": "GET /tags/search?q=keyword",
+          "name": "GET /tags/candidates/global",
           "event": [
             {
               "listen": "test",
@@ -1091,53 +1085,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Returns search results', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.results).to.be.an('array');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/tags/search?q=construccion",
-              "protocol": "http",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "tags", "search"],
-              "query": [
-                {
-                  "key": "q",
-                  "value": "construccion"
-                }
-              ]
-            },
-            "description": "Busca etiquetas por término (autocomplete)"
-          },
-          "response": []
-        },
-        {
-          "name": "GET /tags/:id",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status is 200 OK', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Returns tag details', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tag.id).to.be.a('string');",
+                  "pm.test('Returns candidate tags', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tags).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1148,143 +1098,15 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/tags/{{tagId}}",
+              "raw": "{{baseUrl}}/api/v1/tags/candidates/global?minVotes=10",
               "protocol": "http",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "tags", "{{tagId}}"]
+              "path": ["api", "v1", "tags", "candidates", "global"],
+              "query": [
+                { "key": "minVotes", "value": "10" }
+              ]
             },
-            "description": "Obtiene detalles de una etiqueta específica"
-          },
-          "response": []
-        },
-        {
-          "name": "PATCH /tags/:id",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status is 200 OK', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Returns updated tag', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tag.id).to.be.a('string');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"name\":\"Updated Tag\",\"description\":\"Updated description\"}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/tags/{{tagId}}",
-              "protocol": "http",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "tags", "{{tagId}}"]
-            },
-            "description": "Actualiza una etiqueta"
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE /tags/:id",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status is 200 OK', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.success).to.equal(true);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/tags/{{tagId}}",
-              "protocol": "http",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "tags", "{{tagId}}"]
-            },
-            "description": "Elimina una etiqueta"
-          },
-          "response": []
-        },
-        {
-          "name": "POST /tags/private",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status is 201 Created', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "",
-                  "pm.test('Returns private tag with id', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tag.id).to.be.a('string');",
-                  "    pm.environment.set('tagId', jsonData.tag.id);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"name\":\"My Private Tag\",\"description\":\"Only for me\"}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/tags/private",
-              "protocol": "http",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "tags", "private"]
-            },
-            "description": "Crea una etiqueta privada personalizada"
+            "description": "Etiquetas privadas con suficientes votos para ser promovidas a globales."
           },
           "response": []
         },
@@ -1299,9 +1121,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Returns array of my tags', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tags).to.be.an('array');",
+                  "pm.test('Returns my tags', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tags).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1322,7 +1144,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "my", "all"]
             },
-            "description": "Obtiene todas mis etiquetas (globales + privadas)"
+            "description": "Mis etiquetas: globales suscritas + privadas creadas."
           },
           "response": []
         },
@@ -1338,8 +1160,8 @@
                   "});",
                   "",
                   "pm.test('Returns pinned tags', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tags).to.be.an('array');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tags).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1360,7 +1182,212 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "my", "pinned"]
             },
-            "description": "Obtiene mis etiquetas fijadas en dashboard"
+            "description": "Mis etiquetas fijadas en el dashboard."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /tags/search?q=keyword",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Returns search results', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.results).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/search?q=construccion",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "search"],
+              "query": [
+                { "key": "q", "value": "construccion" }
+              ]
+            },
+            "description": "Busca etiquetas por nombre/slug/keywords (autocomplete)."
+          },
+          "response": []
+        },
+        {
+          "name": "GET /tags/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Returns tag details', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tag.id).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/{{tagId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "{{tagId}}"]
+            },
+            "description": "Obtiene detalles de una etiqueta específica."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /tags/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Returns updated tag', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tag.id).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Updated Tag\",\n    \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/{{tagId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "{{tagId}}"]
+            },
+            "description": "Actualiza una etiqueta. Solo propietario o SUPER_ADMIN."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /tags/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Success', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.success).to.equal(true);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/{{tagId}}",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "{{tagId}}"]
+            },
+            "description": "Elimina una etiqueta. Admin elimina globales, usuario sus propias privadas."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /tags/private",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Returns private tag id', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tag.id).to.be.a('string');",
+                  "    pm.environment.set('tagId', j.data.tag.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"My Private Tag\",\n    \"description\": \"Solo para mí\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/private",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "private"]
+            },
+            "description": "Crea una etiqueta privada. El slug se auto-genera desde el nombre."
           },
           "response": []
         },
@@ -1375,9 +1402,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.success).to.equal(true);",
+                  "pm.test('Success', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.success).to.equal(true);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1398,7 +1425,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "{{tagId}}", "subscribe"]
             },
-            "description": "Se suscribe a una etiqueta global"
+            "description": "Suscribirse a una etiqueta global."
           },
           "response": []
         },
@@ -1413,9 +1440,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.success).to.equal(true);",
+                  "pm.test('Success', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.success).to.equal(true);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1436,7 +1463,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "{{tagId}}", "unsubscribe"]
             },
-            "description": "Se desuscribe de una etiqueta"
+            "description": "Desuscribirse de una etiqueta."
           },
           "response": []
         },
@@ -1451,9 +1478,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.success).to.equal(true);",
+                  "pm.test('Success', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.success).to.equal(true);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1474,7 +1501,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "{{tagId}}", "pin"]
             },
-            "description": "Fija o desfija una etiqueta en el dashboard"
+            "description": "Toggle: fija o desfija una etiqueta en el dashboard."
           },
           "response": []
         },
@@ -1489,9 +1516,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.success).to.equal(true);",
+                  "pm.test('Success', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.success).to.equal(true);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1512,51 +1539,12 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "{{tagId}}", "vote-to-global"]
             },
-            "description": "Vota para promover una etiqueta privada a global"
+            "description": "Votar para promover una etiqueta privada a global."
           },
           "response": []
         },
         {
-          "name": "GET /tags/candidates/global",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status is 200 OK', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Returns candidate tags', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tags).to.be.an('array');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/tags/candidates/global?minVotes=10",
-              "protocol": "http",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "tags", "candidates", "global"],
-              "query": [
-                {
-                  "key": "minVotes",
-                  "value": "10"
-                }
-              ]
-            },
-            "description": "Obtiene etiquetas candidatas a promover a global"
-          },
-          "response": []
-        },
-        {
-          "name": "POST /tags/:id/promote-to-global",
+          "name": "POST /tags/:id/promote-to-global (SUPER_ADMIN)",
           "event": [
             {
               "listen": "test",
@@ -1567,8 +1555,8 @@
                   "});",
                   "",
                   "pm.test('Returns promoted tag', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.tag.id).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.tag.id).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1589,7 +1577,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "tags", "{{tagId}}", "promote-to-global"]
             },
-            "description": "Promueve una etiqueta privada a global (solo SUPER_ADMIN)"
+            "description": "Mueve una etiqueta privada al marketplace global. Solo SUPER_ADMIN."
           },
           "response": []
         }
@@ -1605,14 +1593,14 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status is 200 OK', function () {",
-                  "    pm.response.to.have.status(200);",
+                  "pm.test('Status is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test('Returns alert with id', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.id).to.be.a('string');",
-                  "    pm.environment.set('alertId', jsonData.id);",
+                  "pm.test('Returns alert id', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.id).to.be.a('string');",
+                  "    pm.environment.set('alertId', j.data.id);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1633,7 +1621,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"name\":\"Alert Test\",\"email\":\"testuser@example.com\",\"keywords\":\"licitaciones\",\"estado\":\"ABIERTA\",\"importe\":5000}"
+              "raw": "{\n    \"name\": \"Alert Test\",\n    \"email\": \"testuser@example.com\",\n    \"palabrasClave\": \"licitaciones tecnologia\",\n    \"estados\": [\"ABIERTA\"],\n    \"importeMin\": \"5000\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/alerts",
@@ -1641,7 +1629,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "alerts"]
             },
-            "description": "Crea una nueva alerta personalizada"
+            "description": "Crea una nueva alerta personalizada. Campos: name, email?, palabrasClave? (string), estados?[], tiposContrato?[], procedimientos?[], tramitaciones?[], ccaas?[], provincias?[], cpvCodes?[], importeMin? (string), importeMax? (string), isActive?"
           },
           "response": []
         },
@@ -1656,9 +1644,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Returns array of alerts', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
+                  "pm.test('Returns array', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1679,7 +1667,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "alerts"]
             },
-            "description": "Obtiene todas las alertas del usuario autenticado"
+            "description": "Lista todas las alertas del usuario autenticado."
           },
           "response": []
         },
@@ -1695,8 +1683,8 @@
                   "});",
                   "",
                   "pm.test('Returns alert details', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.id).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.id).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1717,7 +1705,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "alerts", "{{alertId}}"]
             },
-            "description": "Obtiene detalles de una alerta específica"
+            "description": "Obtiene detalles de una alerta específica."
           },
           "response": []
         },
@@ -1733,8 +1721,8 @@
                   "});",
                   "",
                   "pm.test('Returns updated alert', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.id).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.id).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1755,7 +1743,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"name\":\"Updated Alert\",\"keywords\":\"updated keywords\"}"
+              "raw": "{\n    \"name\": \"Updated Alert\",\n    \"palabrasClave\": \"licitaciones tecnologia software\",\n    \"estados\": [\"ABIERTA\", \"CERRADA\"]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/alerts/{{alertId}}",
@@ -1763,7 +1751,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "alerts", "{{alertId}}"]
             },
-            "description": "Actualiza una alerta existente"
+            "description": "Actualiza criterios de una alerta. NOTA: el campo es palabrasClave (string), NO keywords."
           },
           "response": []
         },
@@ -1778,9 +1766,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Has success message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.success).to.equal(true);",
+                  "pm.test('Success', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.success).to.equal(true);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1801,7 +1789,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "alerts", "{{alertId}}"]
             },
-            "description": "Elimina una alerta"
+            "description": "Elimina una alerta del usuario autenticado."
           },
           "response": []
         }
@@ -1821,11 +1809,10 @@
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "pm.test('Returns invitation with token', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.id).to.be.a('string');",
-                  "    pm.expect(jsonData.token).to.be.a('string');",
-                  "    pm.environment.set('invitationId', jsonData.id);",
+                  "pm.test('Returns invitation', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.id).to.be.a('string');",
+                  "    pm.environment.set('invitationId', j.data.id);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1846,7 +1833,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"email\":\"newinvite@example.com\",\"organizationId\":\"{{organizationId}}\",\"role\":\"ORG_MEMBER\"}"
+              "raw": "{\n    \"email\": \"newinvite@example.com\",\n    \"organizationId\": \"{{organizationId}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/invitations",
@@ -1854,7 +1841,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "invitations"]
             },
-            "description": "Crea una invitación para unirse a una organización"
+            "description": "Envía invitación a unirse a una organización. Solo ORG_OWNER. Campos: email, organizationId."
           },
           "response": []
         },
@@ -1870,9 +1857,9 @@
                   "});",
                   "",
                   "pm.test('Has user and org info', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.userId).to.be.a('string');",
-                  "    pm.expect(jsonData.organizationId).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.userId).to.be.a('string');",
+                  "    pm.expect(j.data.organizationId).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1888,7 +1875,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "invitations", "INVITE_TOKEN", "accept"]
             },
-            "description": "Acepta una invitación para unirse a organización"
+            "description": "Acepta una invitación. No requiere autenticación."
           },
           "response": []
         },
@@ -1903,9 +1890,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Returns array of invitations', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
+                  "pm.test('Returns invitations', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1926,7 +1913,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "invitations", "organization", "{{organizationId}}"]
             },
-            "description": "Obtiene invitaciones pendientes de una organización"
+            "description": "Lista invitaciones pendientes de una organización. Solo ORG_OWNER."
           },
           "response": []
         },
@@ -1959,7 +1946,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "invitations", "{{invitationId}}"]
             },
-            "description": "Cancela una invitación pendiente"
+            "description": "Cancela una invitación pendiente. Solo ORG_OWNER. Responde 204 No Content."
           },
           "response": []
         }
@@ -1980,9 +1967,9 @@
                   "});",
                   "",
                   "pm.test('Returns paginated results', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.data).to.be.an('array');",
-                  "    pm.expect(jsonData.total).to.be.a('number');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.data).to.be.an('array');",
+                  "    pm.expect(j.data.total).to.be.a('number');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1993,30 +1980,32 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/licitaciones?search=construccion&estado=ABIERTA&page=1&limit=20",
+              "raw": "{{baseUrl}}/api/v1/licitaciones?q=construccion&estado=ABIERTA&page=1&pageSize=20",
               "protocol": "http",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "licitaciones"],
               "query": [
-                {
-                  "key": "search",
-                  "value": "construccion"
-                },
-                {
-                  "key": "estado",
-                  "value": "ABIERTA"
-                },
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "limit",
-                  "value": "20"
-                }
+                { "key": "q", "value": "construccion", "description": "Búsqueda full-text" },
+                { "key": "estado", "value": "ABIERTA", "description": "ABIERTA|ADJUDICADA|CERRADA|DESIERTA|RESUELTA" },
+                { "key": "tipoContrato", "value": "", "disabled": true, "description": "OBRAS|SERVICIOS|SUMINISTROS" },
+                { "key": "procedimiento", "value": "", "disabled": true, "description": "ABIERTO|RESTRINGIDO|NEGOCIADO_CON_PUBLICIDAD" },
+                { "key": "tramitacion", "value": "", "disabled": true, "description": "ORDINARIA|URGENTE" },
+                { "key": "ccaa", "value": "", "disabled": true, "description": "Comunidad Autónoma" },
+                { "key": "provincia", "value": "", "disabled": true },
+                { "key": "cpv", "value": "", "disabled": true, "description": "Código CPV europeo" },
+                { "key": "organoId", "value": "", "disabled": true, "description": "UUID del órgano de contratación" },
+                { "key": "importeMin", "value": "", "disabled": true, "description": "Importe mínimo (número)" },
+                { "key": "importeMax", "value": "", "disabled": true, "description": "Importe máximo (número)" },
+                { "key": "fechaDesde", "value": "", "disabled": true, "description": "ISO 8601 ej: 2026-01-01" },
+                { "key": "fechaHasta", "value": "", "disabled": true, "description": "ISO 8601 ej: 2026-12-31" },
+                { "key": "soloConPlazo", "value": "", "disabled": true, "description": "true|false" },
+                { "key": "sortBy", "value": "", "disabled": true, "description": "fecha|importe|deadline" },
+                { "key": "sortOrder", "value": "", "disabled": true, "description": "ASC|DESC" },
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "20" }
               ]
             },
-            "description": "Busca licitaciones con filtros (público)"
+            "description": "Búsqueda de licitaciones con filtros avanzados. Endpoint público (sin auth)."
           },
           "response": []
         },
@@ -2032,8 +2021,8 @@
                   "});",
                   "",
                   "pm.test('Returns filter options', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.estados).to.be.an('array');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.estados).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2049,7 +2038,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "licitaciones", "filters"]
             },
-            "description": "Obtiene opciones de filtrado disponibles"
+            "description": "Obtiene todos los valores disponibles para filtros: estados, tipos, ccaas, provincias, órganos."
           },
           "response": []
         },
@@ -2065,8 +2054,8 @@
                   "});",
                   "",
                   "pm.test('Returns licitacion details', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.id).to.be.a('string');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.id).to.be.a('string');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2082,7 +2071,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "licitaciones", "LICITACION_ID"]
             },
-            "description": "Obtiene detalles de una licitación específica"
+            "description": "Detalle completo de una licitación por su UUID."
           },
           "response": []
         }
@@ -2102,10 +2091,10 @@
                   "    pm.response.to.have.status(202);",
                   "});",
                   "",
-                  "pm.test('Returns job info', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.jobId).to.be.a('string');",
-                  "    pm.expect(jsonData.status).to.equal('PENDING');",
+                  "pm.test('Returns scraping result', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.newItems).to.be.a('number');",
+                  "    pm.expect(j.data.errors).to.be.a('number');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2126,7 +2115,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\"maxPages\":3}"
+              "raw": "{\n    \"maxPages\": 3\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/scraping/place/run",
@@ -2134,7 +2123,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "scraping", "place", "run"]
             },
-            "description": "Inicia scraping de licitaciones (asincrónico)"
+            "description": "Ejecuta scraping de PLACE manualmente. Respuesta SÍNCRONA: { newItems, updatedItems, errors, duration }. NOTA: NO retorna jobId/PENDING."
           },
           "response": []
         },
@@ -2149,9 +2138,9 @@
                   "    pm.response.to.have.status(202);",
                   "});",
                   "",
-                  "pm.test('Has status message', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.equal('PENDING');",
+                  "pm.test('Returns result', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.newItems).to.be.a('number');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2172,7 +2161,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "scraping", "place", "historical", "2024"]
             },
-            "description": "Carga histórico de licitaciones para período (YYYY o YYYYMM)"
+            "description": "Carga histórico por período YYYY o YYYYMM (ej: 2024, 202604)."
           },
           "response": []
         },
@@ -2188,8 +2177,8 @@
                   "});",
                   "",
                   "pm.test('Returns array of results', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data).to.be.an('array');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2210,12 +2199,12 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "scraping", "place", "historical-all"]
             },
-            "description": "Carga histórico completo de licitaciones (30-60 min)"
+            "description": "Carga TODO el histórico desde 2024 hasta hoy. Puede tardar 30-60 minutos."
           },
           "response": []
         },
         {
-          "name": "GET /scraping/stats",
+          "name": "GET /scraping/stats (SUPER_ADMIN)",
           "event": [
             {
               "listen": "test",
@@ -2226,8 +2215,8 @@
                   "});",
                   "",
                   "pm.test('Returns stats', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.totalLicitaciones).to.be.a('number');",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.totalLicitaciones).to.be.a('number');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2236,14 +2225,97 @@
           ],
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/scraping/stats",
               "protocol": "http",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "scraping", "stats"]
             },
-            "description": "Obtiene estadísticas de scraping (público)"
+            "description": "Estadísticas de licitaciones y último scraping. Requiere SUPER_ADMIN."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /scraping/migrations/update-search-vector",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Returns updated count', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.updatedCount).to.exist;",
+                  "    pm.expect(j.data.duration).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/scraping/migrations/update-search-vector",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "scraping", "migrations", "update-search-vector"]
+            },
+            "description": "Recalcula searchVector (tsvector) para todas las licitaciones existentes. Ejecutar tras scraping masivo para habilitar búsqueda full-text."
+          },
+          "response": []
+        },
+        {
+          "name": "POST /scraping/migrations/create-search-trigger",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Returns trigger info', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.message).to.be.a('string');",
+                  "    pm.expect(j.data.triggerName).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/scraping/migrations/create-search-trigger",
+              "protocol": "http",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "scraping", "migrations", "create-search-trigger"]
+            },
+            "description": "Crea trigger en PostgreSQL que auto-actualiza searchVector en INSERT/UPDATE. Ejecutar UNA SOLA VEZ."
           },
           "response": []
         }
@@ -2251,6 +2323,7 @@
     },
     {
       "name": "❤️ Health",
+      "description": "Sin prefijo api/v1. El ResponseInterceptor también envuelve estas respuestas en { success, data, timestamp, path }.",
       "item": [
         {
           "name": "GET /health",
@@ -2263,9 +2336,9 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "",
-                  "pm.test('Health check', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.equal('OK');",
+                  "pm.test('Health OK', function () {",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.status).to.equal('OK');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2276,12 +2349,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/health",
+              "raw": "{{baseUrl}}/health",
               "protocol": "http",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "health"]
+              "path": ["health"]
             },
-            "description": "Health check básico del servidor"
+            "description": "Health check básico. Sin prefijo api/v1."
           },
           "response": []
         },
@@ -2297,8 +2370,8 @@
                   "});",
                   "",
                   "pm.test('Readiness check', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.ready).to.equal(true);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.ready).to.equal(true);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2309,12 +2382,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/health/ready",
+              "raw": "{{baseUrl}}/health/ready",
               "protocol": "http",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "health", "ready"]
+              "path": ["health", "ready"]
             },
-            "description": "Readiness probe (K8s)"
+            "description": "Readiness probe para K8s. Sin prefijo api/v1."
           },
           "response": []
         },
@@ -2330,8 +2403,8 @@
                   "});",
                   "",
                   "pm.test('Liveness check', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.alive).to.equal(true);",
+                  "    var j = pm.response.json();",
+                  "    pm.expect(j.data.alive).to.equal(true);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2342,12 +2415,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/health/live",
+              "raw": "{{baseUrl}}/health/live",
               "protocol": "http",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "health", "live"]
+              "path": ["health", "live"]
             },
-            "description": "Liveness probe (K8s)"
+            "description": "Liveness probe para K8s. Sin prefijo api/v1."
           },
           "response": []
         }
@@ -2355,45 +2428,13 @@
     }
   ],
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000",
-      "type": "string"
-    },
-    {
-      "key": "access_token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "refresh_token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "organizationId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "tagId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "alertId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "invitationId",
-      "value": "",
-      "type": "string"
-    }
+    { "key": "baseUrl", "value": "localhost:3000", "type": "string" },
+    { "key": "access_token", "value": "", "type": "string" },
+    { "key": "refresh_token", "value": "", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" },
+    { "key": "organizationId", "value": "", "type": "string" },
+    { "key": "tagId", "value": "", "type": "string" },
+    { "key": "alertId", "value": "", "type": "string" },
+    { "key": "invitationId", "value": "", "type": "string" }
   ]
 }
