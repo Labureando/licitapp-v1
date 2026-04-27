@@ -23,7 +23,6 @@ import {
   ApiParam,
   ApiBearerAuth,
   ApiExtraModels,
-  getSchemaPath,
   ApiHeader,
 } from '@nestjs/swagger';
 import type { Response } from 'express';
