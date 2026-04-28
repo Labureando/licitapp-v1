@@ -9,7 +9,7 @@
 
 | Controlador | Endpoints | Documentación Swagger | Estado |
 |---|---|---|---|
-| **auth.controller.ts** | 8 | ✅ COMPLETA | Bien documentado |
+| **auth.controller.ts** | 8 | ✅ COMPLETO | Bien documentado |
 | **users.controller.ts** | 10 | ⚠️ PARCIAL | Sin decoradores @Api* |
 | **health.controller.ts** | 3 | ✅ BÁSICA | Minimal pero presente |
 | **licitaciones.controller.ts** | 3 | ✅ BÁSICA | Swagger presente |
