@@ -1,0 +1,137 @@
+{
+  "page": {
+    "title": "Pesquisa",
+    "indexedCount": "concursos públicos indexados",
+    "scrapingActive": "Scraping ativo"
+  },
+  "input": {
+    "placeholder": "Pesquisar por palavra-chave, CPV, órgão de contratação...",
+    "submitButton": "Pesquisar"
+  },
+  "results": {
+    "empty": "Sem resultados",
+    "emptyHint": "Tenta com outros termos ou ajusta os filtros"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "pageLabel": "Página",
+    "of": "de"
+  },
+  "filters": {
+    "groups": {
+      "estado": "Estado",
+      "tipoContrato": "Tipo",
+      "procedimiento": "Procedimento",
+      "tramitacion": "Tramitação",
+      "ccaa": "Região",
+      "provincia": "Província",
+      "organo": "Órgão"
+    },
+    "allPlaceholder": "Todos",
+    "searchPlaceholder": "Pesquisar...",
+    "noResults": "Sem resultados",
+    "clearButton": "Limpar",
+    "applyButton": "Aplicar",
+    "clearAll": "Limpar tudo",
+    "organoPicker": {
+      "label": "Órgão",
+      "allPlaceholder": "Todos",
+      "searchPlaceholder": "Pesquisar câmara, junta...",
+      "filteringIn": "A filtrar em:",
+      "noMatch": "Nenhum órgão corresponde",
+      "typeToSearch": "Escreve para pesquisar órgãos"
+    },
+    "removeFilter": "Remover filtro {{group}}: {{value}}"
+  },
+  "card": {
+    "urgent": "Urgente",
+    "deadlineToday": "Hoje",
+    "deadlineOneDay": "1 dia",
+    "deadlineDays": "{{count}} dias",
+    "noAmount": "Sem valor"
+  },
+  "estado": {
+    "ABIERTA": "Aberto",
+    "ADJUDICADA": "Adjudicado",
+    "RESUELTA": "Resolvido",
+    "CERRADA": "Fechado",
+    "DESIERTA": "Deserto",
+    "ANULADA": "Anulado",
+    "ANUNCIO_PREVIO": "Aviso prévio",
+    "DESCONOCIDO": "Sem estado"
+  },
+  "tipoContrato": {
+    "OBRAS": "Obras",
+    "SERVICIOS": "Serviços",
+    "SUMINISTROS": "Fornecimentos",
+    "CONCESION_OBRAS": "Concessão de obras",
+    "CONCESION_SERVICIOS": "Concessão de serviços",
+     "MIXTO": "Misto",
+    "ACUERDO_MARCO": "Acordo-quadro",
+    "SISTEMA_DINAMICO": "Sistema dinâmico",
+    "GESTION_SERVICIOS_PUBLICOS": "Gestão de serviços públicos",
+    "ADMINISTRATIVO_ESPECIAL": "Administrativo especial",
+    "PRIVADO": "Privado",
+    "PATRIMONIAL": "Patrimonial",
+    "OTROS": "Outros"
+  },
+  "procedimiento": {
+    "ABIERTO": "Aberto",
+    "RESTRINGIDO": "Restrito",
+    "NEGOCIADO": "Negociado",
+    "NEGOCIADO_SIN_PUBLICIDAD": "Negociado sem publicidade",
+    "DIALOGO_COMPETITIVO": "Diálogo competitivo",
+    "ASOCIACION_INNOVACION": "Parceria para inovação",
+    "CONCURSO_PROYECTOS": "Concurso de projetos",
+     "SIMPLIFICADO": "Simplificado",
+    "SIMPLIFICADO_ABREVIADO": "Simplificado abreviado",
+    "NEGOCIADO_CON_PUBLICIDAD": "Negociado com publicidade",
+    "SISTEMA_DINAMICO": "Sistema dinâmico",
+    "NORMAS_INTERNAS": "Normas internas",
+    "BASADO_ACUERDO_MARCO": "Baseado em acordo-quadro",
+    "NO_DEFINIDO": "Indefinido",
+    "LICITACION_CON_NEGOCIACION": "Concurso com negociação",
+    "MENOR": "Menor",
+    "DERIVADO_ACUERDO_MARCO": "Derivado de acordo-quadro",
+    "OTROS": "Outros"
+  },
+  "tramitacion": {
+    "ORDINARIA": "Ordinária",
+    "URGENTE": "Urgente",
+    "EMERGENCIA": "Emergência"
+  },
+  "detail": {
+    "notFoundTitle": "Concurso não encontrado",
+    "notFoundBody": "O identificador não existe ou o concurso foi eliminado.",
+    "backToSearch": "Voltar à pesquisa",
+    "budgetLabel": "Orçamento",
+    "deadlineSuffix": "restantes",
+    "economicTitle": "Dados económicos",
+    "budgetBaseNoIva": "Orçamento base (sem IVA)",
+    "budgetWithIva": "Orçamento com IVA",
+    "awardAmount": "Valor adjudicação",
+    "discount": "Desconto",
+    "numBidders": "Nº concorrentes",
+    "datesTitle": "Datas e prazos",
+    "publication": "Publicação",
+    "presentationDeadline": "Fecho apresentação",
+    "awardDate": "Adjudicação",
+    "cpvTitle": "Classificação CPV",
+    "awardeeTitle": "Adjudicatário",
+    "nifLabel": "NIF:",
+    "descriptionTitle": "Descrição",
+    "documentsTitle": "Documentos",
+    "aiSummaryTitle": "Resumo IA",
+    "aiSummaryBadge": "Sprint 5",
+    "aiSummaryBody": "A análise automática de cadernos estará disponível em breve."
+  },
+  "sections": {
+    "guardadas": "Guardadas",
+    "analytics": "Análises",
+    "calendario": "Calendário",
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "cookies": "Cookies"
+  }
+}

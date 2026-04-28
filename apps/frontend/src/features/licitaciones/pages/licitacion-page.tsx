@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
     ArrowLeft,
     ExternalLink,
@@ -19,7 +20,9 @@ import {
     formatMoneyCompact,
     formatDateTime,
     daysUntil,
+    deadlineLabel,
     getEstadoStyle,
+    prettyEnum,
 } from '../utils'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -57,8 +60,13 @@ function InfoRow({
 }
 
 export function LicitacionPage() {
+    const { t } = useTranslation('search')
     const { id } = useParams<{ id: string }>()
     const { data: lic, isLoading, error } = useLicitacion(id)
+
+    // Traduce un enum value con fallback a prettyEnum si la clave no existe
+    const tEnum = (namespace: string, key: string | null | undefined) =>
+        key ? t(`${namespace}.${key}`, { defaultValue: prettyEnum(key) }) : ''
 
     // ═══ Loading ═══
     if (isLoading) {
@@ -78,13 +86,13 @@ export function LicitacionPage() {
     if (error || !lic) {
         return (
             <div className="max-w-xl mx-auto text-center py-16">
-                <h2 className="text-xl font-bold mb-2">Licitación no encontrada</h2>
+                <h2 className="text-xl font-bold mb-2">{t('detail.notFoundTitle')}</h2>
                 <p className="text-sm text-muted-foreground mb-6">
-                    El identificador no existe o la licitación ha sido eliminada.
+                    {t('detail.notFoundBody')}
                 </p>
                 <Button render={<Link to="/buscar" />}>
                     <ArrowLeft size={14} />
-                    Volver al buscador
+                    {t('detail.backToSearch')}
                 </Button>
             </div>
         )
@@ -102,7 +110,7 @@ export function LicitacionPage() {
                 className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
                 <ArrowLeft size={14} />
-                Volver al buscador
+                 {t('detail.backToSearch')}
             </Link>
 
             {/* ═══ HERO — Estado + Título + Presupuesto ═══ */}
@@ -126,16 +134,16 @@ export function LicitacionPage() {
                                         estado.pulse ? { boxShadow: '0 0 6px currentColor' } : undefined
                                     }
                                 />
-                                {lic.estado}
+                                 {tEnum('estado', lic.estado)}
                             </span>
                             {lic.tipoContrato && (
                                 <Badge variant="outline" className="text-[11px]">
-                                    {lic.tipoContrato}
+                                    {tEnum('tipoContrato', lic.tipoContrato)}
                                 </Badge>
                             )}
                             {lic.procedimiento && (
                                 <Badge variant="outline" className="text-[11px]">
-                                    {lic.procedimiento}
+                                    {tEnum('procedimiento', lic.procedimiento)}
                                 </Badge>
                             )}
                         </div>
@@ -170,7 +178,7 @@ export function LicitacionPage() {
                     {/* Presupuesto destacado */}
                     <div className="text-right shrink-0">
                         <div className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase mb-1">
-                            Presupuesto
+                           {t('detail.budgetLabel')}
                         </div>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-4xl font-extrabold font-mono tracking-tight text-gradient-primary leading-none">
@@ -195,7 +203,7 @@ export function LicitacionPage() {
                                         deadline.urgent && 'animate-pulse'
                                     )}
                                 />
-                                {deadline.text} restantes
+                                 {deadlineLabel(deadline.days, t)} {t('detail.deadlineSuffix')}
                             </div>
                         )}
                     </div>
@@ -207,17 +215,17 @@ export function LicitacionPage() {
                 {/* Datos económicos */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-sm flex items-center gap-2">
+                      <CardTitle className="text-sm flex items-center gap-2">
                             <Euro size={14} className="text-primary" />
-                            Datos económicos
+                            {t('detail.economicTitle')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-1">
-                        <InfoRow label="Presupuesto base (sin IVA)" value={formatMoney(lic.presupuestoBase)} mono emphasis />
-                        <InfoRow label="Presupuesto con IVA" value={formatMoney(lic.presupuestoConIva)} mono />
+                        <InfoRow label={t('detail.budgetBaseNoIva')} value={formatMoney(lic.presupuestoBase)} mono emphasis />
+                        <InfoRow label={t('detail.budgetWithIva')} value={formatMoney(lic.presupuestoConIva)} mono />
                         {lic.importeAdjudicacion && (
                             <InfoRow
-                                label="Importe adjudicación"
+                                label={t('detail.awardAmount')}
                                 value={
                                     <span className="text-emerald-600 dark:text-emerald-400 font-bold">
                                         {formatMoney(lic.importeAdjudicacion)}
@@ -228,7 +236,7 @@ export function LicitacionPage() {
                         )}
                         {lic.porcentajeBaja != null && (
                             <InfoRow
-                                label="Baja"
+                                label={t('detail.discount')}
                                 value={
                                     <span className="inline-flex items-center gap-1">
                                         <TrendingDown size={12} className="text-emerald-500" />
@@ -239,7 +247,7 @@ export function LicitacionPage() {
                         )}
                         {lic.numLicitadores != null && (
                             <InfoRow
-                                label="Nº licitadores"
+                                label={t('detail.numBidders')}
                                 value={
                                     <span className="inline-flex items-center gap-1">
                                         <Users size={12} />
@@ -254,20 +262,17 @@ export function LicitacionPage() {
                 {/* Fechas */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-sm flex items-center gap-2">
+                      <CardTitle className="text-sm flex items-center gap-2">
                             <Calendar size={14} className="text-primary" />
-                            Fechas y plazos
+                            {t('detail.datesTitle')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-1">
-                        <InfoRow label="Publicación" value={formatDateTime(lic.fechaPublicacion)} />
-                        <InfoRow label="Cierre presentación" value={formatDateTime(lic.fechaPresentacion)} emphasis />
+                        <InfoRow label={t('detail.publication')} value={formatDateTime(lic.fechaPublicacion)} />
+                        <InfoRow label={t('detail.presentationDeadline')} value={formatDateTime(lic.fechaPresentacion)} emphasis />
                         {lic.fechaAdjudicacion && (
-                            <InfoRow label="Adjudicación" value={formatDateTime(lic.fechaAdjudicacion)} />
+                            <InfoRow label={t('detail.awardDate')} value={formatDateTime(lic.fechaAdjudicacion)} />
                         )}
-                        {/* {lic.fechaFormalizacion && (
-                            <InfoRow label="Formalización" value={formatDateTime(lic.fechaFormalizacion)} />
-                        )} */}
                     </CardContent>
                 </Card>
             </div>
@@ -276,7 +281,7 @@ export function LicitacionPage() {
             {lic.cpvCodes && lic.cpvCodes.length > 0 && (
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-sm">Clasificación CPV</CardTitle>
+                        <CardTitle className="text-sm">{t('detail.cpvTitle')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="flex flex-wrap gap-1.5">
@@ -294,13 +299,13 @@ export function LicitacionPage() {
             {lic.adjudicatarioNombre && (
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-sm">Adjudicatario</CardTitle>
+                        <CardTitle className="text-sm">{t('detail.awardeeTitle')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-1">
                         <div className="font-semibold">{lic.adjudicatarioNombre}</div>
                         {lic.adjudicatarioNif && (
                             <div className="text-xs text-muted-foreground font-mono">
-                                NIF: {lic.adjudicatarioNif}
+                                {t('detail.nifLabel')} {lic.adjudicatarioNif}
                             </div>
                         )}
                     </CardContent>
@@ -311,7 +316,7 @@ export function LicitacionPage() {
             {lic.description && (
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-sm">Descripción</CardTitle>
+                        <CardTitle className="text-sm">{t('detail.descriptionTitle')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
@@ -327,7 +332,7 @@ export function LicitacionPage() {
                     <CardHeader>
                         <CardTitle className="text-sm flex items-center gap-2">
                             <FileText size={14} className="text-primary" />
-                            Documentos
+                            {t('detail.documentsTitle')}
                             <Badge variant="outline" className="ml-1">
                                 {lic.documentos.length}
                             </Badge>
@@ -361,17 +366,17 @@ export function LicitacionPage() {
             {/* ═══ Resumen IA (placeholder) ═══ */}
             <Card className="border-dashed">
                 <CardHeader>
-                    <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+                   <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
                         <Sparkles size={14} />
-                        Resumen IA
+                        {t('detail.aiSummaryTitle')}
                         <Badge variant="outline" className="ml-1 text-[10px]">
-                            Sprint 5
+                            {t('detail.aiSummaryBadge')}
                         </Badge>
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-sm text-muted-foreground">
-                        El análisis automático de pliegos estará disponible próximamente.
+                        {t('detail.aiSummaryBody')}
                     </p>
                 </CardContent>
             </Card>

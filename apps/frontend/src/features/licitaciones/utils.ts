@@ -277,3 +277,21 @@ export function formatLocation(
   if (unique.length === 0) return null;
   return unique.slice(0, 2).join(' · ');
 }
+/**
+ * Texto traducido del deadline. Se mantiene `daysUntil()` intacto (que sigue
+ * devolviendo `text` en español) para no romper la página de detalle, que
+ * lo usa con su propio formato. Esta función se llama explícitamente desde
+ * componentes ya migrados a i18n.
+ *
+ * @param days  número de días devuelto por `daysUntil(...).days`
+ * @param t     `useTranslation('search').t` del componente que llama
+ */
+export function deadlineLabel(
+  days: number | null,
+  t: (key: string, opts?: Record<string, unknown>) => string,
+): string {
+  if (days === null) return '—';
+  if (days === 0) return t('card.deadlineToday');
+  if (days === 1) return t('card.deadlineOneDay');
+  return t('card.deadlineDays', { count: days });
+}

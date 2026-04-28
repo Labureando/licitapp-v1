@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowUpRight, MapPin, Building2 } from 'lucide-react';
 import type { LicitacionCard as LicitacionCardType } from '../types';
 import {
   daysUntil,
+  deadlineLabel,
   formatDate,
   formatLocation,
   formatMoneyCompact,
@@ -10,14 +12,20 @@ import {
   prettyEnum,
 } from '../utils';
 import { cn } from '@/lib/utils';
-
 interface LicitacionCardProps {
   licitacion: LicitacionCardType;
   index?: number;
 }
 
 export function LicitacionCard({ licitacion, index = 0 }: LicitacionCardProps) {
+  const { t } = useTranslation('search');
+
+  // Traduce un enum value con fallback a prettyEnum si la clave no existe
+  const tEnum = (namespace: string, key: string | null | undefined) =>
+    key ? t(`${namespace}.${key}`, { defaultValue: prettyEnum(key) }) : '';
+
   const estado = getEstadoConfig(licitacion.estado);
+  const estadoLabel = tEnum('estado', licitacion.estado);
   const deadline = daysUntil(licitacion.fechaPresentacion);
   const location = formatLocation(
     licitacion.municipio,
@@ -121,12 +129,12 @@ export function LicitacionCard({ licitacion, index = 0 }: LicitacionCardProps) {
                 )}
               />
             </span>
-            {estado.label}
+            {estadoLabel}
           </span>
 
-          {licitacion.tipoContrato && (
+           {licitacion.tipoContrato && (
             <span className="font-medium uppercase tracking-wider text-muted-foreground">
-              {prettyEnum(licitacion.tipoContrato)}
+              {tEnum('tipoContrato', licitacion.tipoContrato)}
             </span>
           )}
 
@@ -134,14 +142,14 @@ export function LicitacionCard({ licitacion, index = 0 }: LicitacionCardProps) {
             <>
               <span className="text-muted-foreground/30">·</span>
               <span className="text-muted-foreground/70">
-                {prettyEnum(licitacion.procedimiento)}
+                {tEnum('procedimiento', licitacion.procedimiento)}
               </span>
             </>
           )}
 
-          {licitacion.tramitacion === 'URGENTE' && (
+           {licitacion.tramitacion === 'URGENTE' && (
             <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-amber-600 dark:text-amber-400">
-              Urgente
+              {t('card.urgent')}
             </span>
           )}
         </div>
@@ -200,11 +208,7 @@ export function LicitacionCard({ licitacion, index = 0 }: LicitacionCardProps) {
                   : undefined
               }
             />
-            {deadline.days === 0
-              ? 'Hoy'
-              : deadline.days === 1
-              ? '1 día'
-              : `${deadline.days} días`}
+            {deadlineLabel(deadline.days, t)}
           </span>
         )}
 
@@ -220,7 +224,7 @@ export function LicitacionCard({ licitacion, index = 0 }: LicitacionCardProps) {
           </div>
         ) : (
           <span className="text-xs font-medium text-muted-foreground/50">
-            Sin importe
+            {t('card.noAmount')}
           </span>
         )}
       </div>

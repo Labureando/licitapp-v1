@@ -33,8 +33,8 @@ function toParams(p: SearchOrganosParams): Record<string, string> {
 export const organosApi = {
   search: (params: SearchOrganosParams) =>
     apiClient
-      .get<ApiEnvelope<OrganoSearchResult[]>>('/organos/search', {
+      .get<OrganoSearchResult[]>('/organos/search', {
         params: toParams(params),
       })
-      .then((r) => r.data.data),
+      .then((r) => r.data),
 };

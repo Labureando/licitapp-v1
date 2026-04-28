@@ -95,7 +95,9 @@
   "theme": {
     "light": "Clar",
     "dark": "Fosc",
-    "system": "Sistema"
+    "system": "Sistema",
+    "change": "Canviar tema",
+    "label": "Tema"
   },
   "language": {
     "label": "Idioma",
@@ -113,5 +115,9 @@
   "password": {
     "show": "Mostrar contrasenya",
     "hide": "Amagar contrasenya"
+  },
+  "error": {
+    "unexpectedTitle": "Alguna cosa inesperada ha passat",
+    "unexpectedBody": "Prova a refrescar la pàgina o tornar a l'inici."
   }
 }

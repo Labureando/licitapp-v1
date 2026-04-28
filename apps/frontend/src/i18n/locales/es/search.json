@@ -1,0 +1,137 @@
+{
+  "page": {
+    "title": "Buscador",
+    "indexedCount": "licitaciones públicas indexadas",
+    "scrapingActive": "Scraping activo"
+  },
+  "input": {
+    "placeholder": "Buscar por palabra clave, CPV, órgano de contratación...",
+    "submitButton": "Buscar"
+  },
+  "results": {
+    "empty": "Sin resultados",
+    "emptyHint": "Prueba con otros términos o ajusta los filtros"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "pageLabel": "Página",
+     "of": "de"
+  },
+  "filters": {
+    "groups": {
+      "estado": "Estado",
+      "tipoContrato": "Tipo",
+      "procedimiento": "Procedimiento",
+      "tramitacion": "Tramitación",
+      "ccaa": "CCAA",
+      "provincia": "Provincia",
+      "organo": "Órgano"
+    },
+    "allPlaceholder": "Todos",
+    "searchPlaceholder": "Buscar...",
+    "noResults": "Sin resultados",
+    "clearButton": "Limpiar",
+    "applyButton": "Aplicar",
+    "organoPicker": {
+      "label": "Órgano",
+      "allPlaceholder": "Todos",
+      "searchPlaceholder": "Buscar ayuntamiento, diputación...",
+      "filteringIn": "Filtrando en:",
+      "noMatch": "Ningún órgano coincide",
+      "typeToSearch": "Escribe para buscar órganos"
+    },
+    "clearAll": "Limpiar todo",
+    "removeFilter": "Quitar filtro {{group}}: {{value}}"
+  },
+  "card": {
+    "urgent": "Urgente",
+    "deadlineToday": "Hoy",
+    "deadlineOneDay": "1 día",
+    "deadlineDays": "{{count}} días",
+    "noAmount": "Sin importe"
+  },
+  "estado": {
+    "ABIERTA": "Abierta",
+    "ADJUDICADA": "Adjudicada",
+    "RESUELTA": "Resuelta",
+    "CERRADA": "Cerrada",
+    "DESIERTA": "Desierta",
+    "ANULADA": "Anulada",
+    "ANUNCIO_PREVIO": "Anuncio previo",
+    "DESCONOCIDO": "Sin estado"
+  },
+  "tipoContrato": {
+    "OBRAS": "Obras",
+    "SERVICIOS": "Servicios",
+    "SUMINISTROS": "Suministros",
+    "CONCESION_OBRAS": "Concesión de obras",
+    "CONCESION_SERVICIOS": "Concesión de servicios",
+    "GESTION_SERVICIOS_PUBLICOS": "Gestión de servicios públicos",
+    "ADMINISTRATIVO_ESPECIAL": "Administrativo especial",
+    "MIXTO": "Mixto",
+    "ACUERDO_MARCO": "Acuerdo marco",
+    "SISTEMA_DINAMICO": "Sistema dinámico",
+    "PRIVADO": "Privado",
+    "PATRIMONIAL": "Patrimonial",
+    "OTROS": "Otros"
+  },
+  "procedimiento": {
+    "ABIERTO": "Abierto",
+    "RESTRINGIDO": "Restringido",
+    "NEGOCIADO": "Negociado",
+    "NEGOCIADO_SIN_PUBLICIDAD": "Negociado sin publicidad",
+    "DIALOGO_COMPETITIVO": "Diálogo competitivo",
+    "ASOCIACION_INNOVACION": "Asociación para la innovación",
+    "CONCURSO_PROYECTOS": "Concurso de proyectos",
+     "SIMPLIFICADO": "Simplificado",
+    "SIMPLIFICADO_ABREVIADO": "Simplificado abreviado",
+    "NEGOCIADO_CON_PUBLICIDAD": "Negociado con publicidad",
+    "SISTEMA_DINAMICO": "Sistema dinámico",
+    "NORMAS_INTERNAS": "Normas internas",
+    "BASADO_ACUERDO_MARCO": "Basado en acuerdo marco",
+    "NO_DEFINIDO": "No definido",
+    "LICITACION_CON_NEGOCIACION": "Licitación con negociación",
+    "MENOR": "Menor",
+    "DERIVADO_ACUERDO_MARCO": "Derivado de acuerdo marco",
+    "OTROS": "Otros"
+  },
+  "tramitacion": {
+    "ORDINARIA": "Ordinaria",
+    "URGENTE": "Urgente",
+    "EMERGENCIA": "Emergencia"
+  },
+  "detail": {
+    "notFoundTitle": "Licitación no encontrada",
+    "notFoundBody": "El identificador no existe o la licitación ha sido eliminada.",
+    "backToSearch": "Volver al buscador",
+    "budgetLabel": "Presupuesto",
+    "deadlineSuffix": "restantes",
+    "economicTitle": "Datos económicos",
+    "budgetBaseNoIva": "Presupuesto base (sin IVA)",
+    "budgetWithIva": "Presupuesto con IVA",
+    "awardAmount": "Importe adjudicación",
+    "discount": "Baja",
+    "numBidders": "Nº licitadores",
+    "datesTitle": "Fechas y plazos",
+    "publication": "Publicación",
+    "presentationDeadline": "Cierre presentación",
+    "awardDate": "Adjudicación",
+    "cpvTitle": "Clasificación CPV",
+    "awardeeTitle": "Adjudicatario",
+    "nifLabel": "NIF:",
+    "descriptionTitle": "Descripción",
+    "documentsTitle": "Documentos",
+    "aiSummaryTitle": "Resumen IA",
+    "aiSummaryBadge": "Sprint 5",
+    "aiSummaryBody": "El análisis automático de pliegos estará disponible próximamente."
+  },
+  "sections": {
+    "guardadas": "Guardadas",
+    "analytics": "Analytics",
+    "calendario": "Calendario",
+    "terms": "Términos",
+    "privacy": "Privacidad",
+    "cookies": "Cookies"
+  }
+}

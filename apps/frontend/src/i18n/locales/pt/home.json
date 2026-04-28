@@ -1,0 +1,44 @@
+{
+  "hint": "Clica num módulo para ver detalhes · Clica em",
+  "hintKbd": "Abrir módulo",
+  "hintSuffix": "para navegar",
+  "moduleLabel": "MÓDULO",
+  "openModule": "Abrir módulo",
+  "modules": {
+    "buscador": {
+      "title": "Pesquisa",
+      "description": "Explora os concursos públicos indexados com filtros avançados.",
+      "stats": {
+        "total": "totais",
+        "open": "abertos"
+      }
+    },
+    "alertas": {
+      "title": "Alertas",
+      "description": "Notificações automáticas quando aparecem concursos que correspondem aos teus critérios.",
+      "stats": {
+        "new": "novos",
+        "active": "ativos"
+      }
+    },
+    "guardadas": {
+      "title": "Guardadas",
+      "description": "Os teus concursos favoritos com acompanhamento, notas e lembretes de prazos.",
+      "stats": {
+        "saved": "guardadas"
+      }
+    },
+    "analytics": {
+      "title": "Análises",
+      "description": "Dashboards com KPIs do mercado, tendências por setor e análise competitiva."
+    },
+    "calendario": {
+      "title": "Calendário",
+      "description": "Timeline visual de prazos de apresentação e datas-chave dos teus concursos."
+    },
+    "ajustes": {
+      "title": "Definições",
+      "description": "Configuração de conta, critérios de pesquisa e preferências do sistema."
+    }
+  }
+}

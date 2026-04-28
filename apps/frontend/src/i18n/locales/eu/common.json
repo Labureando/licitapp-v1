@@ -95,7 +95,9 @@
   "theme": {
     "light": "Argia",
     "dark": "Iluna",
-    "system": "Sistema"
+    "system": "Sistema",
+    "change": "Itxura aldatu",
+    "label": "Itxura"
   },
   "language": {
     "label": "Hizkuntza",
@@ -113,5 +115,9 @@
   "password": {
     "show": "Pasahitza erakutsi",
     "hide": "Pasahitza ezkutatu"
+  },
+  "error": {
+    "unexpectedTitle": "Zerbait ustekabekoa gertatu da",
+    "unexpectedBody": "Saiatu orria freskatzen edo hasierara itzultzen."
   }
 }

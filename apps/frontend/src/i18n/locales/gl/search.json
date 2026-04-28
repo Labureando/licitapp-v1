@@ -1,0 +1,137 @@
+{
+  "page": {
+    "title": "Buscador",
+    "indexedCount": "licitacións públicas indexadas",
+    "scrapingActive": "Scraping activo"
+  },
+  "input": {
+    "placeholder": "Buscar por palabra clave, CPV, órgano de contratación...",
+    "submitButton": "Buscar"
+  },
+  "results": {
+    "empty": "Sen resultados",
+    "emptyHint": "Proba con outros termos ou axusta os filtros"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Seguinte",
+    "pageLabel": "Páxina",
+    "of": "de"
+  },
+  "filters": {
+    "groups": {
+      "estado": "Estado",
+      "tipoContrato": "Tipo",
+      "procedimiento": "Procedemento",
+      "tramitacion": "Tramitación",
+      "ccaa": "CCAA",
+      "provincia": "Provincia",
+      "organo": "Órgano"
+    },
+    "allPlaceholder": "Todos",
+    "searchPlaceholder": "Buscar...",
+    "noResults": "Sen resultados",
+    "clearButton": "Limpar",
+    "applyButton": "Aplicar",
+    "organoPicker": {
+      "label": "Órgano",
+      "allPlaceholder": "Todos",
+      "searchPlaceholder": "Buscar concello, deputación...",
+      "filteringIn": "Filtrando en:",
+      "noMatch": "Ningún órgano coincide",
+      "typeToSearch": "Escribe para buscar órganos"
+    },
+    "clearAll": "Limpar todo",
+    "removeFilter": "Quitar filtro {{group}}: {{value}}"
+  },
+  "card": {
+    "urgent": "Urxente",
+    "deadlineToday": "Hoxe",
+    "deadlineOneDay": "1 día",
+    "deadlineDays": "{{count}} días",
+    "noAmount": "Sen importe"
+  },
+  "estado": {
+    "ABIERTA": "Aberta",
+    "ADJUDICADA": "Adxudicada",
+    "RESUELTA": "Resolta",
+    "CERRADA": "Pechada",
+    "DESIERTA": "Deserta",
+    "ANULADA": "Anulada",
+    "ANUNCIO_PREVIO": "Anuncio previo",
+    "DESCONOCIDO": "Sen estado"
+  },
+  "tipoContrato": {
+    "OBRAS": "Obras",
+    "SERVICIOS": "Servizos",
+    "SUMINISTROS": "Subministracións",
+    "CONCESION_OBRAS": "Concesión de obras",
+    "CONCESION_SERVICIOS": "Concesión de servizos",
+    "GESTION_SERVICIOS_PUBLICOS": "Xestión de servizos públicos",
+    "PRIVADO": "Privado",
+    "MIXTO": "Mixto",
+    "ADMINISTRATIVO_ESPECIAL": "Administrativo especial",
+    "ACUERDO_MARCO": "Acordo marco",
+    "SISTEMA_DINAMICO": "Sistema dinámico",
+     "PATRIMONIAL": "Patrimonial",
+    "OTROS": "Outros"
+  },
+  "procedimiento": {
+    "ABIERTO": "Aberto",
+    "RESTRINGIDO": "Restrinxido",
+    "NEGOCIADO": "Negociado",
+    "NEGOCIADO_SIN_PUBLICIDAD": "Negociado sen publicidade",
+    "DIALOGO_COMPETITIVO": "Diálogo competitivo",
+    "ASOCIACION_INNOVACION": "Asociación para a innovación",
+    "CONCURSO_PROYECTOS": "Concurso de proxectos",
+    "LICITACION_CON_NEGOCIACION": "Licitación con negociación",
+    "SIMPLIFICADO": "Simplificado",
+    "SIMPLIFICADO_ABREVIADO": "Simplificado abreviado",
+    "NEGOCIADO_CON_PUBLICIDAD": "Negociado con publicidade",
+    "SISTEMA_DINAMICO": "Sistema dinámico",
+    "NORMAS_INTERNAS": "Normas internas",
+    "BASADO_ACUERDO_MARCO": "Baseado en acordo marco",
+    "NO_DEFINIDO": "Non definido",
+    "MENOR": "Menor",
+    "DERIVADO_ACUERDO_MARCO": "Derivado de acordo marco",
+    "OTROS": "Outros"
+  },
+  "tramitacion": {
+    "ORDINARIA": "Ordinaria",
+    "URGENTE": "Urxente",
+    "EMERGENCIA": "Emerxencia"
+  },
+  "detail": {
+    "notFoundTitle": "Licitación non atopada",
+    "notFoundBody": "O identificador non existe ou a licitación foi eliminada.",
+    "backToSearch": "Volver ao buscador",
+    "budgetLabel": "Orzamento",
+    "deadlineSuffix": "restantes",
+    "economicTitle": "Datos económicos",
+    "budgetBaseNoIva": "Orzamento base (sen IVA)",
+    "budgetWithIva": "Orzamento con IVA",
+    "awardAmount": "Importe adxudicación",
+    "discount": "Baixa",
+    "numBidders": "Nº licitadores",
+    "datesTitle": "Datas e prazos",
+    "publication": "Publicación",
+    "presentationDeadline": "Peche presentación",
+    "awardDate": "Adxudicación",
+    "cpvTitle": "Clasificación CPV",
+    "awardeeTitle": "Adxudicatario",
+    "nifLabel": "NIF:",
+    "descriptionTitle": "Descrición",
+    "documentsTitle": "Documentos",
+    "aiSummaryTitle": "Resumo IA",
+    "aiSummaryBadge": "Sprint 5",
+    "aiSummaryBody": "A análise automática de pregos estará dispoñible proximamente."
+  },
+  "sections": {
+    "guardadas": "Gardadas",
+    "analytics": "Analíticas",
+    "calendario": "Calendario",
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "cookies": "Cookies"
+  }
+}

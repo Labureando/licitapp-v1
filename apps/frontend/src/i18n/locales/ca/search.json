@@ -1,0 +1,137 @@
+{
+  "page": {
+    "title": "Cercador",
+    "indexedCount": "licitacions públiques indexades",
+    "scrapingActive": "Scraping actiu"
+  },
+  "input": {
+    "placeholder": "Cerca per paraula clau, CPV, òrgan de contractació...",
+    "submitButton": "Cercar"
+  },
+  "results": {
+    "empty": "Sense resultats",
+    "emptyHint": "Prova amb altres termes o ajusta els filtres"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Següent",
+    "pageLabel": "Pàgina",
+    "of": "de"
+  },
+  "filters": {
+    "groups": {
+      "estado": "Estat",
+      "tipoContrato": "Tipus",
+      "procedimiento": "Procediment",
+      "tramitacion": "Tramitació",
+      "ccaa": "CCAA",
+      "provincia": "Província",
+      "organo": "Òrgan"
+    },
+    "allPlaceholder": "Tots",
+    "searchPlaceholder": "Cercar...",
+    "noResults": "Sense resultats",
+    "clearButton": "Netejar",
+    "applyButton": "Aplicar",
+    "organoPicker": {
+      "label": "Òrgan",
+      "allPlaceholder": "Tots",
+      "searchPlaceholder": "Cerca ajuntament, diputació...",
+      "filteringIn": "Filtrant a:",
+      "noMatch": "Cap òrgan coincideix",
+      "typeToSearch": "Escriu per cercar òrgans"
+    },
+    "clearAll": "Netejar tot",
+    "removeFilter": "Treure filtre {{group}}: {{value}}"
+  },
+  "card": {
+    "urgent": "Urgent",
+    "deadlineToday": "Avui",
+    "deadlineOneDay": "1 dia",
+    "deadlineDays": "{{count}} dies",
+    "noAmount": "Sense import"
+  },
+  "estado": {
+    "ABIERTA": "Oberta",
+    "ADJUDICADA": "Adjudicada",
+    "RESUELTA": "Resolta",
+    "CERRADA": "Tancada",
+    "DESIERTA": "Deserta",
+    "ANULADA": "Anul·lada",
+    "ANUNCIO_PREVIO": "Anunci previ",
+    "DESCONOCIDO": "Sense estat"
+  },
+  "tipoContrato": {
+    "OBRAS": "Obres",
+    "SERVICIOS": "Serveis",
+    "SUMINISTROS": "Subministraments",
+    "CONCESION_OBRAS": "Concessió d'obres",
+    "CONCESION_SERVICIOS": "Concessió de serveis",
+    "GESTION_SERVICIOS_PUBLICOS": "Gestió de serveis públics",
+    "ADMINISTRATIVO_ESPECIAL": "Administratiu especial",
+    "MIXTO": "Mixt",
+    "ACUERDO_MARCO": "Acord marc",
+    "SISTEMA_DINAMICO": "Sistema dinàmic",
+    "PRIVADO": "Privat",
+    "PATRIMONIAL": "Patrimonial",
+    "OTROS": "Altres"
+  },
+  "procedimiento": {
+    "ABIERTO": "Obert",
+    "RESTRINGIDO": "Restringit",
+    "NEGOCIADO": "Negociat",
+    "NEGOCIADO_SIN_PUBLICIDAD": "Negociat sense publicitat",
+    "DIALOGO_COMPETITIVO": "Diàleg competitiu",
+    "ASOCIACION_INNOVACION": "Associació per a la innovació",
+     "SIMPLIFICADO": "Simplificat",
+    "SIMPLIFICADO_ABREVIADO": "Simplificat abreujat",
+    "NEGOCIADO_CON_PUBLICIDAD": "Negociat amb publicitat",
+    "SISTEMA_DINAMICO": "Sistema dinàmic",
+    "NORMAS_INTERNAS": "Normes internes",
+    "BASADO_ACUERDO_MARCO": "Basat en acord marc",
+    "NO_DEFINIDO": "No definit",
+    "CONCURSO_PROYECTOS": "Concurs de projectes",
+    "LICITACION_CON_NEGOCIACION": "Licitació amb negociació",
+    "MENOR": "Menor",
+    "DERIVADO_ACUERDO_MARCO": "Derivat d'acord marc",
+    "OTROS": "Altres"
+  },
+  "tramitacion": {
+    "ORDINARIA": "Ordinària",
+    "URGENTE": "Urgent",
+    "EMERGENCIA": "Emergència"
+  },
+  "detail": {
+    "notFoundTitle": "Licitació no trobada",
+    "notFoundBody": "L'identificador no existeix o la licitació ha estat eliminada.",
+    "backToSearch": "Tornar al cercador",
+    "budgetLabel": "Pressupost",
+    "deadlineSuffix": "restants",
+    "economicTitle": "Dades econòmiques",
+    "budgetBaseNoIva": "Pressupost base (sense IVA)",
+    "budgetWithIva": "Pressupost amb IVA",
+    "awardAmount": "Import adjudicació",
+    "discount": "Baixa",
+    "numBidders": "Nº licitadors",
+    "datesTitle": "Dates i terminis",
+    "publication": "Publicació",
+    "presentationDeadline": "Tancament presentació",
+    "awardDate": "Adjudicació",
+    "cpvTitle": "Classificació CPV",
+    "awardeeTitle": "Adjudicatari",
+    "nifLabel": "NIF:",
+    "descriptionTitle": "Descripció",
+    "documentsTitle": "Documents",
+    "aiSummaryTitle": "Resum IA",
+    "aiSummaryBadge": "Sprint 5",
+    "aiSummaryBody": "L'anàlisi automàtica de plecs estarà disponible properament."
+  },
+  "sections": {
+    "guardadas": "Desades",
+    "analytics": "Analítica",
+    "calendario": "Calendari",
+    "terms": "Termes",
+    "privacy": "Privacitat",
+    "cookies": "Galetes"
+  }
+}

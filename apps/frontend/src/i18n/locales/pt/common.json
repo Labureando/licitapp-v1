@@ -95,7 +95,9 @@
   "theme": {
     "light": "Claro",
     "dark": "Escuro",
-    "system": "Sistema"
+    "system": "Sistema",
+    "change": "Mudar tema",
+    "label": "Tema"
   },
   "language": {
     "label": "Idioma",
@@ -113,5 +115,9 @@
   "password": {
     "show": "Mostrar palavra-passe",
     "hide": "Ocultar palavra-passe"
+  },
+  "error": {
+    "unexpectedTitle": "Algo inesperado aconteceu",
+    "unexpectedBody": "Tenta refrescar a página ou voltar ao início."
   }
 }

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { Flag } from '@/components/language-switcher';
 import { Check, AlertCircle } from 'lucide-react';
 import { useLanguage } from '@/i18n/use-language';
 import { useTheme } from '@/providers/theme-provider';
@@ -51,9 +52,7 @@ export function AjustesPreferenciasTab() {
                   : 'border-input hover:bg-accent'
               )}
             >
-              <span aria-hidden className="text-base">
-                {lang.flag}
-              </span>
+              <Flag code={lang.code} />
               <span className="flex-1 truncate">{lang.name}</span>
               {lang.needsReview && (
                 <AlertCircle

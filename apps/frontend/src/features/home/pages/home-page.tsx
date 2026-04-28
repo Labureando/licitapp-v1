@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import RadialOrbitalNav from '@/components/ui/radial-orbital-nav'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
-import { HOME_MODULES } from '../config/modules'
+import { useHomeModules } from '../config/use-home-modules'
 
 export function HomePage() {
   const navigate = useNavigate()
+  const HOME_MODULES = useHomeModules()
 
   return (
     <div className="relative w-full h-screen bg-background overflow-hidden">

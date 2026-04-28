@@ -95,7 +95,9 @@
   "theme": {
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "change": "Change theme",
+    "label": "Theme"
   },
   "language": {
     "label": "Language",
@@ -113,5 +115,9 @@
   "password": {
     "show": "Show password",
     "hide": "Hide password"
+  },
+  "error": {
+    "unexpectedTitle": "Something unexpected happened",
+    "unexpectedBody": "Try refreshing the page or go back home."
   }
 }

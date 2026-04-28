@@ -1,0 +1,44 @@
+{
+  "hint": "Sakatu modulu bat xehetasunak ikusteko · Klik egin",
+  "hintKbd": "Modulua ireki",
+  "hintSuffix": "nabigatzeko",
+  "moduleLabel": "MODULUA",
+  "openModule": "Modulua ireki",
+  "modules": {
+    "buscador": {
+      "title": "Bilatzailea",
+      "description": "Esploratu indexatutako lehiaketa publikoak iragazki aurreratuekin.",
+      "stats": {
+        "total": "guztira",
+        "open": "irekiak"
+      }
+    },
+    "alertas": {
+      "title": "Alertak",
+      "description": "Jakinarazpen automatikoak zure irizpideekin bat datozen lehiaketak agertzean.",
+      "stats": {
+        "new": "berriak",
+        "active": "aktiboak"
+      }
+    },
+    "guardadas": {
+      "title": "Gordeak",
+      "description": "Zure lehiaketa gogokoenak jarraipenarekin, oharrekin eta epeen oroigarriekin.",
+      "stats": {
+        "saved": "gordeak"
+      }
+    },
+    "analytics": {
+      "title": "Analisiak",
+      "description": "Merkatuaren KPIak, sektore-joerak eta lehia-analisiak dituzten dashboardak."
+    },
+    "calendario": {
+      "title": "Egutegia",
+      "description": "Zure lehiaketen aurkezpen-epeen eta data garrantzitsuen denbora-lerro bisuala."
+    },
+    "ajustes": {
+      "title": "Ezarpenak",
+      "description": "Kontu-konfigurazioa, bilaketa-irizpideak eta sistemaren hobespenak."
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "page": {
+    "title": "Bilatzailea",
+    "indexedCount": "indexatutako lehiaketa publiko",
+    "scrapingActive": "Scraping aktibo"
+  },
+  "input": {
+    "placeholder": "Hitz gakoaren, CPV-aren, kontratazio-organoaren arabera bilatu...",
+    "submitButton": "Bilatu"
+  },
+  "results": {
+    "empty": "Emaitzarik ez",
+    "emptyHint": "Saiatu beste termino batzuekin edo doitu iragazkiak"
+  },
+  "pagination": {
+    "previous": "Aurrekoa",
+    "next": "Hurrengoa",
+    "pageLabel": "Orria",
+     "of": "/"
+  },
+  "filters": {
+    "groups": {
+      "estado": "Egoera",
+      "tipoContrato": "Mota",
+      "procedimiento": "Prozedura",
+      "tramitacion": "Izapidetzea",
+      "ccaa": "Erkidegoa",
+      "provincia": "Probintzia",
+      "organo": "Organoa"
+    },
+    "allPlaceholder": "Denak",
+    "searchPlaceholder": "Bilatu...",
+    "noResults": "Emaitzarik ez",
+    "clearButton": "Garbitu",
+    "applyButton": "Aplikatu",
+    "organoPicker": {
+      "label": "Organoa",
+      "allPlaceholder": "Denak",
+      "searchPlaceholder": "Bilatu udala, aldundia...",
+      "filteringIn": "Hemen iragazten:",
+      "noMatch": "Ez dago bat datorren organorik",
+      "typeToSearch": "Idatzi organoak bilatzeko"
+    },
+    "clearAll": "Dena garbitu",
+    "removeFilter": "Kendu {{group}} iragazkia: {{value}}"
+  },
+  "card": {
+    "urgent": "Urgentea",
+    "deadlineToday": "Gaur",
+    "deadlineOneDay": "egun 1",
+    "deadlineDays": "{{count}} egun",
+    "noAmount": "Zenbateko gabe"
+  },
+  "estado": {
+    "ABIERTA": "Irekia",
+    "ADJUDICADA": "Esleitua",
+    "RESUELTA": "Ebatzia",
+    "CERRADA": "Itxita",
+    "DESIERTA": "Hutsik geratutakoa",
+    "ANULADA": "Baliogabetua",
+    "ANUNCIO_PREVIO": "Aurretiazko iragarkia",
+    "DESCONOCIDO": "Egoerarik gabe"
+  },
+  "tipoContrato": {
+    "OBRAS": "Obrak",
+    "SERVICIOS": "Zerbitzuak",
+    "SUMINISTROS": "Hornidurak",
+    "CONCESION_OBRAS": "Obren emakida",
+    "CONCESION_SERVICIOS": "Zerbitzuen emakida",
+    "GESTION_SERVICIOS_PUBLICOS": "Zerbitzu publikoen kudeaketa",
+    "ADMINISTRATIVO_ESPECIAL": "Administratibo berezia",
+    "PRIVADO": "Pribatua",
+     "MIXTO": "Mistoa",
+    "ACUERDO_MARCO": "Esparru-akordioa",
+    "SISTEMA_DINAMICO": "Sistema dinamikoa",
+    "PATRIMONIAL": "Ondarezkoa",
+    "OTROS": "Besteak"
+  },
+  "procedimiento": {
+    "ABIERTO": "Irekia",
+    "RESTRINGIDO": "Murriztua",
+    "NEGOCIADO": "Negoziatua",
+    "NEGOCIADO_SIN_PUBLICIDAD": "Negoziatua publizitaterik gabe",
+    "DIALOGO_COMPETITIVO": "Elkarrizketa lehiakorra",
+     "SIMPLIFICADO": "Sinplifikatua",
+    "SIMPLIFICADO_ABREVIADO": "Sinplifikatu laburtua",
+    "NEGOCIADO_CON_PUBLICIDAD": "Negoziatua publizitatearekin",
+    "SISTEMA_DINAMICO": "Sistema dinamikoa",
+    "NORMAS_INTERNAS": "Barne-arauak",
+    "BASADO_ACUERDO_MARCO": "Esparru-akordioan oinarritua",
+    "NO_DEFINIDO": "Definitu gabea",
+    "ASOCIACION_INNOVACION": "Berrikuntzarako elkartea",
+    "CONCURSO_PROYECTOS": "Proiektuen lehiaketa",
+    "LICITACION_CON_NEGOCIACION": "Negoziazioarekiko lizitazioa",
+    "MENOR": "Txikia",
+    "DERIVADO_ACUERDO_MARCO": "Esparru-akordiotik eratorria",
+    "OTROS": "Besteak"
+  },
+  "tramitacion": {
+    "ORDINARIA": "Arrunta",
+    "URGENTE": "Urgentea",
+    "EMERGENCIA": "Larrialdikoa"
+  },
+  "detail": {
+    "notFoundTitle": "Lehiaketa ez da aurkitu",
+    "notFoundBody": "Identifikatzailea ez da existitzen edo lehiaketa ezabatu da.",
+    "backToSearch": "Bilatzailera itzuli",
+    "budgetLabel": "Aurrekontua",
+    "deadlineSuffix": "falta",
+    "economicTitle": "Datu ekonomikoak",
+    "budgetBaseNoIva": "Oinarrizko aurrekontua (BEZ gabe)",
+    "budgetWithIva": "Aurrekontua BEZarekin",
+    "awardAmount": "Esleipen zenbatekoa",
+    "discount": "Beherapena",
+    "numBidders": "Lizitatzaile kop.",
+    "datesTitle": "Datak eta epeak",
+    "publication": "Argitalpena",
+    "presentationDeadline": "Aurkezpen itxiera",
+    "awardDate": "Esleipena",
+    "cpvTitle": "CPV sailkapena",
+    "awardeeTitle": "Esleipenduna",
+    "nifLabel": "NAN:",
+    "descriptionTitle": "Deskribapena",
+    "documentsTitle": "Dokumentuak",
+    "aiSummaryTitle": "IA laburpena",
+    "aiSummaryBadge": "Sprint 5",
+    "aiSummaryBody": "Pleguen analisi automatikoa laster egongo da erabilgarri."
+  },
+  "sections": {
+    "guardadas": "Gordeak",
+    "analytics": "Analisiak",
+    "calendario": "Egutegia",
+    "terms": "Baldintzak",
+    "privacy": "Pribatutasuna",
+    "cookies": "Cookieak"
+  }
+}

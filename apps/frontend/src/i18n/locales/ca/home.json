@@ -1,0 +1,44 @@
+{
+  "hint": "Prem un mòdul per veure detalls · Clica a",
+  "hintKbd": "Obrir mòdul",
+  "hintSuffix": "per navegar",
+  "moduleLabel": "MÒDUL",
+  "openModule": "Obrir mòdul",
+  "modules": {
+    "buscador": {
+      "title": "Cercador",
+      "description": "Explora les licitacions públiques indexades amb filtres avançats.",
+      "stats": {
+        "total": "totals",
+        "open": "obertes"
+      }
+    },
+    "alertas": {
+      "title": "Alertes",
+      "description": "Notificacions automàtiques quan apareixen licitacions que coincideixen amb els teus criteris.",
+      "stats": {
+        "new": "noves",
+        "active": "actives"
+      }
+    },
+    "guardadas": {
+      "title": "Desades",
+      "description": "Les teves licitacions preferides amb seguiment, notes i recordatoris de terminis.",
+      "stats": {
+        "saved": "desades"
+      }
+    },
+    "analytics": {
+      "title": "Analítica",
+      "description": "Dashboards amb KPIs del mercat, tendències per sector i anàlisi competitiu."
+    },
+    "calendario": {
+      "title": "Calendari",
+      "description": "Timeline visual de terminis de presentació i dates clau de les teves licitacions."
+    },
+    "ajustes": {
+      "title": "Configuració",
+      "description": "Configuració de compte, criteris de cerca i preferències del sistema."
+    }
+  }
+}

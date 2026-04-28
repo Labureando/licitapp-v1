@@ -1,0 +1,137 @@
+{
+  "page": {
+    "title": "Search",
+    "indexedCount": "public tenders indexed",
+    "scrapingActive": "Scraping active"
+  },
+  "input": {
+    "placeholder": "Search by keyword, CPV, contracting body...",
+    "submitButton": "Search"
+  },
+  "results": {
+    "empty": "No results",
+    "emptyHint": "Try other terms or adjust the filters"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "pageLabel": "Page",
+    "of": "of"
+  },
+  "filters": {
+    "groups": {
+      "estado": "Status",
+      "tipoContrato": "Type",
+      "procedimiento": "Procedure",
+      "tramitacion": "Processing",
+      "ccaa": "Region",
+      "provincia": "Province",
+      "organo": "Body"
+    },
+    "allPlaceholder": "All",
+    "searchPlaceholder": "Search...",
+    "noResults": "No results",
+    "clearButton": "Clear",
+    "applyButton": "Apply",
+    "organoPicker": {
+      "label": "Body",
+      "allPlaceholder": "All",
+      "searchPlaceholder": "Search town hall, council...",
+      "filteringIn": "Filtering in:",
+      "noMatch": "No bodies match",
+      "typeToSearch": "Type to search for bodies"
+    },
+    "clearAll": "Clear all",
+    "removeFilter": "Remove {{group}} filter: {{value}}"
+  },
+  "card": {
+    "urgent": "Urgent",
+    "deadlineToday": "Today",
+    "deadlineOneDay": "1 day",
+    "deadlineDays": "{{count}} days",
+    "noAmount": "No amount"
+  },
+  "estado": {
+    "ABIERTA": "Open",
+    "ADJUDICADA": "Awarded",
+    "RESUELTA": "Resolved",
+    "CERRADA": "Closed",
+    "DESIERTA": "Deserted",
+    "ANULADA": "Cancelled",
+    "ANUNCIO_PREVIO": "Prior notice",
+    "DESCONOCIDO": "No status"
+  },
+  "tipoContrato": {
+    "OBRAS": "Works",
+    "SERVICIOS": "Services",
+    "SUMINISTROS": "Supplies",
+    "CONCESION_OBRAS": "Works concession",
+    "CONCESION_SERVICIOS": "Services concession",
+    "GESTION_SERVICIOS_PUBLICOS": "Public services management",
+    "MIXTO": "Mixed",
+    "ACUERDO_MARCO": "Framework agreement",
+    "SISTEMA_DINAMICO": "Dynamic purchasing system",
+    "ADMINISTRATIVO_ESPECIAL": "Special administrative",
+    "PRIVADO": "Private",
+    "PATRIMONIAL": "Property",
+    "OTROS": "Other"
+  },
+  "procedimiento": {
+    "ABIERTO": "Open",
+    "RESTRINGIDO": "Restricted",
+    "NEGOCIADO": "Negotiated",
+    "NEGOCIADO_SIN_PUBLICIDAD": "Negotiated without publicity",
+    "DIALOGO_COMPETITIVO": "Competitive dialogue",
+    "ASOCIACION_INNOVACION": "Innovation partnership",
+    "SIMPLIFICADO": "Simplified",
+    "SIMPLIFICADO_ABREVIADO": "Simplified abbreviated",
+    "NEGOCIADO_CON_PUBLICIDAD": "Negotiated with publication",
+    "SISTEMA_DINAMICO": "Dynamic purchasing system",
+    "NORMAS_INTERNAS": "Internal rules",
+    "BASADO_ACUERDO_MARCO": "Framework agreement based",
+    "NO_DEFINIDO": "Undefined",
+    "CONCURSO_PROYECTOS": "Design contest",
+    "LICITACION_CON_NEGOCIACION": "Tender with negotiation",
+    "MENOR": "Minor",
+    "DERIVADO_ACUERDO_MARCO": "Framework agreement derived",
+    "OTROS": "Other"
+  },
+  "tramitacion": {
+    "ORDINARIA": "Ordinary",
+    "URGENTE": "Urgent",
+    "EMERGENCIA": "Emergency"
+  },
+  "detail": {
+    "notFoundTitle": "Tender not found",
+    "notFoundBody": "The identifier doesn't exist or the tender has been deleted.",
+    "backToSearch": "Back to search",
+    "budgetLabel": "Budget",
+    "deadlineSuffix": "remaining",
+    "economicTitle": "Financial data",
+    "budgetBaseNoIva": "Base budget (excl. VAT)",
+    "budgetWithIva": "Budget with VAT",
+    "awardAmount": "Award amount",
+    "discount": "Discount",
+    "numBidders": "# bidders",
+    "datesTitle": "Dates and deadlines",
+    "publication": "Publication",
+    "presentationDeadline": "Submission deadline",
+    "awardDate": "Award",
+    "cpvTitle": "CPV classification",
+    "awardeeTitle": "Awardee",
+    "nifLabel": "Tax ID:",
+    "descriptionTitle": "Description",
+    "documentsTitle": "Documents",
+    "aiSummaryTitle": "AI summary",
+    "aiSummaryBadge": "Sprint 5",
+    "aiSummaryBody": "Automatic document analysis will be available soon."
+  },
+  "sections": {
+    "guardadas": "Saved",
+    "analytics": "Analytics",
+    "calendario": "Calendar",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies"
+  }
+}

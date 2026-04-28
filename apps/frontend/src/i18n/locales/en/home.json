@@ -1,0 +1,44 @@
+{
+  "hint": "Tap a module to see details · Click",
+  "hintKbd": "Open module",
+  "hintSuffix": "to navigate",
+  "moduleLabel": "MODULE",
+  "openModule": "Open module",
+  "modules": {
+    "buscador": {
+      "title": "Search",
+      "description": "Explore indexed public tenders with advanced filters.",
+      "stats": {
+        "total": "total",
+        "open": "open"
+      }
+    },
+    "alertas": {
+      "title": "Alerts",
+      "description": "Automatic notifications when tenders matching your criteria appear.",
+      "stats": {
+        "new": "new",
+        "active": "active"
+      }
+    },
+    "guardadas": {
+      "title": "Saved",
+      "description": "Your favorite tenders with tracking, notes and deadline reminders.",
+      "stats": {
+        "saved": "saved"
+      }
+    },
+    "analytics": {
+      "title": "Analytics",
+      "description": "Dashboards with market KPIs, sector trends and competitive analysis."
+    },
+    "calendario": {
+      "title": "Calendar",
+      "description": "Visual timeline of submission deadlines and key dates for your tenders."
+    },
+    "ajustes": {
+      "title": "Settings",
+      "description": "Account configuration, search criteria and system preferences."
+    }
+  }
+}

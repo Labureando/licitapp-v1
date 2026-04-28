@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { Check, ChevronDown, Search, X, Building2, Loader2 } from 'lucide-react';
 import { organosApi, type OrganoSearchResult } from '../api/organos.api';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 interface OrganoPickerPopoverProps {
@@ -21,6 +22,7 @@ export function OrganoPickerPopover({
   provinciaContext,
   className,
 }: OrganoPickerPopoverProps) {
+  const { t } = useTranslation('search');
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -154,13 +156,13 @@ export function OrganoPickerPopover({
         )}
       >
         <Building2 size={14} className="text-muted-foreground" />
-        <span className="text-foreground">Órgano</span>
+        <span className="text-foreground">{t('filters.organoPicker.label')}</span>
         {selectedIds.length > 0 ? (
           <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-medium text-primary-foreground">
             {selectedIds.length}
           </span>
         ) : (
-          <span className="text-muted-foreground">Todos</span>
+             <span className="text-muted-foreground">{t('filters.organoPicker.allPlaceholder')}</span>
         )}
         <ChevronDown
           className={cn(
@@ -185,7 +187,7 @@ export function OrganoPickerPopover({
               ref={searchRef}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar ayuntamiento, diputación..."
+              placeholder={t('filters.organoPicker.searchPlaceholder')}
               className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
             {isFetching ? (
@@ -203,8 +205,8 @@ export function OrganoPickerPopover({
 
           {(ccaaContext?.length || provinciaContext?.length) && (
             <div className="border-b border-border bg-muted/30 px-3 py-1.5">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                Filtrando en:{' '}
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {t('filters.organoPicker.filteringIn')}{' '}
                 <span className="font-semibold text-foreground">
                   {[...(provinciaContext ?? []), ...(ccaaContext ?? [])].join(', ')}
                 </span>
@@ -215,9 +217,9 @@ export function OrganoPickerPopover({
           <div className="max-h-[340px] overflow-y-auto py-1">
             {merged.length === 0 ? (
               <div className="px-3 py-6 text-center text-sm text-muted-foreground">
-                {debouncedQuery
-                  ? 'Ningún órgano coincide'
-                  : 'Escribe para buscar órganos'}
+               {debouncedQuery
+                  ? t('filters.organoPicker.noMatch')
+                  : t('filters.organoPicker.typeToSearch')}
               </div>
             ) : (
               merged.map((org) => {
@@ -279,7 +281,7 @@ export function OrganoPickerPopover({
                   : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground',
               )}
             >
-              Limpiar
+              {t('filters.clearButton')}
             </button>
             <button
               type="button"
@@ -292,7 +294,7 @@ export function OrganoPickerPopover({
                   : 'bg-muted text-muted-foreground',
               )}
             >
-              Aplicar {buffer.length > 0 && `(${buffer.length})`}
+               {t('filters.applyButton')} {buffer.length > 0 && `(${buffer.length})`}
             </button>
           </div>
         </div>

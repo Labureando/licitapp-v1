@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MultiSelectPopover } from './multi-select-popover';
 import { FilterBadges, type ActiveFilter } from './filter-badges';
 import { OrganoPickerPopover } from './organo-picker-popover';
@@ -13,15 +14,7 @@ interface LicitacionFiltersProps {
   className?: string;
 }
  
-const LABEL_MAP: Record<string, string> = {
-  estado: 'Estado',
-  tipoContrato: 'Tipo',
-  procedimiento: 'Procedimiento',
-  tramitacion: 'Tramitación',
-  ccaa: 'CCAA',
-  provincia: 'Provincia',
-  organoId: 'Órgano',
-};
+
  
 function prettify(value: string): string {
   return value
@@ -36,6 +29,28 @@ export function LicitacionFilters({
   onChange,
   className,
 }: LicitacionFiltersProps) {
+  const { t } = useTranslation('search');
+
+  // Mapa local: group → label traducido (antes era LABEL_MAP estático)
+  const labelMap: Record<string, string> = {
+    estado: t('filters.groups.estado'),
+    tipoContrato: t('filters.groups.tipoContrato'),
+    procedimiento: t('filters.groups.procedimiento'),
+    tramitacion: t('filters.groups.tramitacion'),
+    ccaa: t('filters.groups.ccaa'),
+    provincia: t('filters.groups.provincia'),
+    organoId: t('filters.groups.organo'),
+  };
+
+  // Traduce un enum value con fallback a prettify si la clave no existe
+  const tEnum = (namespace: string, key: string) =>
+    t(`${namespace}.${key}`, { defaultValue: prettify(key) });
+
+  const popoverPlaceholders = {
+    placeholder: t('filters.allPlaceholder'),
+    searchPlaceholder: t('filters.searchPlaceholder'),
+  };
+
   // Guardamos la metadata del órgano seleccionado (para badges/trigger)
   const [selectedOrgano, setSelectedOrgano] =
     useState<OrganoSearchResult | null>(null);
@@ -63,21 +78,21 @@ export function LicitacionFilters({
       const values = filters[group];
       if (!values || !Array.isArray(values)) return;
       values.forEach((value) => {
-        badges.push({
+         badges.push({
           group,
-          groupLabel: LABEL_MAP[group],
+          groupLabel: labelMap[group],
           value,
-          label: prettify(value),
+          label: tEnum(group, value),
         });
       });
     });
  
-    if (filters.organoId) {
+     if (filters.organoId) {
       badges.push({
         group: 'organoId',
-        groupLabel: LABEL_MAP.organoId,
+        groupLabel: labelMap.organoId,
         value: filters.organoId,
-        label: selectedOrgano?.nombre ?? 'Órgano',
+        label: selectedOrgano?.nombre ?? labelMap.organoId,
       });
     }
  
@@ -114,37 +129,37 @@ export function LicitacionFilters({
     () =>
       (options?.estados ?? []).map((e) => ({
         value: e.value,
-        label: prettify(e.value),
+        label: tEnum('estado', e.value),
         count: e.count,
       })),
-    [options?.estados],
+    [options?.estados, t],
   );
   const tipoOpts = useMemo(
     () =>
       (options?.tipos ?? []).map((e) => ({
         value: e.value,
-        label: prettify(e.value),
+        label: tEnum('tipoContrato', e.value),
         count: e.count,
       })),
-    [options?.tipos],
+    [options?.tipos, t],
   );
   const procedimientoOpts = useMemo(
     () =>
       (options?.procedimientos ?? []).map((e) => ({
         value: e.value,
-        label: prettify(e.value),
+        label: tEnum('procedimiento', e.value),
         count: e.count,
       })),
-    [options?.procedimientos],
+    [options?.procedimientos, t],
   );
-  const tramitacionOpts = useMemo(
+ const tramitacionOpts = useMemo(
     () =>
       (options?.tramitaciones ?? []).map((e) => ({
         value: e.value,
-        label: prettify(e.value),
+        label: tEnum('tramitacion', e.value),
         count: e.count,
       })),
-    [options?.tramitaciones],
+    [options?.tramitaciones, t],
   );
   const ccaaOpts = useMemo(
     () =>
@@ -168,39 +183,45 @@ export function LicitacionFilters({
   return (
     <div className={cn('space-y-3', className)}>
       <div className="flex flex-wrap items-center gap-2">
-        <MultiSelectPopover
-          label="Estado"
+       <MultiSelectPopover
+          label={labelMap.estado}
+          {...popoverPlaceholders}
           options={estadoOpts}
           selected={filters.estado ?? []}
           onChange={setGroup('estado')}
         />
         <MultiSelectPopover
-          label="Tipo"
+          label={labelMap.tipoContrato}
+          {...popoverPlaceholders}
           options={tipoOpts}
           selected={filters.tipoContrato ?? []}
           onChange={setGroup('tipoContrato')}
         />
         <MultiSelectPopover
-          label="Procedimiento"
+          label={labelMap.procedimiento}
+          {...popoverPlaceholders}
           options={procedimientoOpts}
           selected={filters.procedimiento ?? []}
           onChange={setGroup('procedimiento')}
         />
         <MultiSelectPopover
-          label="Tramitación"
+          label={labelMap.tramitacion}
+          {...popoverPlaceholders}
           options={tramitacionOpts}
           selected={filters.tramitacion ?? []}
           onChange={setGroup('tramitacion')}
         />
         <MultiSelectPopover
-          label="CCAA"
+          label={labelMap.ccaa}
+          {...popoverPlaceholders}
           options={ccaaOpts}
           selected={filters.ccaa ?? []}
           onChange={setGroup('ccaa')}
         />
         {provinciaOpts.length > 0 && (
           <MultiSelectPopover
-            label="Provincia"
+            label={labelMap.provincia}
+            {...popoverPlaceholders}
             options={provinciaOpts}
             selected={filters.provincia ?? []}
             onChange={setGroup('provincia')}

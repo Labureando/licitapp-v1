@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { Check, ChevronDown, Search, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 export interface MultiSelectOption {
@@ -29,6 +30,7 @@ export function MultiSelectPopover({
   searchThreshold = 8,
   className,
 }: MultiSelectPopoverProps) {
+   const { t } = useTranslation('search');
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [buffer, setBuffer] = useState<string[]>(selected);
@@ -172,7 +174,7 @@ export function MultiSelectPopover({
           <div className="max-h-[320px] overflow-y-auto py-1">
             {filtered.length === 0 ? (
               <div className="px-3 py-4 text-center text-sm text-muted-foreground">
-                Sin resultados
+                {t('filters.noResults')}
               </div>
             ) : (
               filtered.map((opt) => {
@@ -224,7 +226,7 @@ export function MultiSelectPopover({
                   : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground',
               )}
             >
-              Limpiar
+              {t('filters.clearButton')}
             </button>
             <button
               type="button"
@@ -237,7 +239,7 @@ export function MultiSelectPopover({
                   : 'bg-muted text-muted-foreground',
               )}
             >
-              Aplicar {buffer.length > 0 && `(${buffer.length})`}
+             {t('filters.applyButton')} {buffer.length > 0 && `(${buffer.length})`}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { useLicitaciones, useFilterOptions } from '../hooks/use-licitaciones';
 import { LicitacionCard } from '../components/licitacion-card';
@@ -59,6 +60,7 @@ function paramsToUrl(params: SearchParams): URLSearchParams {
 export function BuscarPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const params = useMemo(() => parseUrlToParams(searchParams), [searchParams]);
+  const { t } = useTranslation('search');
 
   const [searchText, setSearchText] = useState(params.q || '');
   const [focused, setFocused] = useState(false);
@@ -85,12 +87,12 @@ export function BuscarPage() {
       {/* HEADER */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Buscador</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight">{t('page.title')}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             <span className="font-mono font-bold text-gradient-primary">
               {data?.total?.toLocaleString('es-ES') || '—'}
             </span>{' '}
-            licitaciones públicas indexadas
+            {t('page.indexedCount')}
           </p>
         </div>
         <div className="inline-flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5">
@@ -99,7 +101,7 @@ export function BuscarPage() {
             style={{ boxShadow: '0 0 6px currentColor' }}
           />
           <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-            Scraping activo
+            {t('page.scrapingActive')}
           </span>
         </div>
       </div>
@@ -134,7 +136,7 @@ export function BuscarPage() {
             onChange={(e) => setSearchText(e.target.value)}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
-            placeholder="Buscar por palabra clave, CPV, órgano de contratación..."
+            placeholder={t('input.placeholder')}
             className="flex-1 bg-transparent py-4 text-sm text-foreground outline-none placeholder:text-muted-foreground/40"
           />
           <kbd className="hidden items-center rounded border border-border bg-muted px-2 py-1 font-mono text-[10px] text-muted-foreground sm:inline-flex">
@@ -142,7 +144,7 @@ export function BuscarPage() {
           </kbd>
           <Button type="submit" size="sm" className="h-8">
             <Zap size={14} />
-            Buscar
+           {t('input.submitButton')}
           </Button>
         </div>
       </form>
@@ -175,14 +177,13 @@ export function BuscarPage() {
                   onClick={() => goToPage((params.page ?? 1) - 1)}
                 >
                   <ChevronLeft size={14} />
-                  Anterior
+                  {t('pagination.previous')}
                 </Button>
                 <span className="px-3 text-sm text-muted-foreground">
-                  Página{' '}
+                  {t('pagination.pageLabel')}{' '}
                   <span className="font-mono font-bold text-foreground">
                     {data.page}
-                  </span>{' '}
-                  de{' '}
+                  </span>{' '}{t('pagination.of')}{' '}
                   <span className="font-mono font-bold text-foreground">
                     {data.totalPages}
                   </span>
@@ -193,7 +194,7 @@ export function BuscarPage() {
                   disabled={!data.hasMore}
                   onClick={() => goToPage((params.page ?? 1) + 1)}
                 >
-                  Siguiente
+                  {t('pagination.next')}
                   <ChevronRight size={14} />
                 </Button>
               </div>
@@ -204,9 +205,9 @@ export function BuscarPage() {
             <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
               <Search size={22} className="text-muted-foreground/40" />
             </div>
-            <h3 className="mb-1 text-base font-semibold">Sin resultados</h3>
+            <h3 className="mb-1 text-base font-semibold">{t('results.empty')}</h3>
             <p className="text-sm text-muted-foreground">
-              Prueba con otros términos o ajusta los filtros
+              {t('results.emptyHint')}
             </p>
           </div>
         )}

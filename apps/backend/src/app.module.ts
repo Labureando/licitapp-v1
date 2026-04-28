@@ -17,6 +17,7 @@ import { InvitationsModule } from './modules/invitations/invitations.module';
 import { AlertsModule } from './modules/alerts/alerts.module';
 import { SearchModule } from './modules/search/search.module';
 import { TagsModule } from './modules/tags/tags.module';
+import { OrganosModule } from './modules/organos/organos.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { TagsModule } from './modules/tags/tags.module';
     AlertsModule,
     SearchModule,
     TagsModule,
+    OrganosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

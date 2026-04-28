@@ -1,0 +1,44 @@
+{
+  "hint": "Pulsa un módulo para ver detalles · Click en",
+  "hintKbd": "Abrir módulo",
+  "hintSuffix": "para navegar",
+  "moduleLabel": "MÓDULO",
+  "openModule": "Abrir módulo",
+  "modules": {
+    "buscador": {
+      "title": "Buscador",
+      "description": "Explora las licitaciones públicas indexadas con filtros avanzados.",
+      "stats": {
+        "total": "totales",
+        "open": "abiertas"
+      }
+    },
+    "alertas": {
+      "title": "Alertas",
+      "description": "Notificaciones automáticas cuando aparecen licitaciones que coinciden con tus criterios.",
+      "stats": {
+        "new": "nuevas",
+        "active": "activas"
+      }
+    },
+    "guardadas": {
+      "title": "Guardadas",
+      "description": "Tus licitaciones favoritas con seguimiento, notas y recordatorios de plazos.",
+      "stats": {
+        "saved": "guardadas"
+      }
+    },
+    "analytics": {
+      "title": "Analytics",
+      "description": "Dashboards con KPIs del mercado, tendencias por sector y análisis competitivo."
+    },
+    "calendario": {
+      "title": "Calendario",
+      "description": "Timeline visual de plazos de presentación y fechas clave de tus licitaciones."
+    },
+    "ajustes": {
+      "title": "Ajustes",
+      "description": "Configuración de cuenta, criterios de búsqueda y preferencias del sistema."
+    }
+  }
+}

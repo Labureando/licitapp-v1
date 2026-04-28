@@ -1,6 +1,7 @@
-'use client'
+
 
 import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowRight } from 'lucide-react'
 import { Badge } from './badge'
 import { Button } from './button'
@@ -31,6 +32,7 @@ export default function RadialOrbitalNav({
   radius = 220,
 }: RadialOrbitalNavProps) {
   const [expandedId, setExpandedId] = useState<number | null>(null)
+  const { t } = useTranslation('home')
   const containerRef = useRef<HTMLDivElement>(null)
   const orbitRef = useRef<HTMLDivElement>(null)
 
@@ -152,7 +154,7 @@ export default function RadialOrbitalNav({
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">
                         <Badge variant="outline" className="text-[10px] tracking-wider">
-                          MÓDULO
+                          {t('moduleLabel')}
                         </Badge>
                       </div>
                       <CardTitle className="text-base mt-1">{item.title}</CardTitle>
@@ -184,7 +186,7 @@ export default function RadialOrbitalNav({
                           onNavigate?.(item.path)
                         }}
                       >
-                        Abrir módulo
+                        {t('openModule')}
                         <ArrowRight size={14} className="ml-1" />
                       </Button>
                     </CardContent>

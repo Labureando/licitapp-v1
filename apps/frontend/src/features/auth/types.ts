@@ -89,6 +89,7 @@ export interface UpdateUserPayload {
 export interface ChangePasswordPayload {
   oldPassword: string;
   newPassword: string;
+  newPasswordConfirm: string;   
 }
 
 // ─── Reset password ───

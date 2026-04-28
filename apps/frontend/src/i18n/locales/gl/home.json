@@ -1,0 +1,44 @@
+{
+  "hint": "Preme un módulo para ver detalles · Clica en",
+  "hintKbd": "Abrir módulo",
+  "hintSuffix": "para navegar",
+  "moduleLabel": "MÓDULO",
+  "openModule": "Abrir módulo",
+  "modules": {
+    "buscador": {
+      "title": "Buscador",
+      "description": "Explora as licitacións públicas indexadas con filtros avanzados.",
+      "stats": {
+        "total": "totais",
+        "open": "abertas"
+      }
+    },
+    "alertas": {
+      "title": "Alertas",
+      "description": "Notificacións automáticas cando aparecen licitacións que coinciden cos teus criterios.",
+      "stats": {
+        "new": "novas",
+        "active": "activas"
+      }
+    },
+    "guardadas": {
+      "title": "Gardadas",
+      "description": "As túas licitacións favoritas con seguimento, notas e recordatorios de prazos.",
+      "stats": {
+        "saved": "gardadas"
+      }
+    },
+    "analytics": {
+      "title": "Analíticas",
+      "description": "Dashboards con KPIs do mercado, tendencias por sector e análise competitiva."
+    },
+    "calendario": {
+      "title": "Calendario",
+      "description": "Timeline visual de prazos de presentación e datas clave das túas licitacións."
+    },
+    "ajustes": {
+      "title": "Axustes",
+      "description": "Configuración de conta, criterios de busca e preferencias do sistema."
+    }
+  }
+}

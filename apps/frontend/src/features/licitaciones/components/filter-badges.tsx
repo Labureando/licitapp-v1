@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface FilterBadgesProps {
   filters: ActiveFilter[];
@@ -21,6 +22,7 @@ export function FilterBadges({
   onClearAll,
   className,
 }: FilterBadgesProps) {
+  const { t } = useTranslation('search');
   if (filters.length === 0) return null;
 
   return (
@@ -48,7 +50,7 @@ export function FilterBadges({
               'ml-0.5 rounded-full p-0.5 text-muted-foreground',
               'hover:bg-primary/20 hover:text-foreground transition-colors',
             )}
-            aria-label={`Quitar filtro ${f.groupLabel}: ${f.label}`}
+           aria-label={t('filters.removeFilter', { group: f.groupLabel, value: f.label })}
           >
             <X className="h-3 w-3" />
           </button>
@@ -64,7 +66,7 @@ export function FilterBadges({
             'hover:text-foreground transition-colors underline-offset-2 hover:underline',
           )}
         >
-          Limpiar todo
+          {t('filters.clearAll')}
         </button>
       )}
     </div>

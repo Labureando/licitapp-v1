@@ -1,4 +1,5 @@
 import { Moon, Sun, Monitor } from 'lucide-react'
+import { useTranslation } from 'react-i18next' 
 import { Button } from './button'
 import {
   DropdownMenu,
@@ -16,6 +17,7 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ variant = 'icon', className }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme()
+  const { t } = useTranslation('common')
 
   return (
     <DropdownMenu>
@@ -30,8 +32,8 @@ export function ThemeToggle({ variant = 'icon', className }: ThemeToggleProps) {
       >
         <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
         <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        {variant === 'full' && <span className="ml-2">Tema</span>}
-        <span className="sr-only">Cambiar tema</span>
+        {variant === 'full' && <span className="ml-2">{t('theme.label')}</span>}
+        <span className="sr-only">{t('theme.change')}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-36">
         <DropdownMenuItem
@@ -39,21 +41,21 @@ export function ThemeToggle({ variant = 'icon', className }: ThemeToggleProps) {
           className={cn('cursor-pointer', theme === 'light' && 'bg-accent')}
         >
           <Sun className="mr-2 h-4 w-4" />
-          Claro
+          {t('theme.light')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme('dark')}
           className={cn('cursor-pointer', theme === 'dark' && 'bg-accent')}
         >
           <Moon className="mr-2 h-4 w-4" />
-          Oscuro
+          {t('theme.dark')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme('system')}
           className={cn('cursor-pointer', theme === 'system' && 'bg-accent')}
         >
           <Monitor className="mr-2 h-4 w-4" />
-          Sistema
+          {t('theme.system')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
