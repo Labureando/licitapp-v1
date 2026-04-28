@@ -8,7 +8,7 @@ import { AlertEntity } from './entities/alert.entity';
 import { EmailService } from '../../infrastructure/email/email.service';
 import { Licitacion } from '../scraping/shared/entities/licitacion.entity';
 import { SearchEngineService } from '../search/search.engine';
-import { generateAlertEmailTemplate } from '../../common/email-templates';
+import { generateAlertEmailTemplate, generateAlertDigestEmailTemplate } from '../../common/email-templates';
 
 @Injectable()
 export class AlertsService {
@@ -17,6 +17,8 @@ export class AlertsService {
   constructor(
     @InjectRepository(AlertEntity)
     private readonly alertRepo: Repository<AlertEntity>,
+    @InjectRepository(Licitacion)
+    private readonly licRepo: Repository<Licitacion>,
     private readonly emailService: EmailService,
     private readonly searchEngine: SearchEngineService,
   ) {}
@@ -467,5 +469,134 @@ export class AlertsService {
         error,
       );
     }
+  }
+
+  /**
+   * Busca en BD las licitaciones del último mes que coinciden con los criterios de
+   * la alerta. Ordena por fecha de publicación DESC (más recientes primero).
+   *
+   * @param alert   - AlertEntity con criterios de filtrado
+   * @param limit   - Máximo de resultados a devolver (default 10)
+   * @param days    - Ventana temporal en días hacia atrás (default 30)
+   */
+  async findLicitacionesForAlert(
+    alert: AlertEntity,
+    limit = 10,
+    days = 30,
+  ): Promise<{ licitaciones: Licitacion[]; total: number }> {
+    // Fecha límite: hace `days` días desde ahora
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const qb = this.licRepo
+      .createQueryBuilder('l')
+      // Solo licitaciones publicadas en los últimos `days` días
+      .where('l."fechaPublicacion" >= :since', { since });
+
+    if (alert.estados?.length) {
+      qb.andWhere('l.estado IN (:...estados)', { estados: alert.estados });
+    }
+    if (alert.tiposContrato?.length) {
+      qb.andWhere('l."tipoContrato" IN (:...tipos)', { tipos: alert.tiposContrato });
+    }
+    if (alert.procedimientos?.length) {
+      qb.andWhere('l.procedimiento IN (:...procs)', { procs: alert.procedimientos });
+    }
+    if (alert.tramitaciones?.length) {
+      qb.andWhere('l.tramitacion IN (:...trams)', { trams: alert.tramitaciones });
+    }
+    if (alert.ccaas?.length) {
+      qb.andWhere('l.ccaa IN (:...ccaas)', { ccaas: alert.ccaas });
+    }
+    if (alert.provincias?.length) {
+      qb.andWhere('l.provincia IN (:...provs)', { provs: alert.provincias });
+    }
+    if (alert.cpvCodes?.length) {
+      qb.andWhere(':cpv = ANY(l."cpvCodes")', { cpv: alert.cpvCodes[0] });
+    }
+    if (alert.importeMin) {
+      qb.andWhere('CAST(l."presupuestoBase" AS BIGINT) >= :min', {
+        min: BigInt(alert.importeMin),
+      });
+    }
+    if (alert.importeMax) {
+      qb.andWhere('CAST(l."presupuestoBase" AS BIGINT) <= :max', {
+        max: BigInt(alert.importeMax),
+      });
+    }
+    if (alert.palabrasClave?.trim()) {
+      qb.andWhere(
+        `l."searchVector" @@ plainto_tsquery('spanish', :kw)`,
+        { kw: alert.palabrasClave.trim() },
+      );
+    }
+
+    // Más recientes primero
+    qb.orderBy('l."fechaPublicacion"', 'DESC', 'NULLS LAST');
+
+    const total = await qb.getCount();
+    const licitaciones = await qb.take(limit).getMany();
+
+    return { licitaciones, total };
+  }
+
+  /**
+   * Envía el digest diario para TODAS las alertas activas.
+   * Llamado por el scheduler a las 8:00 AM cada día.
+   */
+  async sendDailyDigestForAllAlerts(): Promise<void> {
+    this.logger.log('[Digest] Iniciando envío de digests diarios...');
+
+    const activeAlerts = await this.alertRepo.find({
+      where: { isActive: true },
+      relations: ['user'],
+    });
+
+    this.logger.log(`[Digest] ${activeAlerts.length} alertas activas encontradas`);
+
+    let sent = 0;
+    let errors = 0;
+
+    for (const alert of activeAlerts) {
+      try {
+        const destination = alert.email || alert.user?.email;
+        if (!destination) {
+          this.logger.warn(`[Digest] Alerta ${alert.id} sin email destino, skip`);
+          continue;
+        }
+
+        const { licitaciones, total } = await this.findLicitacionesForAlert(alert, 10);
+
+        // No enviar email si no hay licitaciones coincidentes
+        if (total === 0) {
+          this.logger.debug(`[Digest] Sin resultados para alerta "${alert.name}", skip`);
+          continue;
+        }
+
+        const html = generateAlertDigestEmailTemplate(alert, licitaciones, total);
+        const subject = `📋 ${total} licitación${total !== 1 ? 'es' : ''} para tu alerta "${alert.name}"`;
+
+        await this.emailService.sendEmail({ to: destination, subject, html });
+
+        alert.lastTriggeredAt = new Date();
+        alert.triggerCount += 1;
+        await this.alertRepo.save(alert);
+
+        sent++;
+        this.logger.debug(
+          `[Digest] Enviado a ${destination} — alerta "${alert.name}" — ${total} licitaciones`,
+        );
+      } catch (error) {
+        errors++;
+        this.logger.error(
+          `[Digest] Error procesando alerta ${alert.id}`,
+          error,
+        );
+      }
+    }
+
+    this.logger.log(
+      `[Digest] Finalizado: ${sent} enviados, ${errors} errores`,
+    );
   }
 }

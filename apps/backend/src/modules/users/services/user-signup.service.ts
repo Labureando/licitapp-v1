@@ -6,10 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import * as crypto from 'crypto';
 import { UserEntity } from '../entities';
 import { Plan, Role, Timezone } from '../enums';
 import { UserSanitizeHelper } from '../helpers';
 import { UserAuthService } from './user-auth.service';
+import { EmailService } from '../../../infrastructure/email';
+import { EmailTemplatesService } from '../../../common/email-templates';
 
 @Injectable()
 export class UserSignupService {
@@ -21,6 +24,8 @@ export class UserSignupService {
     private readonly dataSource: DataSource,
     private readonly sanitizeHelper: UserSanitizeHelper,
     private readonly authService: UserAuthService,
+    private readonly emailService: EmailService,
+    private readonly emailTemplatesService: EmailTemplatesService,
   ) {}
 
   /**
@@ -50,12 +55,12 @@ export class UserSignupService {
       }
 
       // Generar token único de 32 bytes
-      const signupToken = require('crypto').randomBytes(32).toString('hex');
+      const signupToken = crypto.randomBytes(32).toString('hex');
       const signupTokenExpiresAt = new Date();
       signupTokenExpiresAt.setHours(signupTokenExpiresAt.getHours() + 24);
 
       // Generar contraseña temporal
-      const tempPassword = require('crypto').randomBytes(32).toString('hex');
+      const tempPassword = crypto.randomBytes(32).toString('hex');
       const hashedTempPassword = await this.authService.hashPassword(tempPassword);
 
       // Crear usuario INACTIVO
@@ -143,5 +148,26 @@ export class UserSignupService {
       );
       throw error;
     }
+  }
+
+  /**
+   * Enviar email de verificación de signup
+   */
+  async sendVerificationEmail(user: UserEntity): Promise<void> {
+    const verificationLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/complete-signup/${user.signupToken}`;
+
+    const emailHtml = this.emailTemplatesService.getSignupVerificationTemplate(
+      user.firstName,
+      verificationLink,
+      user.signupTokenExpiresAt!,
+    );
+
+    await this.emailService.sendEmail({
+      to: user.email,
+      subject: 'Completa tu Registro - LicitApp',
+      html: emailHtml,
+    });
+
+    this.logger.log(`Email de verificación enviado a: ${user.email}`);
   }
 }

@@ -154,5 +154,11 @@ export class UsersService {
   }): Promise<UserEntity> {
     return this.organizationService.createUserWithGoogle(googleUserData);
   }
+
+  // ============ EMAIL OPERATIONS ============
+
+  async sendSignupVerificationEmail(user: UserEntity): Promise<void> {
+    return this.signupService.sendVerificationEmail(user);
+  }
 }
 

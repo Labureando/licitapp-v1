@@ -42,8 +42,13 @@ export class EmailService {
       await sgMail.send(msg);
       this.logger.log(`Email sent to ${Array.isArray(emailDto.to) ? emailDto.to.join(', ') : emailDto.to}`);
     } catch (error) {
-      this.logger.error(`Failed to send email: ${error.message}`, error.stack);
-      throw new InternalServerErrorException('Failed to send email');
+      // Loguear respuesta detallada de SendGrid si está disponible
+      const sgResponse = error?.response?.body;
+      this.logger.error(
+        `Failed to send email to ${Array.isArray(emailDto.to) ? emailDto.to.join(', ') : emailDto.to}: ${error.message}`,
+        sgResponse ? JSON.stringify(sgResponse) : error.stack,
+      );
+      throw new InternalServerErrorException(`Failed to send email: ${error.message}`);
     }
   }
 

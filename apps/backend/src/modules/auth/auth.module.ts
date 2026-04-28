@@ -7,8 +7,6 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { UsersModule } from '../users/users.module';
-import { EmailTemplatesModule } from '../../common/email-templates';
-import { EmailModule } from '../../infrastructure/email';
 import { CommonModule } from '../../common/common.module';
 
 /**
@@ -45,8 +43,6 @@ import { CommonModule } from '../../common/common.module';
       inject: [ConfigService],
     }),
     UsersModule,
-    EmailTemplatesModule,
-    EmailModule,
     CommonModule,
   ],
   controllers: [AuthController],

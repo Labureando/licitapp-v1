@@ -11,13 +11,12 @@ import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { Plan } from '../users/enums';
-import { EmailTemplatesService } from '../../common/email-templates';
-import { EmailService } from '../../infrastructure/email';
 import { BruteForceService } from '../../common/services/brute-force.service';
 
 /**
  * Servicio de Autenticación
- * Maneja login, refresh token, logout y obtener usuario actual
+ * Maneja login, refresh token, logout, obtener usuario actual
+ * Solo ORQUESTA - la lógica de usuarios está centralizada en UsersService
  */
 @Injectable()
 export class AuthService {
@@ -31,8 +30,6 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly emailTemplatesService: EmailTemplatesService,
-    private readonly emailService: EmailService,
     private readonly bruteForceService: BruteForceService,
   ) {}
 
@@ -81,32 +78,9 @@ export class AuthService {
       // 4. Login exitoso: resetear intentos
       await this.bruteForceService.resetAttempts(clientIp);
 
-      // 5. Generar tokens
-      const payload = {
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-        isActive: user.isActive,
-      };
-
-      const access_token = this.jwtService.sign(payload, {
-        expiresIn: `${this.ACCESS_TOKEN_EXPIRY}s`,
-      });
-
-      const refresh_token = this.jwtService.sign(payload, {
-        expiresIn: `${this.REFRESH_TOKEN_EXPIRY}s`,
-      });
-
-      // 6. Retornar usuario sin contraseña
-      const { password: pwd, ...userWithoutPassword } = user;
-
       this.logger.log(`✅ Login exitoso para: ${user.email} desde IP: ${clientIp}`);
 
-      return {
-        access_token,
-        refresh_token,
-        user: userWithoutPassword,
-      };
+      return this.generateTokensResponse(user);
     } catch (error) {
       this.logger.error(`Error en login: ${(error as Error).message}`);
       throw error;
@@ -233,27 +207,13 @@ export class AuthService {
         timezone,
       });
 
-      // 2. Generar link de verificación
-      const verificationLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/complete-signup/${newUser.signupToken}`;
-
-      // 3. Enviar email de verificación
+      // 2. Enviar email de verificación (delegado a UsersService)
       try {
-        const emailHtml = this.emailTemplatesService.getSignupVerificationTemplate(
-          newUser.firstName,
-          verificationLink,
-          newUser.signupTokenExpiresAt!,
-        );
-
-        await this.emailService.sendEmail({
-          to: newUser.email,
-          subject: 'Completa tu Registro - LicitApp',
-          html: emailHtml,
-        });
-
-        this.logger.log(`Email de verificación enviado a: ${newUser.email}`);
+        await this.usersService.sendSignupVerificationEmail(newUser);
       } catch (emailError) {
-        this.logger.warn(
-          `Error al enviar email de verificación a ${newUser.email}: ${(emailError as Error).message}`,
+        this.logger.error(
+          `⚠️  FALLO AL ENVIAR EMAIL a ${newUser.email}: ${(emailError as Error).message}`,
+          (emailError as Error).stack,
         );
         // No lanzar error, el usuario fue creado, solo falló el email
       }
@@ -298,32 +258,9 @@ export class AuthService {
       // 2. Signup exitoso: resetear intentos
       await this.bruteForceService.resetAttempts(clientIp);
 
-      // 3. Generar tokens (login automático)
-      const payload = {
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-        isActive: user.isActive,
-      };
-
-      const access_token = this.jwtService.sign(payload, {
-        expiresIn: `${this.ACCESS_TOKEN_EXPIRY}s`,
-      });
-
-      const refresh_token = this.jwtService.sign(payload, {
-        expiresIn: `${this.REFRESH_TOKEN_EXPIRY}s`,
-      });
-
-      // 4. Retornar usuario sin contraseña
-      const { password: pwd, ...userWithoutPassword } = user;
-
       this.logger.log(`✅ Signup completado y usuario logueado: ${user.email} desde IP: ${clientIp}`);
 
-      return {
-        access_token,
-        refresh_token,
-        user: userWithoutPassword,
-      };
+      return this.generateTokensResponse(user);
     } catch (error) {
       // Registrar intento fallido
       await this.bruteForceService.recordFailedAttempt(clientIp);
@@ -400,6 +337,8 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       role: user.role,
+      isActive: user.isActive,
+      organizationId: user.organizationId ?? null,
     };
 
     const access_token = this.jwtService.sign(payload, {

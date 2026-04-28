@@ -1,31 +1,16 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { PlaceScraperService } from '../place/place-scraper.service';
 
 @Injectable()
-export class ScrapingScheduler implements OnModuleInit {
+export class ScrapingScheduler {
   private readonly logger = new Logger(ScrapingScheduler.name);
   private isRunning = false;
 
   constructor(private readonly placeScraper: PlaceScraperService) {}
 
-  onModuleInit() {
-    this.logger.log('ScrapingScheduler INICIADO — cada 5 min');
-
-    // Primera ejecución a los 10 segundos de arrancar
-    setTimeout(() => {
-      void this.runScraping();
-    }, 10000);
-
-    // Después cada 5 minutos
-    setInterval(
-      () => {
-        void this.runScraping();
-      },
-      5 * 60 * 1000
-    );
-  }
-
-  private async runScraping(): Promise<void> {
+  @Cron('*/5 * * * *', { name: 'scraping-place' })
+  async runScraping(): Promise<void> {
     if (this.isRunning) {
       this.logger.warn('[Cron] Ya en ejecución, skip');
       return;
@@ -39,7 +24,7 @@ export class ScrapingScheduler implements OnModuleInit {
         errors: number;
       };
       this.logger.log(
-        `[Cron] PLACE: ${r.newItems} new, ${r.updatedItems} updated`
+        `[Cron] PLACE: ${r.newItems} new, ${r.updatedItems} updated`,
       );
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Unknown error';
